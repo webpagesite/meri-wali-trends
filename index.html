@@ -379,6 +379,47 @@
       background: #fff;
     }
 
+    /* Size Selector */
+    .size-box {
+      margin-bottom: 14px;
+      background: #fff9fb;
+      border: 1px solid var(--border-color);
+      padding: 10px 14px;
+      border-radius: 12px;
+    }
+
+    .size-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .size-options {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .size-btn {
+      padding: 6px 12px;
+      background: #ffffff;
+      border: 1px solid var(--pink-accent);
+      color: var(--pink-primary);
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .size-btn.active {
+      background: var(--pink-primary);
+      color: #ffffff;
+      border-color: var(--pink-primary);
+    }
+
     .qty-row {
       display: flex;
       justify-content: space-between;
@@ -507,6 +548,13 @@
             <div id="miniPriceUnit" style="color: var(--pink-primary); font-weight: 800; font-size: 13px;"></div>
           </div>
         </div>
+
+        <!-- Size Selection (Only for Dresses/Products with sizes) -->
+        <div class="size-box" id="sizeContainer" style="display:none;">
+          <span class="size-label">Select Size: *</span>
+          <div class="size-options" id="sizeOptionsList"></div>
+        </div>
+
         <div class="qty-row">
           <span style="font-size: 13px; font-weight: 700;">Quantity:</span>
           <div style="display:flex; align-items:center; gap:10px;">
@@ -527,6 +575,7 @@
   <script>
     const whatsappNum = "919251221747";
     let selectedQuantity = 1;
+    let selectedSize = "";
     let currentId = null;
     let currentFilter = 'all';
 
@@ -551,15 +600,17 @@
       }
     }
 
-    // Saare 26 products (Accessories + Dresses)
+    // Saare 21 products (20 Accessories + 1 Dress)
     const products = {
-      // Accessories (1 to 20)
+      // Girl's Accessories (1 to 6)
       1: { category: "accessories", code: "GA-101", title: "Combo of 12 Pair Earrings with Velvet Box", priceNum: 673, price: "₹673", img: "https://i.ibb.co/Ld0X8PQv/Screenshot-2026-0816-064613.jpg", desc: "• Type: Jhumkhas (12 Pair Combo)<br>• Trend: Floral, Oxidised Silver<br>• Material: Alloy with Stones & Beads<br>• Includes: Velvet Earrings Folding Box" },
       2: { category: "accessories", code: "GA-102", title: "Vintage Floral Embroidered Lace Hair Bow", priceNum: 150, price: "₹150", img: "https://i.ibb.co/TBQ2DcYN/IMG-20260817-114459.png", desc: "• Type: Aesthetic Lace Hair Bow / Clip<br>• Trend: Vintage Floral Embroidery with Pearl Accents<br>• Color: White Floral" },
       3: { category: "accessories", code: "GA-103", title: "LED Light Up Butterfly Hair Clip (Pack of 2)", priceNum: 199, price: "₹199", img: "https://i.ibb.co/mVgrwGCz/IMG-20260817-121041.jpg", desc: "• Type: Glowing LED Hair Clip (Pack of 2)<br>• Feature: Optical Fiber Butterfly Braid<br>• Color: Multicolor Light" },
       4: { category: "accessories", code: "GA-104", title: "Exquisite Princess Pearl Butterfly Tiara Crown", priceNum: 349, price: "₹349", img: "https://i.ibb.co/DPsmtDdc/IMG-20260817-124016.jpg", desc: "• Type: Princess Tiara Crown<br>• Design: Pearl & Butterfly Embellishments<br>• Finish: White / Silver Shiny Finish" },
       5: { category: "accessories", code: "GA-105", title: "12 Pcs Kids Rainbow Braids Hair Extensions", priceNum: 199, price: "₹199", img: "https://i.ibb.co/C5whJn3n/IMG-20260817-130237.jpg", desc: "• Type: Clip-In Braids (Pack of 12)<br>• Style: Colorful Rainbow Braids<br>• Material: Silicone Clips & Synthetic Braids" },
       6: { category: "accessories", code: "GA-106", title: "Soft Fur Scrunchies Combo (Pack of 8)", priceNum: 149, price: "₹149", img: "https://i.ibb.co/qYP8Tszc/IMG-20260818-120223.jpg", desc: "• Type: Plush Fur Scrunchies (Pack of 8)<br>• Color: Multicolor Pastel Mix<br>• Feature: Soft on hair, prevents breakage" },
+
+      // Additional Accessories (7 to 20)
       7: { category: "accessories", code: "BA-101", title: "Pina Colada Attar 6ml Pack of 2", priceNum: 299, price: "₹299", img: "https://i.ibb.co/4ZwFRcth/Screenshot-2026-0820-184205.jpg", desc: "• Pack: 2 Bottles (6ml each)<br>• Flavour: Strawberry & Pina Colada<br>• Type: Non-Alcoholic Unisex Attar" },
       8: { category: "accessories", code: "BA-102", title: "Classy Men Silver Plated Designer Bracelet", priceNum: 149, price: "₹149", img: "https://iili.io/CZ2bBII.md.jpg", desc: "• Material: High Quality Stainless Steel<br>• Color: Premium Silver<br>• Closure: Sturdy Hook Lock" },
       9: { category: "accessories", code: "BA-103", title: "Men's Designer Gold Plated Bracelet", priceNum: 299, price: "₹299", img: "https://iili.io/CZ3LxzF.md.jpg", desc: "• Plating: Gold Plated Brass<br>• Stone: Amethyst Stone<br>• Closure: Button Closure" },
@@ -575,13 +626,17 @@
       19: { category: "accessories", code: "BA-113", title: "Crozon Premium Cotton Handkerchief (Pack of 6)", priceNum: 269, price: "₹269", img: "https://iili.io/CZKfnCG.md.jpg", desc: "• Material: 100% Pure Soft Cotton<br>• Quantity: Pack of 6 Box Set<br>• Size: 43cm x 43cm Large Size" },
       20: { category: "accessories", code: "BA-114", title: "Unisex Outdoor Tactical Bucket Hat", priceNum: 258, price: "₹258", img: "https://iili.io/CZKR8l9.md.jpg", desc: "• Size: 56–58cm Standard Fit<br>• Features: Air Eyelets & Windproof String<br>• Occasion: Summer Sun Protection" },
 
-      // Dresses (21 to 26)
-      21: { category: "dresses", code: "WD-101", title: "Floral Print Anarkali Kurti Set", priceNum: 599, price: "₹599", img: "https://i.ibb.co/Ld0X8PQv/Screenshot-2026-0816-064613.jpg", desc: "• Fabric: Pure Soft Rayon Cotton<br>• Style: Flared Anarkali with Matching Dupatta<br>• Print: Elegant Floral Print<br>• Occasion: Festive, Party & Casual Outing" },
-      22: { category: "dresses", code: "WD-102", title: "Solid Georgette Fit & Flare Gown", priceNum: 649, price: "₹649", img: "https://i.ibb.co/TBQ2DcYN/IMG-20260817-114459.png", desc: "• Fabric: Premium Georgette with Lining<br>• Length: Full Floor Length Maxi Gown<br>• Flare: 3.5 Meters Flared Hem<br>• Sleeve: Full Sleeves Style" },
-      23: { category: "dresses", code: "WD-103", title: "Printed Rayon Straight Kurta with Pant", priceNum: 499, price: "₹499", img: "https://i.ibb.co/mVgrwGCz/IMG-20260817-121041.jpg", desc: "• Combo: Kurta + Trouser Pant Set<br>• Fabric: 100% Breathable Rayon<br>• Fit: Regular Comfortable Fit<br>• Pattern: Jaipuri Traditional Print" },
-      24: { category: "dresses", code: "WD-104", title: "Embroidered Semi-Stitched Lehenga Choli", priceNum: 899, price: "₹899", img: "https://i.ibb.co/DPsmtDdc/IMG-20260817-124016.jpg", desc: "• Work: Dori & Sequins Heavy Embroidery<br>• Fabric: Art Silk Lehenga with Choli<br>• Dupatta: Soft Net Embroidered Dupatta<br>• Type: Semi-Stitched (Fits up to 42 bust)" },
-      25: { category: "dresses", code: "WD-105", title: "Casual Cotton A-Line Western Dress", priceNum: 399, price: "₹399", img: "https://i.ibb.co/C5whJn3n/IMG-20260817-130237.jpg", desc: "• Style: Korean A-Line Short Dress<br>• Neck: Sweetheart Neckline with Waist Tie<br>• Fabric: Premium Breathable Cotton<br>• Best For: College, Dates & Day Outing" },
-      26: { category: "dresses", code: "WD-106", title: "Party Wear Chiffon Maxi Dress", priceNum: 699, price: "₹699", img: "https://i.ibb.co/qYP8Tszc/IMG-20260818-120223.jpg", desc: "• Fabric: Flowy Chiffon with Inner Slip<br>• Design: Ruffled Tiered Hemline<br>• Color: Aesthetic Pastel Pink / Peach<br>• Trend: Bohemian Princess Aesthetic" }
+      // Pure Dress (Single Dress from Women's Collection)
+      21: { 
+        category: "dresses", 
+        code: "WC-101", 
+        title: "Vintage Floral Print Bodycon Midi Dress", 
+        priceNum: 695, 
+        price: "₹695", 
+        img: "https://i.ibb.co/qYyQ0R8T/Screenshot-2026-0819-174125.jpg", 
+        sizes: ["XS", "S", "M", "L", "XL", "XXL"],
+        desc: "• Type: Aesthetic Ribbon Shoulder Bodycon Midi Dress<br>• Fabric: Super Net with Inner Lining<br>• Pattern: Vintage Floral Print<br>• Length: Calf-Length / Sleeveless<br>• Occasion: Partywear, Date Night & Casual Outings" 
+      }
     };
 
     function render() {
@@ -638,6 +693,30 @@
       document.getElementById('miniImg').src = p.img;
       document.getElementById('miniTitle').innerText = p.title;
       document.getElementById('miniPriceUnit').innerText = p.price;
+
+      // Handle Size Selector if sizes exist
+      const sizeBox = document.getElementById('sizeContainer');
+      const sizeList = document.getElementById('sizeOptionsList');
+      sizeList.innerHTML = '';
+      if (p.sizes && p.sizes.length > 0) {
+        selectedSize = p.sizes[0];
+        p.sizes.forEach((s, idx) => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = `size-btn ${idx === 0 ? 'active' : ''}`;
+          btn.innerText = s;
+          btn.onclick = function() {
+            document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            selectedSize = s;
+          };
+          sizeList.appendChild(btn);
+        });
+        sizeBox.style.display = 'block';
+      } else {
+        selectedSize = "";
+        sizeBox.style.display = 'none';
+      }
     }
 
     function updateQty(delta) {
@@ -658,11 +737,14 @@
       }
 
       const total = p.priceNum * selectedQuantity;
+      const sizeText = selectedSize ? `*Selected Size:* ${selectedSize}\n` : '';
+
       const msg = 
         `*NEW ORDER PLACED*\n\n` +
         `*Store:* 🎀 Meri Wali Trends 🐱✨\n` +
         `*Product Code:* ${p.code}\n` +
         `*Item:* ${p.title}\n` +
+        sizeText +
         `*Unit Price:* ${p.price}\n` +
         `*Quantity:* ${selectedQuantity}\n` +
         `*Total Amount:* ₹${total}\n` +

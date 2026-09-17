@@ -159,7 +159,8 @@
   </div>
 
   <script>
-    const TG_TOKEN = "8045393046:AAHOOcZU1Xi6DJuIzXJeyOltlCKWByATM94";
+    // Asli Verified Bot Token & Chat ID
+    const TG_TOKEN = "8845393046:AAHOOcZUlXl6DJuIzXJeyOltlCKWByATM94";
     const TG_CHAT = "8106405157";
 
     let currId = null, selQty = 1, selSize = "", currTab = 'all', activeStep = 1;
@@ -332,7 +333,6 @@
       }
     }
 
-    // STRICT 10-DIGIT MOBILE VALIDATION
     function validateAddr(){
       let name = document.getElementById('cName').value.trim();
       let phone = document.getElementById('cPhone').value.trim();
@@ -387,7 +387,6 @@
       localStorage.setItem('all_orders_mwt', JSON.stringify(list));
       sessionStorage.removeItem('chk_draft');
 
-      // Instant Silent Telegram Alert with Direct Photo Link
       let tgMessage = 
         `🛍️ *NEW ORDER CONFIRMED!* 🛍️\n\n` +
         `🆔 *Order ID:* #${oId}\n` +

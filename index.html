@@ -18,6 +18,7 @@
       --text-dark: #2d1e2f;
       --text-muted: #7a6a7c;
       --border-color: #ffd1dc;
+      --green-meesho: #038d63;
     }
 
     body {
@@ -94,11 +95,6 @@
       animation: pulseBtn 2.2s infinite;
     }
 
-    .voice-btn:hover {
-      transform: scale(1.03);
-      box-shadow: 0 8px 20px rgba(255, 46, 99, 0.45);
-    }
-
     @keyframes pulseBtn {
       0%, 100% { transform: scale(1); }
       50% { transform: scale(1.04); }
@@ -172,7 +168,6 @@
       justify-content: space-between;
       transition: transform 0.2s, box-shadow 0.2s;
       box-shadow: 0 4px 12px rgba(255, 105, 180, 0.05);
-      user-select: none;
     }
 
     .card:hover {
@@ -180,7 +175,6 @@
       box-shadow: 0 8px 20px rgba(255, 77, 136, 0.18);
     }
 
-    /* Full Uncropped Image Fitting */
     .card-img-wrapper {
       width: 100%;
       height: 185px;
@@ -232,16 +226,10 @@
       border-radius: 8px;
       font-size: 11.5px;
       font-weight: 700;
-      transition: 0.2s;
       border: 1px solid rgba(255, 77, 136, 0.2);
     }
 
-    .card:hover .btn-view {
-      background: var(--pink-primary);
-      color: #fff;
-    }
-
-    /* Modal Base */
+    /* Modals Base */
     .modal {
       display: none;
       position: fixed;
@@ -256,15 +244,12 @@
       animation: fadeIn 0.2s ease-out;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
     .modal-content {
       background: #ffffff;
       border-radius: 22px;
-      max-width: 410px;
+      max-width: 420px;
       width: 100%;
       border: 1px solid var(--border-color);
       overflow: hidden;
@@ -272,6 +257,7 @@
       box-shadow: 0 20px 45px rgba(255, 77, 136, 0.2);
       max-height: 92vh;
       overflow-y: auto;
+      text-align: left;
     }
 
     .close-btn {
@@ -307,14 +293,13 @@
     .modal-img {
       width: 100%;
       height: auto;
-      max-height: 380px;
+      max-height: 360px;
       object-fit: contain;
       display: block;
     }
 
     .modal-body {
       padding: 18px;
-      text-align: left;
     }
 
     .modal-title {
@@ -343,7 +328,7 @@
       border: 1px solid var(--pink-soft);
     }
 
-    .btn-order-now {
+    .btn-pink-primary {
       display: block;
       width: 100%;
       padding: 14px;
@@ -355,12 +340,38 @@
       cursor: pointer;
       font-size: 14px;
       box-shadow: 0 6px 16px rgba(255, 42, 109, 0.3);
+      text-align: center;
     }
 
-    /* Modal 2: Form */
-    .form-modal-body {
-      padding: 22px 18px;
-      text-align: left;
+    /* Multi-Step Checkout Modal */
+    .step-indicator {
+      display: flex;
+      justify-content: space-between;
+      padding: 16px 20px 10px;
+      background: #fff9fb;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .step-dot {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .step-dot.active {
+      color: var(--pink-primary);
+    }
+
+    .checkout-step-body {
+      padding: 18px;
+      display: none;
+    }
+
+    .checkout-step-body.active {
+      display: block;
     }
 
     .mini-product-card {
@@ -375,14 +386,13 @@
     }
 
     .mini-product-card img {
-      width: 58px;
-      height: 58px;
+      width: 54px;
+      height: 54px;
       border-radius: 10px;
       object-fit: contain;
       background: #fff;
     }
 
-    /* Size Selector */
     .size-box {
       margin-bottom: 14px;
       background: #fff9fb;
@@ -414,7 +424,6 @@
       font-size: 12px;
       font-weight: 700;
       cursor: pointer;
-      transition: 0.2s;
     }
 
     .size-btn.active {
@@ -447,7 +456,7 @@
     }
 
     .form-group {
-      margin-bottom: 12px;
+      margin-bottom: 11px;
     }
 
     .form-group label {
@@ -455,7 +464,7 @@
       font-weight: 700;
       color: var(--text-muted);
       display: block;
-      margin-bottom: 5px;
+      margin-bottom: 4px;
     }
 
     .form-group input, .form-group textarea {
@@ -474,18 +483,139 @@
       box-shadow: 0 0 0 3px rgba(255, 77, 136, 0.15);
     }
 
-    .btn-submit-wa {
-      width: 100%;
-      padding: 14px;
-      background: #25d366;
-      color: #fff;
-      border: none;
+    /* Price Breakdown Box */
+    .bill-box {
+      background: #fff9fb;
       border-radius: 12px;
+      border: 1px solid var(--border-color);
+      padding: 12px 14px;
+      margin-bottom: 15px;
+      font-size: 13px;
+    }
+
+    .bill-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .bill-row.total {
+      border-top: 1px dashed var(--border-color);
+      padding-top: 8px;
+      margin-top: 6px;
+      color: var(--text-dark);
+      font-weight: 800;
+      font-size: 14.5px;
+    }
+
+    .badge-cod {
+      background: #e8f8f2;
+      color: var(--green-meesho);
+      border: 1px solid #b7e8d6;
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 12.5px;
       font-weight: 700;
-      cursor: pointer;
-      margin-top: 10px;
-      font-size: 14px;
-      box-shadow: 0 6px 16px rgba(37, 211, 102, 0.3);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    /* Step 5: Fake Tracking & Confirmation Timeline */
+    .success-header {
+      text-align: center;
+      padding: 20px 16px 10px;
+    }
+
+    .success-check-circle {
+      width: 60px;
+      height: 60px;
+      background: #e8f8f2;
+      border: 2px solid var(--green-meesho);
+      color: var(--green-meesho);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      margin: 0 auto 10px;
+      animation: popIn 0.4s ease-out;
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0.4); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .order-id-badge {
+      display: inline-block;
+      background: #fff2f6;
+      color: var(--pink-primary);
+      font-weight: 800;
+      font-size: 13px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      margin-top: 4px;
+      border: 1px solid var(--pink-soft);
+    }
+
+    .tracking-timeline {
+      margin: 20px 0 10px;
+      position: relative;
+      padding-left: 28px;
+    }
+
+    .tracking-timeline::before {
+      content: '';
+      position: absolute;
+      top: 6px;
+      bottom: 10px;
+      left: 10px;
+      width: 2px;
+      background: #e2d9df;
+    }
+
+    .timeline-item {
+      position: relative;
+      margin-bottom: 20px;
+      font-size: 12.5px;
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -24px;
+      top: 2px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 2px solid #ccc;
+    }
+
+    .timeline-item.done::before {
+      background: var(--green-meesho);
+      border-color: var(--green-meesho);
+    }
+
+    .timeline-item.active::before {
+      background: var(--pink-primary);
+      border-color: var(--pink-primary);
+      animation: pulseBtn 1.5s infinite;
+    }
+
+    .timeline-title {
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+
+    .timeline-desc {
+      color: var(--text-muted);
+      font-size: 11px;
+      margin-top: 2px;
     }
   </style>
 </head>
@@ -533,103 +663,196 @@
         <h2 id="mTitle" class="modal-title"></h2>
         <div id="mPrice" class="modal-price"></div>
         <div id="mDesc" class="modal-desc"></div>
-        <button class="btn-order-now" onclick="openForm()">Order Now 🛍️</button>
+        <button class="btn-pink-primary" onclick="startCheckout()">Buy Now 🛍️</button>
       </div>
     </div>
   </div>
 
-  <!-- Modal 2: WhatsApp Checkout Form -->
-  <div class="modal" id="orderFormModal">
+  <!-- Modal 2: Meesho-Style Multi-Step Checkout Modal -->
+  <div class="modal" id="checkoutModal">
     <div class="modal-content">
-      <div class="close-btn" onclick="document.getElementById('orderFormModal').style.display='none'">&times;</div>
-      <div class="form-modal-body">
-        <h3 style="margin-bottom: 14px; text-align: center; color: var(--pink-primary);">Confirm Order 🌸</h3>
+      <div class="close-btn" onclick="closeCheckout()">&times;</div>
+      
+      <!-- Top Step Indicator -->
+      <div class="step-indicator" id="stepIndicatorBar">
+        <div class="step-dot active" id="dot1">① Select</div>
+        <div class="step-dot" id="dot2">② Address</div>
+        <div class="step-dot" id="dot3">③ Payment</div>
+        <div class="step-dot" id="dot4">④ Review</div>
+      </div>
+
+      <!-- Step 1: Select Details -->
+      <div class="checkout-step-body active" id="cStep1">
         <div class="mini-product-card">
-          <img id="miniImg" src="" alt="Thumbnail">
-          <div class="mini-card-info">
-            <h4 id="miniTitle" style="font-size: 13px; font-weight:700;"></h4>
-            <div id="miniPriceUnit" style="color: var(--pink-primary); font-weight: 800; font-size: 13px;"></div>
+          <img id="cMiniImg1" src="" alt="Item">
+          <div>
+            <h4 id="cMiniTitle1" style="font-size:13px; font-weight:700;"></h4>
+            <div id="cMiniPrice1" style="color:var(--pink-primary); font-weight:800;"></div>
           </div>
         </div>
 
-        <!-- Size Selection (Only for Dresses/Products with sizes) -->
-        <div class="size-box" id="sizeContainer" style="display:none;">
+        <div class="size-box" id="cSizeContainer" style="display:none;">
           <span class="size-label">Select Size: *</span>
-          <div class="size-options" id="sizeOptionsList"></div>
+          <div class="size-options" id="cSizeOptions"></div>
         </div>
 
         <div class="qty-row">
           <span style="font-size: 13px; font-weight: 700;">Quantity:</span>
           <div style="display:flex; align-items:center; gap:10px;">
             <button class="qty-btn" onclick="updateQty(-1)">−</button>
-            <span id="qtyVal" style="font-weight: 800; min-width: 24px;">1</span>
+            <span id="cQtyVal" style="font-weight: 800; min-width: 24px;">1</span>
             <button class="qty-btn" onclick="updateQty(1)">+</button>
           </div>
         </div>
-        <div class="form-group"><label>Full Name *</label><input type="text" id="custName" placeholder="Enter full name"></div>
-        <div class="form-group"><label>Mobile Number *</label><input type="tel" id="custPhone" placeholder="10-digit mobile number"></div>
-        <div class="form-group"><label>Delivery Address *</label><textarea id="custAddress" rows="2" placeholder="House no, Area, City"></textarea></div>
-        <div class="form-group"><label>Pincode *</label><input type="text" id="custPincode" placeholder="6-digit pincode"></div>
-        <button class="btn-submit-wa" onclick="submitOrder()">Confirm & Order on WhatsApp 💬</button>
+
+        <button class="btn-pink-primary" onclick="goToStep(2)">Continue to Address ➔</button>
       </div>
+
+      <!-- Step 2: Delivery Address -->
+      <div class="checkout-step-body" id="cStep2">
+        <h4 style="margin-bottom:12px; font-size:14px; color:var(--text-dark);">Delivery Address 📍</h4>
+        <div class="form-group"><label>Customer Name *</label><input type="text" id="custName" placeholder="Full Name"></div>
+        <div class="form-group"><label>Contact Mobile Number *</label><input type="tel" id="custPhone" placeholder="10-digit number"></div>
+        <div class="form-group"><label>House No. / Colony / Area *</label><textarea id="custAddress" rows="2" placeholder="Complete address"></textarea></div>
+        <div class="form-group"><label>City & State *</label><input type="text" id="custCity" placeholder="City name"></div>
+        <div class="form-group"><label>Pincode *</label><input type="text" id="custPincode" placeholder="6-digit pincode"></div>
+
+        <div style="display:flex; gap:8px; margin-top:10px;">
+          <button style="flex:1; padding:12px; background:#f0e8eb; border:none; border-radius:10px; font-weight:700;" onclick="goToStep(1)">Back</button>
+          <button style="flex:2;" class="btn-pink-primary" onclick="validateAddressAndNext()">Continue to Payment ➔</button>
+        </div>
+      </div>
+
+      <!-- Step 3: Payment & Summary -->
+      <div class="checkout-step-body" id="cStep3">
+        <h4 style="margin-bottom:12px; font-size:14px; color:var(--text-dark);">Payment Method 💳</h4>
+        
+        <div class="badge-cod">
+          <input type="radio" checked disabled>
+          <span>Cash on Delivery (Pay cash upon delivery)</span>
+        </div>
+
+        <div class="bill-box">
+          <div class="bill-row"><span>Product MRP:</span><span id="billMrp">₹0</span></div>
+          <div class="bill-row"><span>Special Store Discount:</span><span style="color:var(--green-meesho);">-₹100</span></div>
+          <div class="bill-row"><span>Delivery Fee:</span><span style="color:var(--green-meesho);">FREE 🚚</span></div>
+          <div class="bill-row total"><span>Total Payable:</span><span id="billTotal" style="color:var(--pink-primary);">₹0</span></div>
+        </div>
+
+        <div style="display:flex; gap:8px; margin-top:10px;">
+          <button style="flex:1; padding:12px; background:#f0e8eb; border:none; border-radius:10px; font-weight:700;" onclick="goToStep(2)">Back</button>
+          <button style="flex:2;" class="btn-pink-primary" onclick="goToStep(4)">Review Order ➔</button>
+        </div>
+      </div>
+
+      <!-- Step 4: Final Review -->
+      <div class="checkout-step-body" id="cStep4">
+        <h4 style="margin-bottom:12px; font-size:14px; color:var(--text-dark);">Review Your Order 📦</h4>
+        
+        <div class="mini-product-card">
+          <img id="cMiniImg4" src="" alt="Item">
+          <div>
+            <h4 id="cMiniTitle4" style="font-size:12.5px; font-weight:700;"></h4>
+            <div id="cReviewQtySize" style="font-size:11.5px; color:var(--text-muted); margin-top:2px;"></div>
+            <div id="cReviewTotal" style="color:var(--pink-primary); font-weight:800; font-size:13px; margin-top:3px;"></div>
+          </div>
+        </div>
+
+        <div style="background:#fff9fb; border:1px solid var(--border-color); border-radius:12px; padding:10px 14px; font-size:12px; margin-bottom:14px; line-height:1.4;">
+          <strong style="color:var(--text-dark);">Delivering To:</strong>
+          <div id="reviewAddrText" style="color:var(--text-muted); margin-top:3px;"></div>
+        </div>
+
+        <button class="btn-pink-primary" id="btnPlaceOrder" onclick="completePlaceOrder()">Place Order (Cash On Delivery) 🎉</button>
+      </div>
+
+      <!-- Step 5: Fake Meesho Tracking Screen -->
+      <div class="checkout-step-body" id="cStep5">
+        <div class="success-header">
+          <div class="success-check-circle">✓</div>
+          <h3 style="color:var(--green-meesho); font-size:18px;">Order Confirmed! 🎉</h3>
+          <p style="font-size:12px; color:var(--text-muted); margin-top:4px;">Estimated Delivery: <strong id="estDeliveryDate">In 3-4 Days</strong></p>
+          <div class="order-id-badge" id="confirmedOrderId">Order #MWT-0000</div>
+        </div>
+
+        <div class="tracking-timeline">
+          <div class="timeline-item done">
+            <div class="timeline-title">Order Confirmed</div>
+            <div class="timeline-desc" id="timelineConfirmedTime">Just now</div>
+          </div>
+          <div class="timeline-item active">
+            <div class="timeline-title">Order Packed</div>
+            <div class="timeline-desc">Expected by tomorrow afternoon</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-title">Shipped via Express Logistics</div>
+            <div class="timeline-desc">Carrier assignment in progress</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-title">Out for Delivery</div>
+            <div class="timeline-desc">Courier partner will contact you</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-title">Delivered</div>
+            <div class="timeline-desc">Cash payment required upon arrival</div>
+          </div>
+        </div>
+
+        <button class="btn-pink-primary" style="margin-top:14px;" onclick="closeCheckout()">Continue Shopping 🛍️</button>
+      </div>
+
     </div>
   </div>
 
   <script>
-    const whatsappNum = "919251221747";
+    // === TELEGRAM BOT CREDENTIALS ===
+    const TG_BOT_TOKEN = "YOUR_BOT_TOKEN_HERE";
+    const TG_CHAT_ID = "YOUR_CHAT_ID_HERE";
+
+    let currentId = null;
     let selectedQuantity = 1;
     let selectedSize = "";
-    let currentId = null;
     let currentFilter = 'all';
 
-    // Local site.mp3 Audio
     const voiceAudio = new Audio("site.mp3");
 
     function playCuteVoice() {
-      const popup = document.getElementById('voicePopup');
-      popup.style.display = 'block';
-
+      document.getElementById('voicePopup').style.display = 'block';
       if (voiceAudio) {
         voiceAudio.currentTime = 0;
-        voiceAudio.play().catch(function(err) {
+        voiceAudio.play().catch(() => {
           if ('speechSynthesis' in window) {
             window.speechSynthesis.cancel();
-            const speech = new SpeechSynthesisUtterance("Haan haan pata hai bohot pyaar karte ho mujhse... par thoda sa pyaar yahan order button pe click karke bhi dikha do na!");
-            speech.lang = 'hi-IN';
-            speech.pitch = 1.25;
-            window.speechSynthesis.speak(speech);
+            const sp = new SpeechSynthesisUtterance("Haan haan pata hai bohot pyaar karte ho mujhse... par thoda sa pyaar yahan order button pe click karke bhi dikha do na!");
+            sp.lang = 'hi-IN';
+            sp.pitch = 1.25;
+            window.speechSynthesis.speak(sp);
           }
         });
       }
     }
 
-    // Saare 21 products (20 Accessories + 1 Dress)
     const products = {
-      // Girl's Accessories (1 to 6)
-      1: { category: "accessories", code: "GA-101", title: "Combo of 12 Pair Earrings with Velvet Box", priceNum: 673, price: "₹673", img: "https://i.ibb.co/Ld0X8PQv/Screenshot-2026-0816-064613.jpg", desc: "• Type: Jhumkhas (12 Pair Combo)<br>• Trend: Floral, Oxidised Silver<br>• Material: Alloy with Stones & Beads<br>• Includes: Velvet Earrings Folding Box" },
-      2: { category: "accessories", code: "GA-102", title: "Vintage Floral Embroidered Lace Hair Bow", priceNum: 150, price: "₹150", img: "https://i.ibb.co/TBQ2DcYN/IMG-20260817-114459.png", desc: "• Type: Aesthetic Lace Hair Bow / Clip<br>• Trend: Vintage Floral Embroidery with Pearl Accents<br>• Color: White Floral" },
-      3: { category: "accessories", code: "GA-103", title: "LED Light Up Butterfly Hair Clip (Pack of 2)", priceNum: 199, price: "₹199", img: "https://i.ibb.co/mVgrwGCz/IMG-20260817-121041.jpg", desc: "• Type: Glowing LED Hair Clip (Pack of 2)<br>• Feature: Optical Fiber Butterfly Braid<br>• Color: Multicolor Light" },
-      4: { category: "accessories", code: "GA-104", title: "Exquisite Princess Pearl Butterfly Tiara Crown", priceNum: 349, price: "₹349", img: "https://i.ibb.co/DPsmtDdc/IMG-20260817-124016.jpg", desc: "• Type: Princess Tiara Crown<br>• Design: Pearl & Butterfly Embellishments<br>• Finish: White / Silver Shiny Finish" },
-      5: { category: "accessories", code: "GA-105", title: "12 Pcs Kids Rainbow Braids Hair Extensions", priceNum: 199, price: "₹199", img: "https://i.ibb.co/C5whJn3n/IMG-20260817-130237.jpg", desc: "• Type: Clip-In Braids (Pack of 12)<br>• Style: Colorful Rainbow Braids<br>• Material: Silicone Clips & Synthetic Braids" },
-      6: { category: "accessories", code: "GA-106", title: "Soft Fur Scrunchies Combo (Pack of 8)", priceNum: 149, price: "₹149", img: "https://i.ibb.co/qYP8Tszc/IMG-20260818-120223.jpg", desc: "• Type: Plush Fur Scrunchies (Pack of 8)<br>• Color: Multicolor Pastel Mix<br>• Feature: Soft on hair, prevents breakage" },
-
-      // Additional Accessories (7 to 20)
-      7: { category: "accessories", code: "BA-101", title: "Pina Colada Attar 6ml Pack of 2", priceNum: 299, price: "₹299", img: "https://i.ibb.co/4ZwFRcth/Screenshot-2026-0820-184205.jpg", desc: "• Pack: 2 Bottles (6ml each)<br>• Flavour: Strawberry & Pina Colada<br>• Type: Non-Alcoholic Unisex Attar" },
-      8: { category: "accessories", code: "BA-102", title: "Classy Men Silver Plated Designer Bracelet", priceNum: 149, price: "₹149", img: "https://iili.io/CZ2bBII.md.jpg", desc: "• Material: High Quality Stainless Steel<br>• Color: Premium Silver<br>• Closure: Sturdy Hook Lock" },
-      9: { category: "accessories", code: "BA-103", title: "Men's Designer Gold Plated Bracelet", priceNum: 299, price: "₹299", img: "https://iili.io/CZ3LxzF.md.jpg", desc: "• Plating: Gold Plated Brass<br>• Stone: Amethyst Stone<br>• Closure: Button Closure" },
-      10: { category: "accessories", code: "BA-104", title: "Magnetic Chain Bracelet (Set of 2)", priceNum: 199, price: "₹199", img: "https://iili.io/CZ3ZhD7.md.jpg", desc: "• Material: Silver Plated Alloy<br>• Set: 2-Piece Magnetic Combo<br>• Sizing: Adjustable" },
-      11: { category: "accessories", code: "BA-105", title: "Silver Plated Charm Bracelet", priceNum: 299, price: "₹299", img: "https://iili.io/CZ3bCo7.md.jpg", desc: "• Material: Stainless Steel (Silver Finish)<br>• Stones: Cubic Zirconia / AD<br>• Length: 20cm" },
-      12: { category: "accessories", code: "BA-106", title: "Brass Gold Plated Kada Bracelet", priceNum: 249, price: "₹249", img: "https://iili.io/CZ3yzKX.md.jpg", desc: "• Material: Brass Base (Gold Plated)<br>• Size: 8-Inch Adjustable<br>• Style: Solid Classic Kada" },
-      13: { category: "accessories", code: "BA-107", title: "SIXER PRO Double Blade Plastic Cricket Bat", priceNum: 399, price: "₹399", img: "https://iili.io/CZF2scP.md.jpg", desc: "• Model: SIXER PRO Double Blade<br>• Material: Heavy-Duty Hard Plastic<br>• Use: Tennis Ball Recreational Cricket" },
-      14: { category: "accessories", code: "BA-108", title: "Black Analog-Digital Sport Watch", priceNum: 249, price: "₹249", img: "https://iili.io/CZFC2Ul.md.jpg", desc: "• Display: Dual Analog & Digital<br>• Features: Date & LED Backlight<br>• Strap: Durable Silicone" },
-      15: { category: "accessories", code: "BA-109", title: "Unisex Sleek Black Digital Watch", priceNum: 280, price: "₹280", img: "https://iili.io/CZFuQwl.md.jpg", desc: "• Display: Clear Minimal Digital Screen<br>• Strap: Black Silicone Bracelet Strap<br>• Style: Modern Daily Casual" },
-      16: { category: "accessories", code: "BA-110", title: "Matte Black Analog Quartz Watch", priceNum: 295, price: "₹295", img: "https://iili.io/CZF5nyJ.md.jpg", desc: "• Movement: High-Precision Quartz<br>• Dial Size: 35mm Round Dial<br>• Features: Shock & Scratch Resistant" },
-      17: { category: "accessories", code: "BA-111", title: "Classic Silver Steel Analog Watch", priceNum: 299, price: "₹299", img: "https://iili.io/CZFYosp.md.jpg", desc: "• Dial: 30mm Black Dial<br>• Chain: Stainless Steel Silver Link<br>• Movement: Quartz Battery Powered" },
-      18: { category: "accessories", code: "BA-112", title: "Multi-Strand Black Leather Bracelet", priceNum: 199, price: "₹199", img: "https://iili.io/CZFjunt.md.jpg", desc: "• Material: Styled Black Leather & Alloy<br>• Sizing: Adjustable Slip-On<br>• Style: Casual & Party Wear" },
-      19: { category: "accessories", code: "BA-113", title: "Crozon Premium Cotton Handkerchief (Pack of 6)", priceNum: 269, price: "₹269", img: "https://iili.io/CZKfnCG.md.jpg", desc: "• Material: 100% Pure Soft Cotton<br>• Quantity: Pack of 6 Box Set<br>• Size: 43cm x 43cm Large Size" },
-      20: { category: "accessories", code: "BA-114", title: "Unisex Outdoor Tactical Bucket Hat", priceNum: 258, price: "₹258", img: "https://iili.io/CZKR8l9.md.jpg", desc: "• Size: 56–58cm Standard Fit<br>• Features: Air Eyelets & Windproof String<br>• Occasion: Summer Sun Protection" },
-
-      // Pure Dress (Single Dress from Women's Collection)
+      1: { category: "accessories", code: "GA-101", title: "Combo of 12 Pair Earrings with Velvet Box", priceNum: 673, price: "₹673", img: "https://i.ibb.co/Ld0X8PQv/Screenshot-2026-0816-064613.jpg", desc: "• Type: Jhumkhas (12 Pair Combo)<br>• Trend: Floral, Oxidised Silver<br>• Material: Alloy with Stones & Beads" },
+      2: { category: "accessories", code: "GA-102", title: "Vintage Floral Embroidered Lace Hair Bow", priceNum: 150, price: "₹150", img: "https://i.ibb.co/TBQ2DcYN/IMG-20260817-114459.png", desc: "• Type: Aesthetic Lace Hair Bow / Clip<br>• Trend: Vintage Floral Embroidery" },
+      3: { category: "accessories", code: "GA-103", title: "LED Light Up Butterfly Hair Clip (Pack of 2)", priceNum: 199, price: "₹199", img: "https://i.ibb.co/mVgrwGCz/IMG-20260817-121041.jpg", desc: "• Type: Glowing LED Hair Clip (Pack of 2)<br>• Feature: Optical Fiber Butterfly Braid" },
+      4: { category: "accessories", code: "GA-104", title: "Exquisite Princess Pearl Butterfly Tiara Crown", priceNum: 349, price: "₹349", img: "https://i.ibb.co/DPsmtDdc/IMG-20260817-124016.jpg", desc: "• Type: Princess Tiara Crown<br>• Design: Pearl & Butterfly Embellishments" },
+      5: { category: "accessories", code: "GA-105", title: "12 Pcs Kids Rainbow Braids Hair Extensions", priceNum: 199, price: "₹199", img: "https://i.ibb.co/C5whJn3n/IMG-20260817-130237.jpg", desc: "• Type: Clip-In Braids (Pack of 12)<br>• Style: Colorful Rainbow Braids" },
+      6: { category: "accessories", code: "GA-106", title: "Soft Fur Scrunchies Combo (Pack of 8)", priceNum: 149, price: "₹149", img: "https://i.ibb.co/qYP8Tszc/IMG-20260818-120223.jpg", desc: "• Type: Plush Fur Scrunchies (Pack of 8)<br>• Color: Multicolor Pastel Mix" },
+      7: { category: "accessories", code: "BA-101", title: "Pina Colada Attar 6ml Pack of 2", priceNum: 299, price: "₹299", img: "https://i.ibb.co/4ZwFRcth/Screenshot-2026-0820-184205.jpg", desc: "• Pack: 2 Bottles (6ml each)<br>• Flavour: Strawberry & Pina Colada" },
+      8: { category: "accessories", code: "BA-102", title: "Classy Men Silver Plated Designer Bracelet", priceNum: 149, price: "₹149", img: "https://iili.io/CZ2bBII.md.jpg", desc: "• Material: High Quality Stainless Steel<br>• Color: Premium Silver" },
+      9: { category: "accessories", code: "BA-103", title: "Men's Designer Gold Plated Bracelet", priceNum: 299, price: "₹299", img: "https://iili.io/CZ3LxzF.md.jpg", desc: "• Plating: Gold Plated Brass<br>• Stone: Amethyst Stone" },
+      10: { category: "accessories", code: "BA-104", title: "Magnetic Chain Bracelet (Set of 2)", priceNum: 199, price: "₹199", img: "https://iili.io/CZ3ZhD7.md.jpg", desc: "• Material: Silver Plated Alloy<br>• Set: 2-Piece Magnetic Combo" },
+      11: { category: "accessories", code: "BA-105", title: "Silver Plated Charm Bracelet", priceNum: 299, price: "₹299", img: "https://iili.io/CZ3bCo7.md.jpg", desc: "• Material: Stainless Steel (Silver Finish)<br>• Stones: AD Zirconia" },
+      12: { category: "accessories", code: "BA-106", title: "Brass Gold Plated Kada Bracelet", priceNum: 249, price: "₹249", img: "https://iili.io/CZ3yzKX.md.jpg", desc: "• Material: Brass Base (Gold Plated)<br>• Size: 8-Inch Adjustable" },
+      13: { category: "accessories", code: "BA-107", title: "SIXER PRO Double Blade Plastic Cricket Bat", priceNum: 399, price: "₹399", img: "https://iili.io/CZF2scP.md.jpg", desc: "• Model: SIXER PRO Double Blade<br>• Heavy-Duty Plastic" },
+      14: { category: "accessories", code: "BA-108", title: "Black Analog-Digital Sport Watch", priceNum: 249, price: "₹249", img: "https://iili.io/CZFC2Ul.md.jpg", desc: "• Display: Dual Analog & Digital<br>• Features: LED Backlight" },
+      15: { category: "accessories", code: "BA-109", title: "Unisex Sleek Black Digital Watch", priceNum: 280, price: "₹280", img: "https://iili.io/CZFuQwl.md.jpg", desc: "• Display: Clear Minimal Screen<br>• Strap: Black Silicone" },
+      16: { category: "accessories", code: "BA-110", title: "Matte Black Analog Quartz Watch", priceNum: 295, price: "₹295", img: "https://iili.io/CZF5nyJ.md.jpg", desc: "• Movement: High-Precision Quartz<br>• Dial Size: 35mm" },
+      17: { category: "accessories", code: "BA-111", title: "Classic Silver Steel Analog Watch", priceNum: 299, price: "₹299", img: "https://iili.io/CZFYosp.md.jpg", desc: "• Dial: 30mm Black Dial<br>• Chain: Stainless Steel Link" },
+      18: { category: "accessories", code: "BA-112", title: "Multi-Strand Black Leather Bracelet", priceNum: 199, price: "₹199", img: "https://iili.io/CZFjunt.md.jpg", desc: "• Material: Styled Black Leather<br>• Sizing: Adjustable Slip-On" },
+      19: { category: "accessories", code: "BA-113", title: "Crozon Premium Cotton Handkerchief (Pack of 6)", priceNum: 269, price: "₹269", img: "https://iili.io/CZKfnCG.md.jpg", desc: "• Material: 100% Pure Soft Cotton<br>• Size: 43cm x 43cm Large" },
+      20: { category: "accessories", code: "BA-114", title: "Unisex Outdoor Tactical Bucket Hat", priceNum: 258, price: "₹258", img: "https://iili.io/CZKR8l9.md.jpg", desc: "• Size: 56–58cm Standard Fit<br>• Windproof String" },
       21: { 
         category: "dresses", 
         code: "WC-101", 
@@ -638,24 +861,19 @@
         price: "₹695", 
         img: "https://i.ibb.co/qYyQ0R8T/Screenshot-2026-0819-174125.jpg", 
         sizes: ["XS", "S", "M", "L", "XL", "XXL"],
-        desc: "• Type: Aesthetic Ribbon Shoulder Bodycon Midi Dress<br>• Fabric: Super Net with Inner Lining<br>• Pattern: Vintage Floral Print<br>• Length: Calf-Length / Sleeveless<br>• Occasion: Partywear, Date Night & Casual Outings" 
+        desc: "• Type: Ribbon Shoulder Bodycon Midi Dress<br>• Fabric: Super Net with Inner Lining<br>• Pattern: Vintage Floral" 
       }
     };
 
     function render() {
       const grid = document.getElementById('productGrid');
       grid.innerHTML = '';
-      
-      let count = 0;
       for (let id in products) {
         const item = products[id];
         if (currentFilter === 'all' || item.category === currentFilter) {
-          count++;
           grid.innerHTML += `
             <div class="card" onclick="openModal(${id})">
-              <div class="card-img-wrapper">
-                <img src="${item.img}" alt="${item.title}" loading="lazy">
-              </div>
+              <div class="card-img-wrapper"><img src="${item.img}" alt="${item.title}" loading="lazy"></div>
               <div class="card-info">
                 <h3>${item.title}</h3>
                 <div class="price">${item.price}</div>
@@ -663,10 +881,6 @@
               </div>
             </div>`;
         }
-      }
-
-      if (count === 0) {
-        grid.innerHTML = `<div style="grid-column: span 2; padding: 40px 10px; color: var(--text-muted); font-size: 14px;">No products found in this category yet! 🎀</div>`;
       }
     }
 
@@ -687,80 +901,157 @@
       document.getElementById('productModal').style.display = 'flex';
     }
 
-    function openForm() {
+    function startCheckout() {
       document.getElementById('productModal').style.display = 'none';
-      document.getElementById('orderFormModal').style.display = 'flex';
-      const p = products[currentId];
+      document.getElementById('checkoutModal').style.display = 'flex';
       selectedQuantity = 1;
-      document.getElementById('qtyVal').innerText = selectedQuantity;
-      document.getElementById('miniImg').src = p.img;
-      document.getElementById('miniTitle').innerText = p.title;
-      document.getElementById('miniPriceUnit').innerText = p.price;
+      document.getElementById('cQtyVal').innerText = selectedQuantity;
+      
+      const p = products[currentId];
+      document.getElementById('cMiniImg1').src = p.img;
+      document.getElementById('cMiniTitle1').innerText = p.title;
+      document.getElementById('cMiniPrice1').innerText = p.price;
 
-      // Handle Size Selector if sizes exist
-      const sizeBox = document.getElementById('sizeContainer');
-      const sizeList = document.getElementById('sizeOptionsList');
-      sizeList.innerHTML = '';
+      // Handle Sizes
+      const sBox = document.getElementById('cSizeContainer');
+      const sOpt = document.getElementById('cSizeOptions');
+      sOpt.innerHTML = '';
       if (p.sizes && p.sizes.length > 0) {
         selectedSize = p.sizes[0];
-        p.sizes.forEach((s, idx) => {
+        p.sizes.forEach((s, i) => {
           const btn = document.createElement('button');
-          btn.type = 'button';
-          btn.className = `size-btn ${idx === 0 ? 'active' : ''}`;
+          btn.className = `size-btn ${i === 0 ? 'active' : ''}`;
           btn.innerText = s;
-          btn.onclick = function() {
+          btn.onclick = () => {
             document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             selectedSize = s;
           };
-          sizeList.appendChild(btn);
+          sOpt.appendChild(btn);
         });
-        sizeBox.style.display = 'block';
+        sBox.style.display = 'block';
       } else {
         selectedSize = "";
-        sizeBox.style.display = 'none';
+        sBox.style.display = 'none';
+      }
+
+      goToStep(1);
+    }
+
+    function closeCheckout() {
+      document.getElementById('checkoutModal').style.display = 'none';
+    }
+
+    function updateQty(d) {
+      selectedQuantity = Math.max(1, Math.min(20, selectedQuantity + d));
+      document.getElementById('cQtyVal').innerText = selectedQuantity;
+    }
+
+    function goToStep(step) {
+      for (let i = 1; i <= 5; i++) {
+        const stepEl = document.getElementById(`cStep${i}`);
+        if (stepEl) stepEl.classList.remove('active');
+        const dotEl = document.getElementById(`dot${i}`);
+        if (dotEl) dotEl.classList.remove('active');
+      }
+
+      document.getElementById(`cStep${step}`).classList.add('active');
+      if (step <= 4) {
+        document.getElementById(`dot${step}`).classList.add('active');
+        document.getElementById('stepIndicatorBar').style.display = 'flex';
+      } else {
+        document.getElementById('stepIndicatorBar').style.display = 'none';
+      }
+
+      const p = products[currentId];
+      const totalAmount = p.priceNum * selectedQuantity;
+
+      if (step === 3) {
+        document.getElementById('billMrp').innerText = `₹${totalAmount + 100}`;
+        document.getElementById('billTotal').innerText = `₹${totalAmount}`;
+      }
+
+      if (step === 4) {
+        document.getElementById('cMiniImg4').src = p.img;
+        document.getElementById('cMiniTitle4').innerText = p.title;
+        document.getElementById('cReviewQtySize').innerText = `Qty: ${selectedQuantity}` + (selectedSize ? ` | Size: ${selectedSize}` : '');
+        document.getElementById('cReviewTotal').innerText = `Final Total: ₹${totalAmount} (COD)`;
+
+        const name = document.getElementById('custName').value.trim();
+        const phone = document.getElementById('custPhone').value.trim();
+        const addr = document.getElementById('custAddress').value.trim();
+        const city = document.getElementById('custCity').value.trim();
+        const pin = document.getElementById('custPincode').value.trim();
+
+        document.getElementById('reviewAddrText').innerText = `${name}, ${phone}\n${addr}, ${city} - ${pin}`;
       }
     }
 
-    function updateQty(delta) {
-      selectedQuantity = Math.max(1, Math.min(20, selectedQuantity + delta));
-      document.getElementById('qtyVal').innerText = selectedQuantity;
-    }
-
-    function submitOrder() {
-      const p = products[currentId];
+    function validateAddressAndNext() {
       const name = document.getElementById('custName').value.trim();
       const phone = document.getElementById('custPhone').value.trim();
-      const address = document.getElementById('custAddress').value.trim();
+      const addr = document.getElementById('custAddress').value.trim();
       const pin = document.getElementById('custPincode').value.trim();
 
-      if (!name || !phone || !address || !pin) {
-        alert("Please fill all required details! 🌸");
+      if (!name || !phone || !addr || !pin) {
+        alert("Please fill all required address details! 🌸");
         return;
       }
+      goToStep(3);
+    }
 
-      const total = p.priceNum * selectedQuantity;
-      const sizeText = selectedSize ? `*Selected Size:* ${selectedSize}\n` : '';
+    function completePlaceOrder() {
+      const btn = document.getElementById('btnPlaceOrder');
+      btn.innerText = "Placing Order...";
+      btn.disabled = true;
 
-      const msg = 
-        `*NEW ORDER PLACED*\n\n` +
-        `*Store:* 🎀 Meri Wali Trends 🐱✨\n` +
-        `*Product Code:* ${p.code}\n` +
-        `*Item:* ${p.title}\n` +
-        sizeText +
-        `*Unit Price:* ${p.price}\n` +
-        `*Quantity:* ${selectedQuantity}\n` +
-        `*Total Amount:* ₹${total}\n` +
-        `*Product Photo:* ${p.img}\n\n` +
-        `*Customer Details:*\n` +
-        `• *Name:* ${name}\n` +
-        `• *Phone:* ${phone}\n` +
-        `• *Delivery Address:* ${address}\n` +
-        `• *Pincode:* ${pin}\n\n` +
-        `Please confirm my order & send delivery details.`;
+      const p = products[currentId];
+      const randomOrderId = "MWT-" + Math.floor(10000 + Math.random() * 90000);
+      const totalAmount = p.priceNum * selectedQuantity;
 
-      window.open(`https://wa.me/${whatsappNum}?text=${encodeURIComponent(msg)}`, '_blank');
-      document.getElementById('orderFormModal').style.display = 'none';
+      const name = document.getElementById('custName').value.trim();
+      const phone = document.getElementById('custPhone').value.trim();
+      const addr = document.getElementById('custAddress').value.trim();
+      const city = document.getElementById('custCity').value.trim();
+      const pin = document.getElementById('custPincode').value.trim();
+
+      // Silent Telegram Background Notification
+      if (TG_BOT_TOKEN !== "YOUR_BOT_TOKEN_HERE" && TG_CHAT_ID !== "YOUR_CHAT_ID_HERE") {
+        const tgMessage = 
+          `🛍️ *NEW ORDER CONFIRMED!* 🛍️\n\n` +
+          `🆔 *Order ID:* #${randomOrderId}\n` +
+          `📦 *Item:* ${p.title}\n` +
+          `🔢 *Code:* ${p.code}\n` +
+          (selectedSize ? `📏 *Size:* ${selectedSize}\n` : '') +
+          `🔢 *Quantity:* ${selectedQuantity}\n` +
+          `💰 *Total (COD):* ₹${totalAmount}\n\n` +
+          `👤 *Customer:* ${name}\n` +
+          `📞 *Phone:* ${phone}\n` +
+          `📍 *Address:* ${addr}, ${city} - ${pin}\n` +
+          `🖼️ [Product Image](${p.img})`;
+
+        fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            chat_id: TG_CHAT_ID,
+            text: tgMessage,
+            parse_mode: "Markdown"
+          })
+        }).catch(err => console.log("Telegram alert error", err));
+      }
+
+      // Show Fake Tracking Screen
+      document.getElementById('confirmedOrderId').innerText = `Order #${randomOrderId}`;
+      document.getElementById('timelineConfirmedTime').innerText = "Today, Confirmed";
+      
+      const futureDate = new Date();
+      futureDate.setDate(futureDate.getDate() + 4);
+      document.getElementById('estDeliveryDate').innerText = futureDate.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+
+      btn.innerText = "Place Order (Cash On Delivery) 🎉";
+      btn.disabled = false;
+      goToStep(5);
     }
 
     render();

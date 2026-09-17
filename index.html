@@ -1,90 +1,679 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MeetCart</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap');
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
-        body { background-color: #0b0f17; color: #f3f4f6; padding-bottom: 50px; }
-        header { background: rgba(11, 15, 23, 0.8); backdrop-filter: blur(12px); position: sticky; top: 0; z-index: 100; padding: 18px 25px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); display: flex; justify-content: space-between; align-items: center; }
-        header .logo { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; color: #fff; }
-        header .logo span { color: #d97706; }
-        header .tagline { font-size: 12px; color: #9ca3af; letter-spacing: 1px; text-transform: uppercase; }
-        .container { max-width: 1200px; margin: 25px auto; padding: 0 12px; }
-        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-        .card { background: #131924; border-radius: 16px; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.06); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column; cursor: pointer; user-select: none; }
-        .card:hover { transform: translateY(-6px); border-color: rgba(217, 119, 6, 0.4); box-shadow: 0 12px 30px rgba(0,0,0,0.5); }
-        .image-box { position: relative; width: 100%; height: 200px; overflow: hidden; }
-        .image-box img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; display: block; }
-        .card:hover .image-box img { transform: scale(1.04); }
-        .discount-badge { position: absolute; top: 10px; right: 10px; background: rgba(0, 0, 0, 0.65); backdrop-filter: blur(8px); color: #fbbf24; font-size: 10px; font-weight: 700; padding: 4px 8px; border-radius: 20px; border: 1px solid rgba(251, 191, 36, 0.3); }
-        .card-body { padding: 14px; display: flex; flex-direction: column; justify-content: space-between; flex-grow: 1; }
-        .card-body h3 { font-size: 15px; font-weight: 600; color: #f9fafb; margin-bottom: 4px; }
-        .card-body p { font-size: 11px; color: #9ca3af; margin-bottom: 14px; line-height: 1.4; }
-        
-        /* Yellow Button Styling */
-        .btn-buy { background: #f59e0b; color: #0b0f17; border: none; padding: 11px; border-radius: 8px; font-weight: 700; cursor: pointer; width: 100%; font-size: 12px; transition: all 0.2s; text-align: center; text-decoration: none; display: block; box-shadow: 0 2px 8px rgba(245, 158, 11, 0.25); }
-        .card:hover .btn-buy, .btn-buy:hover { background: #d97706; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🎀 Meri Wali Trends 🐱✨</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Quicksand:wght@600;700&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+
+    :root {
+      --bg-color: #fff5f8;
+      --card-bg: #ffffff;
+      --pink-primary: #ff4d88;
+      --pink-soft: #ffe4ec;
+      --pink-accent: #ff85a2;
+      --text-dark: #2d1e2f;
+      --text-muted: #7a6a7c;
+      --border-color: #ffd1dc;
+    }
+
+    body {
+      background: var(--bg-color);
+      color: var(--text-dark);
+      padding: 15px 12px 60px;
+      text-align: center;
+      min-height: 100vh;
+    }
+
+    /* Header Section */
+    .header {
+      padding: 16px 10px 14px;
+      margin-bottom: 14px;
+      background: #ffffff;
+      border-radius: 20px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 8px 24px rgba(255, 105, 180, 0.08);
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .brand-title {
+      font-family: 'Quicksand', cursive, sans-serif;
+      font-size: 23px;
+      font-weight: 700;
+      color: var(--pink-primary);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .cat-wiggle {
+      display: inline-block;
+      animation: catWiggle 2s infinite ease-in-out;
+      transform-origin: bottom center;
+    }
+
+    @keyframes catWiggle {
+      0%, 100% { transform: rotate(0deg) scale(1); }
+      25% { transform: rotate(-10deg) scale(1.08); }
+      75% { transform: rotate(10deg) scale(1.08); }
+    }
+
+    .brand-subtitle {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      margin-top: 5px;
+      font-weight: 600;
+    }
+
+    /* Voice Note Cute Banner */
+    .voice-banner-wrapper {
+      max-width: 900px;
+      margin: 0 auto 16px;
+    }
+
+    .voice-btn {
+      background: linear-gradient(135deg, #ff6584, #ff2e63);
+      color: #fff;
+      border: none;
+      padding: 11px 18px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 6px 16px rgba(255, 46, 99, 0.35);
+      transition: transform 0.2s, box-shadow 0.2s;
+      animation: pulseBtn 2.2s infinite;
+    }
+
+    .voice-btn:hover {
+      transform: scale(1.03);
+      box-shadow: 0 8px 20px rgba(255, 46, 99, 0.45);
+    }
+
+    @keyframes pulseBtn {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.04); }
+    }
+
+    .voice-popup {
+      display: none;
+      background: #fff;
+      border: 2px dashed var(--pink-primary);
+      border-radius: 16px;
+      padding: 12px 16px;
+      margin-top: 10px;
+      font-size: 13px;
+      color: #b01a48;
+      font-weight: 600;
+      box-shadow: 0 6px 18px rgba(255, 77, 136, 0.12);
+      line-height: 1.4;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    /* Filter Tabs Bar */
+    .filter-bar {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin: 0 auto 20px;
+      max-width: 500px;
+      padding: 4px;
+      background: #ffffff;
+      border-radius: 999px;
+      border: 1px solid var(--border-color);
+    }
+
+    .filter-tab {
+      flex: 1;
+      padding: 9px 14px;
+      border-radius: 999px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .filter-tab.active {
+      background: var(--pink-primary);
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(255, 77, 136, 0.35);
+    }
+
+    /* Product Grid */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+      cursor: pointer;
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 12px rgba(255, 105, 180, 0.05);
+      user-select: none;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(255, 77, 136, 0.18);
+    }
+
+    .card-img-wrapper {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+      background: #fdf7f9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card-img-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .card-info {
+      padding: 10px 10px 12px;
+    }
+
+    .card-info h3 {
+      font-size: 12.5px;
+      margin-bottom: 4px;
+      color: var(--text-dark);
+      font-weight: 700;
+      line-height: 1.35;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      min-height: 34px;
+    }
+
+    .card-info .price {
+      color: var(--pink-primary);
+      font-weight: 800;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    .btn-view {
+      display: block;
+      text-align: center;
+      background: var(--pink-soft);
+      color: var(--pink-primary);
+      padding: 8px 6px;
+      border-radius: 8px;
+      font-size: 11.5px;
+      font-weight: 700;
+      transition: 0.2s;
+      border: 1px solid rgba(255, 77, 136, 0.2);
+    }
+
+    .card:hover .btn-view {
+      background: var(--pink-primary);
+      color: #fff;
+    }
+
+    /* Modal Base */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(45, 30, 47, 0.65);
+      backdrop-filter: blur(6px);
+      justify-content: center;
+      align-items: center;
+      padding: 12px;
+      z-index: 1000;
+      animation: fadeIn 0.2s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal-content {
+      background: #ffffff;
+      border-radius: 22px;
+      max-width: 410px;
+      width: 100%;
+      border: 1px solid var(--border-color);
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 20px 45px rgba(255, 77, 136, 0.2);
+      max-height: 92vh;
+      overflow-y: auto;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      font-size: 18px;
+      color: var(--text-dark);
+      cursor: pointer;
+      background: #fff;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+      font-weight: bold;
+    }
+
+    .modal-img-container {
+      width: 100%;
+      background: #fdf7f9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .modal-img {
+      width: 100%;
+      height: auto;
+      max-height: 380px;
+      object-fit: contain;
+      display: block;
+    }
+
+    .modal-body {
+      padding: 18px;
+      text-align: left;
+    }
+
+    .modal-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 4px;
+      line-height: 1.35;
+    }
+
+    .modal-price {
+      font-size: 19px;
+      color: var(--pink-primary);
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+
+    .modal-desc {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      line-height: 1.55;
+      margin-bottom: 18px;
+      background: #fff9fb;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid var(--pink-soft);
+    }
+
+    .btn-order-now {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #ff4d88, #ff2a6d);
+      color: #fff;
+      font-weight: 700;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      box-shadow: 0 6px 16px rgba(255, 42, 109, 0.3);
+    }
+
+    /* Modal 2: Form */
+    .form-modal-body {
+      padding: 22px 18px;
+      text-align: left;
+    }
+
+    .mini-product-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: #fff9fb;
+      padding: 10px;
+      border-radius: 12px;
+      margin-bottom: 14px;
+      border: 1px solid var(--border-color);
+    }
+
+    .mini-product-card img {
+      width: 58px;
+      height: 58px;
+      border-radius: 10px;
+      object-fit: cover;
+      background: #fff;
+    }
+
+    .qty-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #fff9fb;
+      padding: 10px 14px;
+      border-radius: 12px;
+      margin-bottom: 14px;
+      border: 1px solid var(--border-color);
+    }
+
+    .qty-btn {
+      width: 32px;
+      height: 32px;
+      background: #ffffff;
+      border: 1px solid var(--pink-accent);
+      color: var(--pink-primary);
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    .form-group label {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--text-muted);
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .form-group input, .form-group textarea {
+      width: 100%;
+      padding: 10px 12px;
+      background: #fff;
+      color: var(--text-dark);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      font-size: 13px;
+      outline: none;
+    }
+
+    .form-group input:focus, .form-group textarea:focus {
+      border-color: var(--pink-primary);
+      box-shadow: 0 0 0 3px rgba(255, 77, 136, 0.15);
+    }
+
+    .btn-submit-wa {
+      width: 100%;
+      padding: 14px;
+      background: #25d366;
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 10px;
+      font-size: 14px;
+      box-shadow: 0 6px 16px rgba(37, 211, 102, 0.3);
+    }
+  </style>
 </head>
 <body>
-<header>
-    <div class="logo">Meet<span>Cart</span></div>
-    <div class="tagline">Curated Collection</div>
-</header>
 
-<div class="container">
-    <div class="grid">
-        <!-- 1. Men Collection -->
-        <div class="card" onclick="window.location.href='men.html'">
-            <div class="image-box">
-                <span class="discount-badge">FLAT 50% OFF</span>
-                <img src="https://images.unsplash.com/photo-1617137968427-85924c800a22?w=600" alt="Men Wear">
-            </div>
-            <div class="card-body">
-                <div><h3>Men's Collection</h3><p>Oversized tees, shirts, and streetwear fits.</p></div>
-                <a href="men.html" class="btn-buy" onclick="event.stopPropagation();">Explore & Order</a>
-            </div>
-        </div>
+  <!-- Cute Animated Header -->
+  <header class="header">
+    <h1 class="brand-title">
+      <span>🎀</span>
+      <span>Meri Wali Trends</span>
+      <span class="cat-wiggle">🐱</span>
+      <span>✨</span>
+    </h1>
+    <p class="brand-subtitle">Babu ki har demand yahan poori hoti hai 🐾💖</p>
+  </header>
 
-        <!-- 2. Women Collection -->
-        <div class="card" onclick="window.location.href='women.html'">
-            <div class="image-box">
-                <span class="discount-badge">UP TO 60% OFF</span>
-                <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=600" alt="Women Wear">
-            </div>
-            <div class="card-body">
-                <div><h3>Women's Collection</h3><p>Trending dresses, tops, and aesthetic outfits.</p></div>
-                <a href="women.html" class="btn-buy" onclick="event.stopPropagation();">Explore & Order</a>
-            </div>
-        </div>
-
-        <!-- 3. Boy's Accessories -->
-        <div class="card" onclick="window.location.href='boysaccessories.html'">
-            <div class="image-box">
-                <span class="discount-badge">FLAT 55% OFF</span>
-                <img src="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=600" alt="Men Accessories">
-            </div>
-            <div class="card-body">
-                <div><h3>Boy's Accessories</h3><p>Watches, sunglasses, chains & essential gear.</p></div>
-                <a href="boysaccessories.html" class="btn-buy" onclick="event.stopPropagation();">Explore & Order</a>
-            </div>
-        </div>
-
-        <!-- 4. Girl's Accessories -->
-        <div class="card" onclick="window.location.href='girlsaccessories.html'">
-            <div class="image-box">
-                <span class="discount-badge">UP TO 65% OFF</span>
-                <img src="https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=600" alt="Women Accessories">
-            </div>
-            <div class="card-body">
-                <div><h3>Girl's Accessories</h3><p>Aesthetic jewellery, watches & luxury bags.</p></div>
-                <a href="girlsaccessories.html" class="btn-buy" onclick="event.stopPropagation();">Explore & Order</a>
-            </div>
-        </div>
+  <!-- Voice Note Button & Dialogue Box -->
+  <div class="voice-banner-wrapper">
+    <button class="voice-btn" onclick="playCuteVoice()">
+      <span>🔊 Baby Ka Msg Suno 🥺</span>
+    </button>
+    <div id="voicePopup" class="voice-popup">
+      "Haan haan pata hai bohot pyaar karte ho mujhse... par thoda sa pyaar yahan order button pe click karke bhi dikha do na! 🥺🛍️"
     </div>
-</div>
+  </div>
+
+  <!-- Realtime Tab Filter -->
+  <div class="filter-bar">
+    <button class="filter-tab active" onclick="filterCategory('all', this)">All</button>
+    <button class="filter-tab" onclick="filterCategory('accessories', this)">Accessories</button>
+    <button class="filter-tab" onclick="filterCategory('dresses', this)">Dresses</button>
+  </div>
+
+  <!-- Product Grid -->
+  <div class="grid" id="productGrid"></div>
+
+  <!-- Modal 1: Product View Popup -->
+  <div class="modal" id="productModal">
+    <div class="modal-content">
+      <div class="close-btn" onclick="document.getElementById('productModal').style.display='none'">&times;</div>
+      <div class="modal-img-container">
+        <img id="mImg" class="modal-img" src="" alt="Product">
+      </div>
+      <div class="modal-body">
+        <h2 id="mTitle" class="modal-title"></h2>
+        <div id="mPrice" class="modal-price"></div>
+        <div id="mDesc" class="modal-desc"></div>
+        <button class="btn-order-now" onclick="openForm()">Order Now 🛍️</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 2: WhatsApp Checkout Form -->
+  <div class="modal" id="orderFormModal">
+    <div class="modal-content">
+      <div class="close-btn" onclick="document.getElementById('orderFormModal').style.display='none'">&times;</div>
+      <div class="form-modal-body">
+        <h3 style="margin-bottom: 14px; text-align: center; color: var(--pink-primary);">Confirm Order 🌸</h3>
+        <div class="mini-product-card">
+          <img id="miniImg" src="" alt="Thumbnail">
+          <div class="mini-card-info">
+            <h4 id="miniTitle" style="font-size: 13px; font-weight:700;"></h4>
+            <div id="miniPriceUnit" style="color: var(--pink-primary); font-weight: 800; font-size: 13px;"></div>
+          </div>
+        </div>
+        <div class="qty-row">
+          <span style="font-size: 13px; font-weight: 700;">Quantity:</span>
+          <div style="display:flex; align-items:center; gap:10px;">
+            <button class="qty-btn" onclick="updateQty(-1)">−</button>
+            <span id="qtyVal" style="font-weight: 800; min-width: 24px;">1</span>
+            <button class="qty-btn" onclick="updateQty(1)">+</button>
+          </div>
+        </div>
+        <div class="form-group"><label>Full Name *</label><input type="text" id="custName" placeholder="Enter full name"></div>
+        <div class="form-group"><label>Mobile Number *</label><input type="tel" id="custPhone" placeholder="10-digit mobile number"></div>
+        <div class="form-group"><label>Delivery Address *</label><textarea id="custAddress" rows="2" placeholder="House no, Area, City"></textarea></div>
+        <div class="form-group"><label>Pincode *</label><input type="text" id="custPincode" placeholder="6-digit pincode"></div>
+        <button class="btn-submit-wa" onclick="submitOrder()">Confirm & Order on WhatsApp 💬</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const whatsappNum = "919251221747";
+    let selectedQuantity = 1;
+    let currentId = null;
+    let currentFilter = 'all';
+
+    // Local site.mp3 Audio
+    const voiceAudio = new Audio("site.mp3");
+
+    function playCuteVoice() {
+      const popup = document.getElementById('voicePopup');
+      popup.style.display = 'block';
+
+      if (voiceAudio) {
+        voiceAudio.currentTime = 0;
+        voiceAudio.play().catch(function(err) {
+          // Fallback agar file load na ho ya permission block ho
+          if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+            const speech = new SpeechSynthesisUtterance("Haan haan pata hai bohot pyaar karte ho mujhse... par thoda sa pyaar yahan order button pe click karke bhi dikha do na!");
+            speech.lang = 'hi-IN';
+            speech.pitch = 1.25;
+            window.speechSynthesis.speak(speech);
+          }
+        });
+      }
+    }
+
+    // Saare combined 20 products
+    const products = {
+      // Girl's Accessories (1 to 6)
+      1: { category: "accessories", code: "GA-101", title: "Combo of 12 Pair Earrings with Velvet Box", priceNum: 673, price: "₹673", img: "https://i.ibb.co/Ld0X8PQv/Screenshot-2026-0816-064613.jpg", desc: "• Type: Jhumkhas (12 Pair Combo)<br>• Trend: Floral, Oxidised Silver<br>• Material: Alloy with Stones & Beads<br>• Includes: Velvet Earrings Folding Box" },
+      2: { category: "accessories", code: "GA-102", title: "Vintage Floral Embroidered Lace Hair Bow", priceNum: 150, price: "₹150", img: "https://i.ibb.co/TBQ2DcYN/IMG-20260817-114459.png", desc: "• Type: Aesthetic Lace Hair Bow / Clip<br>• Trend: Vintage Floral Embroidery with Pearl Accents<br>• Color: White Floral" },
+      3: { category: "accessories", code: "GA-103", title: "LED Light Up Butterfly Hair Clip (Pack of 2)", priceNum: 199, price: "₹199", img: "https://i.ibb.co/mVgrwGCz/IMG-20260817-121041.jpg", desc: "• Type: Glowing LED Hair Clip (Pack of 2)<br>• Feature: Optical Fiber Butterfly Braid<br>• Color: Multicolor Light" },
+      4: { category: "accessories", code: "GA-104", title: "Exquisite Princess Pearl Butterfly Tiara Crown", priceNum: 349, price: "₹349", img: "https://i.ibb.co/DPsmtDdc/IMG-20260817-124016.jpg", desc: "• Type: Princess Tiara Crown<br>• Design: Pearl & Butterfly Embellishments<br>• Finish: White / Silver Shiny Finish" },
+      5: { category: "accessories", code: "GA-105", title: "12 Pcs Kids Rainbow Braids Hair Extensions", priceNum: 199, price: "₹199", img: "https://i.ibb.co/C5whJn3n/IMG-20260817-130237.jpg", desc: "• Type: Clip-In Braids (Pack of 12)<br>• Style: Colorful Rainbow Braids<br>• Material: Silicone Clips & Synthetic Braids" },
+      6: { category: "accessories", code: "GA-106", title: "Soft Fur Scrunchies Combo (Pack of 8)", priceNum: 149, price: "₹149", img: "https://i.ibb.co/qYP8Tszc/IMG-20260818-120223.jpg", desc: "• Type: Plush Fur Scrunchies (Pack of 8)<br>• Color: Multicolor Pastel Mix<br>• Feature: Soft on hair, prevents breakage" },
+
+      // Additional Accessories (7 to 20)
+      7: { category: "accessories", code: "BA-101", title: "Pina Colada Attar 6ml Pack of 2", priceNum: 299, price: "₹299", img: "https://i.ibb.co/4ZwFRcth/Screenshot-2026-0820-184205.jpg", desc: "• Pack: 2 Bottles (6ml each)<br>• Flavour: Strawberry & Pina Colada<br>• Type: Non-Alcoholic Unisex Attar" },
+      8: { category: "accessories", code: "BA-102", title: "Classy Men Silver Plated Designer Bracelet", priceNum: 149, price: "₹149", img: "https://iili.io/CZ2bBII.md.jpg", desc: "• Material: High Quality Stainless Steel<br>• Color: Premium Silver<br>• Closure: Sturdy Hook Lock" },
+      9: { category: "accessories", code: "BA-103", title: "Men's Designer Gold Plated Bracelet", priceNum: 299, price: "₹299", img: "https://iili.io/CZ3LxzF.md.jpg", desc: "• Plating: Gold Plated Brass<br>• Stone: Amethyst Stone<br>• Closure: Button Closure" },
+      10: { category: "accessories", code: "BA-104", title: "Magnetic Chain Bracelet (Set of 2)", priceNum: 199, price: "₹199", img: "https://iili.io/CZ3ZhD7.md.jpg", desc: "• Material: Silver Plated Alloy<br>• Set: 2-Piece Magnetic Combo<br>• Sizing: Adjustable" },
+      11: { category: "accessories", code: "BA-105", title: "Silver Plated Charm Bracelet", priceNum: 299, price: "₹299", img: "https://iili.io/CZ3bCo7.md.jpg", desc: "• Material: Stainless Steel (Silver Finish)<br>• Stones: Cubic Zirconia / AD<br>• Length: 20cm" },
+      12: { category: "accessories", code: "BA-106", title: "Brass Gold Plated Kada Bracelet", priceNum: 249, price: "₹249", img: "https://iili.io/CZ3yzKX.md.jpg", desc: "• Material: Brass Base (Gold Plated)<br>• Size: 8-Inch Adjustable<br>• Style: Solid Classic Kada" },
+      13: { category: "accessories", code: "BA-107", title: "SIXER PRO Double Blade Plastic Cricket Bat", priceNum: 399, price: "₹399", img: "https://iili.io/CZF2scP.md.jpg", desc: "• Model: SIXER PRO Double Blade<br>• Material: Heavy-Duty Hard Plastic<br>• Use: Tennis Ball Recreational Cricket" },
+      14: { category: "accessories", code: "BA-108", title: "Black Analog-Digital Sport Watch", priceNum: 249, price: "₹249", img: "https://iili.io/CZFC2Ul.md.jpg", desc: "• Display: Dual Analog & Digital<br>• Features: Date & LED Backlight<br>• Strap: Durable Silicone" },
+      15: { category: "accessories", code: "BA-109", title: "Unisex Sleek Black Digital Watch", priceNum: 280, price: "₹280", img: "https://iili.io/CZFuQwl.md.jpg", desc: "• Display: Clear Minimal Digital Screen<br>• Strap: Black Silicone Bracelet Strap<br>• Style: Modern Daily Casual" },
+      16: { category: "accessories", code: "BA-110", title: "Matte Black Analog Quartz Watch", priceNum: 295, price: "₹295", img: "https://iili.io/CZF5nyJ.md.jpg", desc: "• Movement: High-Precision Quartz<br>• Dial Size: 35mm Round Dial<br>• Features: Shock & Scratch Resistant" },
+      17: { category: "accessories", code: "BA-111", title: "Classic Silver Steel Analog Watch", priceNum: 299, price: "₹299", img: "https://iili.io/CZFYosp.md.jpg", desc: "• Dial: 30mm Black Dial<br>• Chain: Stainless Steel Silver Link<br>• Movement: Quartz Battery Powered" },
+      18: { category: "accessories", code: "BA-112", title: "Multi-Strand Black Leather Bracelet", priceNum: 199, price: "₹199", img: "https://iili.io/CZFjunt.md.jpg", desc: "• Material: Styled Black Leather & Alloy<br>• Sizing: Adjustable Slip-On<br>• Style: Casual & Party Wear" },
+      19: { category: "accessories", code: "BA-113", title: "Crozon Premium Cotton Handkerchief (Pack of 6)", priceNum: 269, price: "₹269", img: "https://iili.io/CZKfnCG.md.jpg", desc: "• Material: 100% Pure Soft Cotton<br>• Quantity: Pack of 6 Box Set<br>• Size: 43cm x 43cm Large Size" },
+      20: { category: "accessories", code: "BA-114", title: "Unisex Outdoor Tactical Bucket Hat", priceNum: 258, price: "₹258", img: "https://iili.io/CZKR8l9.md.jpg", desc: "• Size: 56–58cm Standard Fit<br>• Features: Air Eyelets & Windproof String<br>• Occasion: Summer Sun Protection" }
+    };
+
+    function render() {
+      const grid = document.getElementById('productGrid');
+      grid.innerHTML = '';
+      
+      let count = 0;
+      for (let id in products) {
+        const item = products[id];
+        if (currentFilter === 'all' || item.category === currentFilter) {
+          count++;
+          grid.innerHTML += `
+            <div class="card" onclick="openModal(${id})">
+              <div class="card-img-wrapper">
+                <img src="${item.img}" alt="${item.title}" loading="lazy">
+              </div>
+              <div class="card-info">
+                <h3>${item.title}</h3>
+                <div class="price">${item.price}</div>
+                <span class="btn-view">View Details</span>
+              </div>
+            </div>`;
+        }
+      }
+
+      if (count === 0) {
+        grid.innerHTML = `<div style="grid-column: span 2; padding: 40px 10px; color: var(--text-muted); font-size: 14px;">No products found in this category yet! 🎀</div>`;
+      }
+    }
+
+    function filterCategory(cat, btn) {
+      currentFilter = cat;
+      document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+      render();
+    }
+
+    function openModal(id) {
+      currentId = id;
+      const p = products[id];
+      document.getElementById('mImg').src = p.img;
+      document.getElementById('mTitle').innerText = p.title;
+      document.getElementById('mPrice').innerText = p.price;
+      document.getElementById('mDesc').innerHTML = p.desc;
+      document.getElementById('productModal').style.display = 'flex';
+    }
+
+    function openForm() {
+      document.getElementById('productModal').style.display = 'none';
+      document.getElementById('orderFormModal').style.display = 'flex';
+      const p = products[currentId];
+      selectedQuantity = 1;
+      document.getElementById('qtyVal').innerText = selectedQuantity;
+      document.getElementById('miniImg').src = p.img;
+      document.getElementById('miniTitle').innerText = p.title;
+      document.getElementById('miniPriceUnit').innerText = p.price;
+    }
+
+    function updateQty(delta) {
+      selectedQuantity = Math.max(1, Math.min(20, selectedQuantity + delta));
+      document.getElementById('qtyVal').innerText = selectedQuantity;
+    }
+
+    function submitOrder() {
+      const p = products[currentId];
+      const name = document.getElementById('custName').value.trim();
+      const phone = document.getElementById('custPhone').value.trim();
+      const address = document.getElementById('custAddress').value.trim();
+      const pin = document.getElementById('custPincode').value.trim();
+
+      if (!name || !phone || !address || !pin) {
+        alert("Please fill all required details! 🌸");
+        return;
+      }
+
+      const total = p.priceNum * selectedQuantity;
+      const msg = 
+        `*NEW ORDER PLACED*\n\n` +
+        `*Store:* 🎀 Meri Wali Trends 🐱✨\n` +
+        `*Product Code:* ${p.code}\n` +
+        `*Item:* ${p.title}\n` +
+        `*Unit Price:* ${p.price}\n` +
+        `*Quantity:* ${selectedQuantity}\n` +
+        `*Total Amount:* ₹${total}\n` +
+        `*Product Photo:* ${p.img}\n\n` +
+        `*Customer Details:*\n` +
+        `• *Name:* ${name}\n` +
+        `• *Phone:* ${phone}\n` +
+        `• *Delivery Address:* ${address}\n` +
+        `• *Pincode:* ${pin}\n\n` +
+        `Please confirm my order & send delivery details.`;
+
+      window.open(`https://wa.me/${whatsappNum}?text=${encodeURIComponent(msg)}`, '_blank');
+      document.getElementById('orderFormModal').style.display = 'none';
+    }
+
+    render();
+  </script>
 </body>
 </html>

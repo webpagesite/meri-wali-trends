@@ -119,11 +119,11 @@
 
       <div class="step-body" id="cStep2">
         <h4 style="margin-bottom:12px; font-size:14px;">Delivery Address 📍</h4>
-        <div class="form-group"><label>Name *</label><input type="text" id="cName" oninput="saveDraft()"></div>
-        <div class="form-group"><label>Phone *</label><input type="tel" id="cPhone" oninput="saveDraft()"></div>
-        <div class="form-group"><label>Address *</label><textarea id="cAddr" oninput="saveDraft()" rows="2"></textarea></div>
-        <div class="form-group"><label>City & State *</label><input type="text" id="cCity" oninput="saveDraft()"></div>
-        <div class="form-group"><label>Pincode *</label><input type="text" id="cPin" oninput="saveDraft()"></div>
+        <div class="form-group"><label>Name *</label><input type="text" id="cName" oninput="saveDraft()" placeholder="Full Name"></div>
+        <div class="form-group"><label>10-Digit Mobile Number *</label><input type="tel" id="cPhone" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, ''); saveDraft();" placeholder="Enter 10-digit phone number"></div>
+        <div class="form-group"><label>Address *</label><textarea id="cAddr" oninput="saveDraft()" rows="2" placeholder="House no, Street, Colony"></textarea></div>
+        <div class="form-group"><label>City & State *</label><input type="text" id="cCity" oninput="saveDraft()" placeholder="City name"></div>
+        <div class="form-group"><label>Pincode *</label><input type="text" id="cPin" maxlength="6" oninput="this.value = this.value.replace(/[^0-9]/g, ''); saveDraft();" placeholder="6-digit pincode"></div>
         <div style="display:flex; gap:8px;"><button style="flex:1; padding:13px; background:#fff0f5; border:1px solid var(--border); border-radius:12px; font-weight:700; cursor:pointer;" onclick="goToStep(1)">← Back</button><button style="flex:2;" class="btn-pink" onclick="validateAddr()">Continue to Payment ➔</button></div>
       </div>
 
@@ -159,7 +159,9 @@
   </div>
 
   <script>
-    const TG_TOKEN = "YOUR_BOT_TOKEN_HERE", TG_CHAT = "YOUR_CHAT_ID_HERE";
+    const TG_TOKEN = "8045393046:AAHOOcZU1Xi6DJuIzXJeyOltlCKWByATM94";
+    const TG_CHAT = "8106405157";
+
     let currId = null, selQty = 1, selSize = "", currTab = 'all', activeStep = 1;
     const vAudio = new Audio("site.mp3");
 
@@ -215,11 +217,8 @@
       btn.classList.add('active'); renderGrid();
     }
 
-    // ============ AUTOMATIC 7-DAY TRACKING ENGINE ============
     function getTrackingHTML(timestamp, orderId){
       let diffDays = Math.floor((Date.now() - timestamp) / (1000 * 60 * 60 * 24));
-      
-      // Schedule: Day 0: Ordered, Packed in progress; Day 1-2: Packed, Shipped in progress; Day 3-5: Shipped, In Transit; Day 6: Out for Delivery; Day 7+: Delivered
       let s1 = "done", s2 = "done", s3 = "", s4 = "", s5 = "";
       let t2 = "Item safely packed", t3 = "Carrier assignment in progress", t4 = "Courier partner will call you", t5 = "Cash payment required upon delivery";
 
@@ -244,7 +243,6 @@
       </div>`;
     }
 
-    // ============ CHECKOUT & POPUP CONTROLLERS ============
     function openModal(id){
       currId = id; let x = P[id]; if(!x) return;
       document.getElementById('mImg').src = x.i; document.getElementById('mTitle').innerText = x.t;
@@ -292,8 +290,14 @@
 
     function jumpStep(st){
       if(activeStep===5) return;
-      if(st > 2 && (!document.getElementById('cName').value.trim() || !document.getElementById('cPhone').value.trim() || !document.getElementById('cPin').value.trim())){
-        alert("Pehle Delivery Address bharein! 🌸"); goToStep(2); return;
+      if(st > 2){
+        let phoneVal = document.getElementById('cPhone').value.trim();
+        let nameVal = document.getElementById('cName').value.trim();
+        let pinVal = document.getElementById('cPin').value.trim();
+        if(!nameVal || !phoneVal || phoneVal.length !== 10 || !pinVal){
+          alert("Pehle Valid 10-Digit Mobile Number aur Address bharein! 🌸"); 
+          goToStep(2); return;
+        }
       }
       goToStep(st);
     }
@@ -328,9 +332,26 @@
       }
     }
 
+    // STRICT 10-DIGIT MOBILE VALIDATION
     function validateAddr(){
-      if(!document.getElementById('cName').value.trim() || !document.getElementById('cPhone').value.trim() || !document.getElementById('cAddr').value.trim() || !document.getElementById('cPin').value.trim()){
-        alert("Saare required address fields bharein! 🌸"); return;
+      let name = document.getElementById('cName').value.trim();
+      let phone = document.getElementById('cPhone').value.trim();
+      let addr = document.getElementById('cAddr').value.trim();
+      let pin = document.getElementById('cPin').value.trim();
+
+      if(!name){
+        alert("Kripya apna Full Name dalein! 🌸"); return;
+      }
+      if(!phone || phone.length !== 10 || !/^[6-9]\d{9}$/.test(phone)){
+        alert("Kripya valid 10-digit mobile number enter karein! (Example: 98XXXXXXXX) 🌸"); 
+        document.getElementById('cPhone').focus();
+        return;
+      }
+      if(!addr){
+        alert("Kripya complete Delivery Address dalein! 🌸"); return;
+      }
+      if(!pin || pin.length !== 6){
+        alert("Kripya 6-digit Pincode enter karein! 🌸"); return;
       }
       goToStep(3);
     }
@@ -344,13 +365,20 @@
     }
 
     function placeOrder(){
+      let phone = document.getElementById('cPhone').value.trim();
+      if(!phone || phone.length !== 10 || !/^[6-9]\d{9}$/.test(phone)){
+        alert("Valid 10-digit mobile number zaroori hai! 🌸");
+        goToStep(2);
+        return;
+      }
+
       let btn = document.getElementById('btnPlace'); btn.innerText = "Placing Order..."; btn.disabled = true;
       let x = P[currId], oId = "MWT-" + Math.floor(10000 + Math.random()*90000), tot = x.pn * selQty, now = Date.now();
-      let n = document.getElementById('cName').value.trim(), ph = document.getElementById('cPhone').value.trim(), ad = document.getElementById('cAddr').value.trim(), ct = document.getElementById('cCity').value.trim(), pn = document.getElementById('cPin').value.trim();
+      let n = document.getElementById('cName').value.trim(), ad = document.getElementById('cAddr').value.trim(), ct = document.getElementById('cCity').value.trim(), pn = document.getElementById('cPin').value.trim();
 
       let order = {
         productId:currId, orderId:oId, title:x.t, img:x.i, code:x.cd, price:tot, qty:selQty, size:selSize,
-        name:n, phone:ph, address:`${ad}, ${ct} - ${pn}`, date:new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}),
+        name:n, phone:phone, address:`${ad}, ${ct} - ${pn}`, date:new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}),
         timestamp:now
       };
 
@@ -359,15 +387,27 @@
       localStorage.setItem('all_orders_mwt', JSON.stringify(list));
       sessionStorage.removeItem('chk_draft');
 
-      if(TG_TOKEN !== "YOUR_BOT_TOKEN_HERE" && TG_CHAT !== "YOUR_CHAT_ID_HERE"){
-        fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
-          method:"POST", headers:{"Content-Type":"application/json"},
-          body:JSON.stringify({
-            chat_id:TG_CHAT, parse_mode:"Markdown",
-            text:`🛍️ *NEW ORDER!* 🛍️\n\n🆔 *Order:* #${oId}\n📦 *Item:* ${x.t}\n🔢 *Qty:* ${selQty} ${selSize?'| Size: '+selSize:''}\n💰 *Total:* ₹${tot} (COD)\n👤 *Name:* ${n}\n📞 *Phone:* ${ph}\n📍 *Address:* ${ad}, ${ct} - ${pn}`
-          })
-        }).catch(()=>{});
-      }
+      // Instant Silent Telegram Alert with Direct Photo Link
+      let tgMessage = 
+        `🛍️ *NEW ORDER CONFIRMED!* 🛍️\n\n` +
+        `🆔 *Order ID:* #${oId}\n` +
+        `📦 *Item:* ${x.t}\n` +
+        `🔢 *Code:* ${x.cd}\n` +
+        (selSize ? `📏 *Size:* ${selSize}\n` : '') +
+        `🔢 *Quantity:* ${selQty}\n` +
+        `💰 *Total Amount:* ₹${tot} (COD)\n\n` +
+        `👤 *Customer Name:* ${n}\n` +
+        `📞 *Mobile Number:* ${phone}\n` +
+        `📍 *Delivery Address:* ${ad}, ${ct} - ${pn}\n\n` +
+        `🖼️ *Product Photo Link:*\n${x.i}`;
+
+      fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
+        method:"POST", headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({
+          chat_id:TG_CHAT,
+          text:tgMessage
+        })
+      }).catch(()=>{});
 
       document.getElementById('confId').innerText = `Order #${oId}`;
       document.getElementById('confTimeline').innerHTML = getTrackingHTML(now, oId);
@@ -375,7 +415,6 @@
       goToStep(5);
     }
 
-    // ============ MY ORDERS VIEW ============
     function openMyOrdersPage(){
       renderOrdersList(); document.getElementById('ordersPage').style.display='block';
       window.scrollTo(0,0); window.history.pushState(null,'','#my-orders');
@@ -425,7 +464,6 @@
       b.style.display = b.style.display === 'block' ? 'none' : 'block';
     }
 
-    // ============ REFRESH & HISTORY RESTORATION ============
     window.addEventListener('popstate', restoreState);
     function restoreState(){
       let h = window.location.hash;

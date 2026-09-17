@@ -266,7 +266,7 @@
       justify-content: center;
       align-items: center;
       padding: 12px;
-      z-index: 1000;
+      z-index: 3000;
       animation: fadeIn 0.2s ease-out;
     }
 
@@ -735,6 +735,14 @@
       display: flex;
       gap: 12px;
       align-items: center;
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 12px;
+      transition: background 0.2s;
+    }
+
+    .order-product-row:hover {
+      background: #fff8fa;
     }
 
     .order-product-row img {
@@ -746,9 +754,14 @@
       border: 1px solid var(--border-color);
     }
 
-    .btn-track-expand {
+    .order-btn-actions {
+      display: flex;
+      gap: 8px;
       margin-top: 12px;
-      width: 100%;
+    }
+
+    .btn-track-expand {
+      flex: 1.3;
       padding: 10px;
       background: #fff0f5;
       border: 1px solid var(--pink-accent);
@@ -756,11 +769,27 @@
       font-weight: 700;
       border-radius: 10px;
       cursor: pointer;
-      font-size: 12.5px;
+      font-size: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
+      gap: 5px;
+    }
+
+    .btn-buy-again {
+      flex: 1;
+      padding: 10px;
+      background: linear-gradient(135deg, #ff4d88, #ff2a6d);
+      border: none;
+      color: #fff;
+      font-weight: 700;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
     }
 
     .order-expanded-details {
@@ -974,7 +1003,7 @@
       <div class="btn-orders-back" onclick="closeMyOrdersPage()">←</div>
       <div>
         <h2 style="font-size:17px; color:var(--text-dark);">My Orders 🛍️</h2>
-        <p style="font-size:11px; color:var(--text-muted);">Track & view all your previous purchases</p>
+        <p style="font-size:11px; color:var(--text-muted);">Tap item to view product or re-order</p>
       </div>
     </div>
     
@@ -1017,7 +1046,6 @@
       }
     }
 
-    // Full Screen My Orders View Functions
     function openMyOrdersPage() {
       renderOrdersList();
       document.getElementById('ordersPage').style.display = 'block';
@@ -1032,7 +1060,7 @@
       }
     }
 
-    // Android/Browser Back Button Handling
+    // Android / Browser Back Gesture Handling
     window.addEventListener('popstate', function(event) {
       const modals = ['productModal', 'checkoutModal'];
       modals.forEach(id => {
@@ -1263,6 +1291,7 @@
       const pin = document.getElementById('custPincode').value.trim();
 
       const newOrder = {
+        productId: currentId,
         orderId: randomOrderId,
         title: p.title,
         img: p.img,
@@ -1277,9 +1306,9 @@
         timestamp: Date.now()
       };
 
-      // Multi-Order Store (PURAANE NEECHE, RECENT/NAYA SABSE UPAR)
+      // Multi-Order Store (Puraane neeche, naya order sabse upar)
       let allOrders = JSON.parse(localStorage.getItem("all_orders_mwt") || "[]");
-      allOrders.unshift(newOrder); // unshift adds new item at the very beginning (Index 0)
+      allOrders.unshift(newOrder);
       localStorage.setItem("all_orders_mwt", JSON.stringify(allOrders));
 
       if (TG_BOT_TOKEN !== "YOUR_BOT_TOKEN_HERE" && TG_CHAT_ID !== "YOUR_CHAT_ID_HERE") {
@@ -1319,6 +1348,26 @@
       goToStep(5);
     }
 
+    // Helper: Find Product Key by code or title if productId is missing
+    function findProductKey(order) {
+      if (order.productId && products[order.productId]) return order.productId;
+      for (let key in products) {
+        if (products[key].code === order.code || products[key].title === order.title) {
+          return key;
+        }
+      }
+      return 1;
+    }
+
+    function openProductFromOrder(key) {
+      openModal(key);
+    }
+
+    function buyAgainFromOrder(key) {
+      currentId = key;
+      startCheckout();
+    }
+
     // Render All Orders in Dedicated Page
     function renderOrdersList() {
       const container = document.getElementById('ordersListContainer');
@@ -1337,6 +1386,7 @@
 
       let html = '';
       allOrders.forEach((o, index) => {
+        const prodKey = findProductKey(o);
         html += `
           <div class="order-card-box">
             <div class="order-card-header">
@@ -1347,19 +1397,25 @@
               <span class="order-status-badge">● Order Confirmed</span>
             </div>
 
-            <div class="order-product-row">
+            <!-- Tap image or title to open real Product View Popup -->
+            <div class="order-product-row" onclick="openProductFromOrder(${prodKey})" title="Click to view full product details">
               <img src="${o.img}" alt="${o.title}">
               <div style="flex:1;">
-                <h4 style="font-size:13px; font-weight:700; color:var(--text-dark);">${o.title}</h4>
+                <h4 style="font-size:13px; font-weight:700; color:var(--text-dark);">${o.title} ➔</h4>
                 <div style="font-size:11.5px; color:var(--text-muted); margin-top:2px;">Qty: ${o.qty} ${o.size ? '| Size: ' + o.size : ''}</div>
                 <div style="color:var(--pink-primary); font-weight:800; font-size:13.5px; margin-top:3px;">₹${o.price} <span style="font-size:10.5px; font-weight:normal; color:var(--text-muted);">(Cash On Delivery)</span></div>
               </div>
             </div>
 
-            <button class="btn-track-expand" onclick="toggleTrackView(${index})">
-              <span>🚚 Track Order & Details</span>
-              <span id="arrowIcon-${index}">▼</span>
-            </button>
+            <div class="order-btn-actions">
+              <button class="btn-track-expand" onclick="toggleTrackView(${index})">
+                <span>🚚 Track Order</span>
+                <span id="arrowIcon-${index}">▼</span>
+              </button>
+              <button class="btn-buy-again" onclick="buyAgainFromOrder(${prodKey})">
+                <span>🔁 Buy Again</span>
+              </button>
+            </div>
 
             <!-- Expanded Details & Timeline on demand -->
             <div class="order-expanded-details" id="expandBox-${index}">

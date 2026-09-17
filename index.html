@@ -901,11 +901,11 @@
       <!-- Step 2: Delivery Address -->
       <div class="checkout-step-body" id="cStep2">
         <h4 style="margin-bottom:12px; font-size:14px; color:var(--text-dark);">Delivery Address 📍</h4>
-        <div class="form-group"><label>Customer Name *</label><input type="text" id="custName" placeholder="Full Name"></div>
-        <div class="form-group"><label>Contact Mobile Number *</label><input type="tel" id="custPhone" placeholder="10-digit number"></div>
-        <div class="form-group"><label>House No. / Colony / Area *</label><textarea id="custAddress" rows="2" placeholder="Complete address"></textarea></div>
-        <div class="form-group"><label>City & State *</label><input type="text" id="custCity" placeholder="City name"></div>
-        <div class="form-group"><label>Pincode *</label><input type="text" id="custPincode" placeholder="6-digit pincode"></div>
+        <div class="form-group"><label>Customer Name *</label><input type="text" id="custName" oninput="saveCheckoutDraft()" placeholder="Full Name"></div>
+        <div class="form-group"><label>Contact Mobile Number *</label><input type="tel" id="custPhone" oninput="saveCheckoutDraft()" placeholder="10-digit number"></div>
+        <div class="form-group"><label>House No. / Colony / Area *</label><textarea id="custAddress" oninput="saveCheckoutDraft()" rows="2" placeholder="Complete address"></textarea></div>
+        <div class="form-group"><label>City & State *</label><input type="text" id="custCity" oninput="saveCheckoutDraft()" placeholder="City name"></div>
+        <div class="form-group"><label>Pincode *</label><input type="text" id="custPincode" oninput="saveCheckoutDraft()" placeholder="6-digit pincode"></div>
 
         <div style="display:flex; gap:8px; margin-top:10px;">
           <button class="btn-back-step" onclick="goToStep(1)">← Back to Qty</button>
@@ -1008,7 +1008,7 @@
     </div>
     
     <div class="orders-list-container" id="ordersListContainer">
-      <!-- Injected via JavaScript (Latest on Top) -->
+      <!-- Injected via JavaScript -->
     </div>
   </div>
 
@@ -1022,54 +1022,6 @@
     let selectedSize = "";
     let currentFilter = 'all';
     let currentActiveStep = 1;
-    let activeModalId = null;
-
-    function openModalWithHistory(modalId) {
-      document.getElementById(modalId).style.display = 'flex';
-      activeModalId = modalId;
-      window.history.pushState({ viewOpen: true, type: 'modal', modalId: modalId }, "");
-    }
-
-    function closeModalDirect(modalId) {
-      document.getElementById(modalId).style.display = 'none';
-      if (activeModalId === modalId) {
-        activeModalId = null;
-        if (window.history.state && window.history.state.viewOpen) {
-          window.history.back();
-        }
-      }
-    }
-
-    function handleOutsideModalClick(e, modalId) {
-      if (e.target.id === modalId) {
-        closeModalDirect(modalId);
-      }
-    }
-
-    function openMyOrdersPage() {
-      renderOrdersList();
-      document.getElementById('ordersPage').style.display = 'block';
-      window.scrollTo(0, 0);
-      window.history.pushState({ viewOpen: true, type: 'page', pageId: 'ordersPage' }, "");
-    }
-
-    function closeMyOrdersPage() {
-      document.getElementById('ordersPage').style.display = 'none';
-      if (window.history.state && window.history.state.viewOpen) {
-        window.history.back();
-      }
-    }
-
-    // Android / Browser Back Gesture Handling
-    window.addEventListener('popstate', function(event) {
-      const modals = ['productModal', 'checkoutModal'];
-      modals.forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.style.display = 'none';
-      });
-      document.getElementById('ordersPage').style.display = 'none';
-      activeModalId = null;
-    });
 
     const voiceAudio = new Audio("site.mp3");
 
@@ -1148,20 +1100,81 @@
       render();
     }
 
+    // ================= URL HASH & REFRESH RECOVERY =================
+    function updateUrlHash(hash) {
+      if (window.location.hash !== hash) {
+        window.history.pushState(null, '', hash || ' ');
+      }
+    }
+
+    function clearUrlHash() {
+      window.history.pushState(null, '', window.location.pathname + window.location.search);
+      sessionStorage.removeItem('active_checkout_state');
+    }
+
+    function saveCheckoutDraft() {
+      const draft = {
+        productId: currentId,
+        step: currentActiveStep,
+        qty: selectedQuantity,
+        size: selectedSize,
+        name: document.getElementById('custName').value,
+        phone: document.getElementById('custPhone').value,
+        address: document.getElementById('custAddress').value,
+        city: document.getElementById('custCity').value,
+        pincode: document.getElementById('custPincode').value
+      };
+      sessionStorage.setItem('active_checkout_state', JSON.stringify(draft));
+    }
+
+    function restoreCheckoutDraft() {
+      const raw = sessionStorage.getItem('active_checkout_state');
+      if (!raw) return null;
+      try {
+        const d = JSON.parse(raw);
+        if (d.name) document.getElementById('custName').value = d.name;
+        if (d.phone) document.getElementById('custPhone').value = d.phone;
+        if (d.address) document.getElementById('custAddress').value = d.address;
+        if (d.city) document.getElementById('custCity').value = d.city;
+        if (d.pincode) document.getElementById('custPincode').value = d.pincode;
+        if (d.qty) selectedQuantity = d.qty;
+        if (d.size) selectedSize = d.size;
+        return d;
+      } catch (e) {
+        return null;
+      }
+    }
+
+    // ================= MODAL & CHECKOUT CONTROLLERS =================
     function openModal(id) {
       currentId = id;
       const p = products[id];
+      if (!p) return;
       document.getElementById('mImg').src = p.img;
       document.getElementById('mTitle').innerText = p.title;
       document.getElementById('mPrice').innerText = p.price;
       document.getElementById('mDesc').innerHTML = p.desc;
-      openModalWithHistory('productModal');
+      
+      document.getElementById('productModal').style.display = 'flex';
+      updateUrlHash(`#product-${id}`);
     }
 
-    function startCheckout() {
+    function closeModalDirect(modalId) {
+      document.getElementById(modalId).style.display = 'none';
+      clearUrlHash();
+    }
+
+    function handleOutsideModalClick(e, modalId) {
+      if (e.target.id === modalId) {
+        closeModalDirect(modalId);
+      }
+    }
+
+    function startCheckout(fromDraft = false) {
       document.getElementById('productModal').style.display = 'none';
       
       const p = products[currentId];
+      if (!p) return;
       document.getElementById('cMiniImg1').src = p.img;
       document.getElementById('cMiniTitle1').innerText = p.title;
       document.getElementById('cMiniPrice1').innerText = p.price;
@@ -1181,6 +1194,7 @@
             document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             selectedSize = s;
+            saveCheckoutDraft();
           };
           sOpt.appendChild(btn);
         });
@@ -1191,18 +1205,22 @@
       }
 
       document.getElementById('cQtyVal').innerText = selectedQuantity;
-      goToStep(1);
-      openModalWithHistory('checkoutModal');
+      document.getElementById('checkoutModal').style.display = 'flex';
+
+      if (!fromDraft) {
+        goToStep(1);
+      }
     }
 
     function backToProductModal() {
       document.getElementById('checkoutModal').style.display = 'none';
-      openModalWithHistory('productModal');
+      openModal(currentId);
     }
 
     function updateQty(d) {
       selectedQuantity = Math.max(1, Math.min(20, selectedQuantity + d));
       document.getElementById('cQtyVal').innerText = selectedQuantity;
+      saveCheckoutDraft();
     }
 
     function jumpToStep(targetStep) {
@@ -1234,11 +1252,16 @@
       if (step <= 4) {
         document.getElementById(`dot${step}`).classList.add('active');
         document.getElementById('stepIndicatorBar').style.display = 'flex';
+        updateUrlHash(`#checkout-step${step}`);
       } else {
         document.getElementById('stepIndicatorBar').style.display = 'none';
+        updateUrlHash(`#order-confirmed`);
       }
 
+      saveCheckoutDraft();
+
       const p = products[currentId];
+      if (!p) return;
       const totalAmount = p.priceNum * selectedQuantity;
 
       if (step === 3) {
@@ -1306,10 +1329,12 @@
         timestamp: Date.now()
       };
 
-      // Multi-Order Store (Puraane neeche, naya order sabse upar)
       let allOrders = JSON.parse(localStorage.getItem("all_orders_mwt") || "[]");
       allOrders.unshift(newOrder);
       localStorage.setItem("all_orders_mwt", JSON.stringify(allOrders));
+
+      // Clear checkout draft once placed
+      sessionStorage.removeItem('active_checkout_state');
 
       if (TG_BOT_TOKEN !== "YOUR_BOT_TOKEN_HERE" && TG_CHAT_ID !== "YOUR_CHAT_ID_HERE") {
         const tgMessage = 
@@ -1348,7 +1373,19 @@
       goToStep(5);
     }
 
-    // Helper: Find Product Key by code or title if productId is missing
+    // ================= MY ORDERS FULL PAGE =================
+    function openMyOrdersPage() {
+      renderOrdersList();
+      document.getElementById('ordersPage').style.display = 'block';
+      window.scrollTo(0, 0);
+      updateUrlHash('#my-orders');
+    }
+
+    function closeMyOrdersPage() {
+      document.getElementById('ordersPage').style.display = 'none';
+      clearUrlHash();
+    }
+
     function findProductKey(order) {
       if (order.productId && products[order.productId]) return order.productId;
       for (let key in products) {
@@ -1368,7 +1405,6 @@
       startCheckout();
     }
 
-    // Render All Orders in Dedicated Page
     function renderOrdersList() {
       const container = document.getElementById('ordersListContainer');
       const allOrders = JSON.parse(localStorage.getItem("all_orders_mwt") || "[]");
@@ -1397,7 +1433,6 @@
               <span class="order-status-badge">● Order Confirmed</span>
             </div>
 
-            <!-- Tap image or title to open real Product View Popup -->
             <div class="order-product-row" onclick="openProductFromOrder(${prodKey})" title="Click to view full product details">
               <img src="${o.img}" alt="${o.title}">
               <div style="flex:1;">
@@ -1417,7 +1452,6 @@
               </button>
             </div>
 
-            <!-- Expanded Details & Timeline on demand -->
             <div class="order-expanded-details" id="expandBox-${index}">
               <div style="background:#fff9fb; border:1px solid var(--border-color); border-radius:12px; padding:10px 14px; font-size:12px; margin-bottom:14px; line-height:1.4;">
                 <strong style="color:var(--text-dark);">Delivery Address:</strong>
@@ -1466,7 +1500,39 @@
       }
     }
 
+    // ================= POPSTATE / BROWSER BACK GESTURE =================
+    window.addEventListener('popstate', function(event) {
+      checkAndRestoreState();
+    });
+
+    function checkAndRestoreState() {
+      const hash = window.location.hash;
+
+      // Close all modals first
+      document.getElementById('productModal').style.display = 'none';
+      document.getElementById('checkoutModal').style.display = 'none';
+      document.getElementById('ordersPage').style.display = 'none';
+
+      if (hash.startsWith('#product-')) {
+        const id = parseInt(hash.replace('#product-', ''));
+        if (products[id]) openModal(id);
+      } else if (hash.startsWith('#checkout-step')) {
+        const stepNum = parseInt(hash.replace('#checkout-step', '')) || 1;
+        const draft = restoreCheckoutDraft();
+        if (draft && draft.productId && products[draft.productId]) {
+          currentId = draft.productId;
+          startCheckout(true);
+          goToStep(stepNum);
+        }
+      } else if (hash === '#my-orders') {
+        renderOrdersList();
+        document.getElementById('ordersPage').style.display = 'block';
+      }
+    }
+
+    // Initialize & Handle Page Reload
     render();
+    checkAndRestoreState();
   </script>
 </body>
 </html>

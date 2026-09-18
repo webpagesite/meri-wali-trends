@@ -8,9 +8,8 @@
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Quicksand:wght@700&display=swap');
     *{margin:0;padding:0;box-sizing:border-box;font-family:'Plus Jakarta Sans',sans-serif;}
     :root{--bg:#fff5f8;--pink:#ff4d88;--pink-soft:#ffe4ec;--pink-accent:#ff85a2;--text:#2d1e2f;--muted:#7a6a7c;--border:#ffd1dc;--green:#038d63;--red:#e63946;--blue:#0288d1;}
-    body{background:var(--bg);color:var(--text);padding:15px 12px 60px;text-align:center;min-height:100vh;}
+    body{background:var(--bg);color:var(--text);padding:15px 12px 80px;text-align:center;min-height:100vh;}
     
-    /* Security: Disable selection & callouts */
     img {
       -webkit-touch-callout: none !important;
       -webkit-user-select: none !important;
@@ -52,7 +51,6 @@
     .card-info h3{font-size:12.5px;color:var(--text);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:34px;}
     .price{color:var(--pink);font-weight:800;font-size:14px;margin:4px 0;}
     
-    /* Direct Size Tags on Card */
     .card-sizes{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px;min-height:22px;}
     .size-tag{font-size:10px;font-weight:700;color:var(--pink);background:#fff0f5;border:1px solid var(--border);padding:2px 6px;border-radius:6px;}
     
@@ -64,6 +62,9 @@
     .close-btn{position:absolute;top:12px;right:12px;font-size:18px;background:#fff;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;border:1px solid var(--border);font-weight:bold;z-index:10;}
     .modal-body{padding:18px;}
     .btn-pink{display:block;width:100%;padding:13px;background:linear-gradient(135deg,#ff4d88,#ff2a6d);color:#fff;font-weight:700;border-radius:12px;border:none;cursor:pointer;font-size:13.5px;text-align:center;}
+    
+    /* Hint to Babu Direct Button */
+    .btn-hint{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:10px;background:#e8f8f2;color:var(--green);border:1.5px dashed #a5d6a7;font-weight:700;border-radius:12px;cursor:pointer;font-size:12.5px;margin-top:8px;}
     
     /* Slider Styles */
     .slider-box{position:relative;width:100%;background:#fff8fa;border-bottom:1px solid var(--border);padding:8px;overflow:hidden;}
@@ -109,11 +110,145 @@
     .orders-top{display:flex;align-items:center;gap:12px;background:#fff;padding:12px 16px;border-radius:16px;border:1px solid var(--border);margin:0 auto 16px;max-width:800px;}
     .order-box{background:#fff;border-radius:18px;border:1px solid var(--border);padding:14px 16px;margin:0 auto 14px;max-width:800px;}
     
-    /* Action Buttons */
     .btn-action{padding:8px 12px;border-radius:8px;font-size:11.5px;font-weight:700;cursor:pointer;border:none;}
     .btn-cancel{background:#ffebee;color:var(--red);border:1px solid #ffcdd2;}
     .btn-return{background:#e8f4fd;color:var(--blue);border:1px solid #b3e5fc;}
     .btn-disabled{background:#f0f0f0;color:#9e9e9e;border:1px solid #e0e0e0;cursor:not-allowed;}
+
+    /* LIVE RECENT ORDER POPUP */
+    .recent-popup {
+      position: fixed;
+      bottom: 20px;
+      left: 14px;
+      background: #ffffff;
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      padding: 9px 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 8px 24px rgba(255, 77, 136, 0.2);
+      z-index: 2500;
+      max-width: 320px;
+      transform: translateY(120px);
+      opacity: 0;
+      transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+      text-align: left;
+      pointer-events: none;
+    }
+    .recent-popup.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    .recent-popup img {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      object-fit: cover;
+      border: 1px solid var(--border);
+    }
+    .recent-popup-txt {
+      font-size: 11px;
+      color: var(--text);
+      line-height: 1.35;
+    }
+
+    /* FLOATING SPIN THE WHEEL BUTTON */
+    .float-spin-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 16px;
+      background: linear-gradient(135deg, #ff4d88, #ff2a6d);
+      color: #fff;
+      padding: 10px 16px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12.5px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(255, 42, 109, 0.4);
+      z-index: 2400;
+      animation: floatWiggle 3s infinite ease-in-out;
+      border: 2px solid #fff;
+    }
+    @keyframes floatWiggle {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-7px); }
+    }
+
+    /* SPIN WHEEL MODAL & ROTATING WHEEL */
+    .wheel-container {
+      position: relative;
+      width: 260px;
+      height: 260px;
+      margin: 18px auto;
+    }
+    .wheel-arrow {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0; 
+      height: 0; 
+      border-left: 14px solid transparent;
+      border-right: 14px solid transparent;
+      border-top: 22px solid var(--pink);
+      z-index: 10;
+    }
+    .spin-wheel {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 6px solid #fff;
+      box-shadow: 0 4px 18px rgba(255, 77, 136, 0.3);
+      background: conic-gradient(
+        #ff85a2 0deg 45deg,
+        #ffe4ec 45deg 90deg,
+        #ff4d88 90deg 135deg,
+        #ffd1dc 135deg 180deg,
+        #ff85a2 180deg 225deg,
+        #ffe4ec 225deg 270deg,
+        #ff4d88 270deg 315deg,
+        #ffd1dc 315deg 360deg
+      );
+      transition: transform 3.5s cubic-bezier(0.15, 0.9, 0.25, 1);
+    }
+    .wheel-center-pin {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 44px;
+      height: 44px;
+      background: #fff;
+      border-radius: 50%;
+      border: 3px solid var(--pink);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      z-index: 5;
+    }
+    .fortune-result-box {
+      display: none;
+      background: #fff0f5;
+      border: 2px dashed var(--pink);
+      border-radius: 16px;
+      padding: 14px;
+      margin-top: 14px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.5;
+      animation: popIn 0.4s ease;
+    }
+    @keyframes popIn {
+      0% { transform: scale(0.85); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
   </style>
 </head>
 <body oncontextmenu="return false;">
@@ -131,7 +266,7 @@
     <div id="voicePopup" class="voice-popup">"Haan haan pata hai bohot pyaar karte ho mujhse... par thoda sa pyaar yahan order button pe click karke bhi dikha do na! 🥺🛍️"</div>
   </div>
 
-  <!-- Live Search Bar -->
+  <!-- Search Bar -->
   <div class="search-wrapper">
     <span class="search-icon">🔍</span>
     <input type="text" class="search-input" id="searchBox" oninput="handleSearch(this.value)" placeholder="Search dress, earrings, bracelet, watch...">
@@ -161,12 +296,13 @@
       <div class="modal-body">
         <h2 id="mTitle" style="font-size:16px; font-weight:700; margin-bottom:4px;"></h2>
         <div id="mPrice" style="font-size:19px; color:var(--pink); font-weight:800; margin-bottom:8px;"></div>
-        
-        <!-- Direct Size Display in Detail Modal -->
         <div id="mSizesDisplay" style="margin-bottom:12px; background:#fff0f5; padding:8px 12px; border-radius:10px; border:1px solid var(--border); font-size:12px; font-weight:700; color:var(--pink);"></div>
-
         <div id="mDesc" style="font-size:12.5px; color:var(--muted); line-height:1.55; margin-bottom:18px; background:#fff9fb; padding:12px; border-radius:12px;"></div>
+        
         <button class="btn-pink" onclick="startCheckout()">Buy Now 🛍️</button>
+        
+        <!-- Hint to Babu Direct WhatsApp Share (Direct to this product) -->
+        <button class="btn-hint" onclick="sendHintToBabu()">💌 Send Hint to Babu 🥺👉👈</button>
       </div>
     </div>
   </div>
@@ -200,647 +336,4 @@
       </div>
 
       <div class="step-body" id="cStep3">
-        <h4 style="margin-bottom:12px; font-size:14px;">Payment Method 💳</h4>
-        <div style="background:#e8f8f2; color:var(--green); border:1px solid #b7e8d6; border-radius:8px; padding:10px; font-size:12.5px; font-weight:700; margin-bottom:14px;"><input type="radio" checked disabled> Cash on Delivery (Pay cash upon arrival)</div>
-        <div class="bill-box"><div class="bill-row"><span>Product MRP:</span><span id="bMrp">₹0</span></div><div class="bill-row"><span>Discount:</span><span style="color:var(--green);">-₹100</span></div><div class="bill-row"><span>Delivery:</span><span style="color:var(--green);">FREE 🚚</span></div><div class="bill-row total"><span>Total Payable:</span><span id="bTot" style="color:var(--pink);">₹0</span></div></div>
-        <div style="display:flex; gap:8px;"><button style="flex:1; padding:13px; background:#fff0f5; border:1px solid var(--border); border-radius:12px; font-weight:700; cursor:pointer;" onclick="goToStep(2)">← Back</button><button style="flex:2;" class="btn-pink" onclick="goToStep(4)">Review Order ➔</button></div>
-      </div>
-
-      <div class="step-body" id="cStep4">
-        <h4 style="margin-bottom:12px; font-size:14px;">Review Order 📦</h4>
-        <div class="mini-card"><img id="cMiniImg4" draggable="false"><div><h4 id="cMiniTitle4" style="font-size:12.5px;"></h4><div id="cRevQty" style="font-size:11.5px; color:var(--muted);"></div><div id="cRevTot" style="color:var(--pink); font-weight:800; font-size:13px;"></div></div></div>
-        <div style="background:#fff9fb; border:1px solid var(--border); border-radius:12px; padding:10px; font-size:12px; margin-bottom:14px;"><strong style="color:var(--text);">Delivering To:</strong><div id="cRevAddr" style="color:var(--muted); margin-top:2px;"></div></div>
-        <div style="display:flex; gap:8px;"><button style="flex:1; padding:13px; background:#fff0f5; border:1px solid var(--border); border-radius:12px; font-weight:700; cursor:pointer;" onclick="goToStep(3)">← Back</button><button style="flex:2;" class="btn-pink" id="btnPlace" onclick="placeOrder()">Place Order (COD) 🎉</button></div>
-      </div>
-
-      <div class="step-body" id="cStep5">
-        <div style="text-align:center; padding:14px;"><div style="width:54px; height:54px; background:#e8f8f2; border:2px solid var(--green); color:var(--green); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:26px; margin:0 auto 8px;">✓</div><h3 style="color:var(--green); font-size:18px;">Order Confirmed! 🎉</h3><div style="display:inline-block; background:#fff2f6; color:var(--pink); font-weight:800; font-size:13px; padding:4px 10px; border-radius:999px; margin-top:4px;" id="confId"></div></div>
-        <div class="timeline" id="confTimeline"></div>
-        <button class="btn-pink" style="margin-top:14px;" onclick="closeModal('checkoutModal')">Continue Shopping 🛍️</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Dedicated My Orders Page -->
-  <div id="ordersPage">
-    <div class="orders-top">
-      <button style="background:#fff0f5; border:1px solid var(--pink-accent); color:var(--pink); border-radius:50%; width:34px; height:34px; font-size:16px; font-weight:bold; cursor:pointer;" onclick="closeMyOrdersPage()">←</button>
-      <div><h2 style="font-size:17px;">My Orders 🛍️</h2><p style="font-size:11px; color:var(--muted);">Tap item to view product or track order</p></div>
-    </div>
-    <div id="ordersList"></div>
-  </div>
-
-  <script>
-    const TG_TOKEN = "8845393046:AAHOOcZUlXl6DJuIzXJeyOltlCKWByATM94";
-    const TG_CHAT = "8106405157";
-    const SHEET_ID = "1VuDMLMixAeBJxFLtgGNxkI5kzUFsNM3RABdQLV6DdRs";
-
-    let currId = null, selQty = 1, selSize = "", currTab = 'all', activeStep = 1;
-    let searchQuery = "";
-    let currentSlideIdx = 0, currentImages = [];
-    const vAudio = new Audio("site.mp3");
-
-    // Block right click / long press on all images
-    document.addEventListener('contextmenu', function(e) {
-      if(e.target.tagName === 'IMG') {
-        e.preventDefault();
-      }
-    });
-
-    function playVoice(){
-      document.getElementById('voicePopup').style.display='block';
-      if(vAudio) vAudio.play().catch(()=>{
-        if('speechSynthesis' in window){
-          let u = new SpeechSynthesisUtterance("Haan haan pata hai bohot pyaar karte ho mujhse... par thoda sa pyaar yahan order button pe click karke bhi dikha do na!");
-          u.lang='hi-IN'; u.pitch=1.25; window.speechSynthesis.speak(u);
-        }
-      });
-    }
-
-    let defaultProducts = [
-      {id:"21", c:"dresses", cd:"WC-101", t:"Vintage Floral Print Bodycon Midi Dress", pn:695, p:"₹695", i:["https://i.ibb.co/qYyQ0R8T/Screenshot-2026-0819-174125.jpg"], s:["XS","S","M","L","XL","XXL"], d:"• Type: Aesthetic Ribbon Shoulder Bodycon Midi Dress<br>• Fabric: Super Net with Inner Lining<br>• Pattern: Vintage Floral"},
-      {id:"1", c:"accessories", cd:"GA-101", t:"Combo of 12 Pair Earrings with Velvet Box", pn:673, p:"₹673", i:["https://i.ibb.co/Ld0X8PQv/Screenshot-2026-0816-064613.jpg"], s:["Free Size"], d:"• Type: Jhumkhas (12 Pair Combo)<br>• Trend: Floral, Oxidised Silver"},
-      {id:"2", c:"accessories", cd:"GA-102", t:"Vintage Floral Embroidered Lace Hair Bow", pn:150, p:"₹150", i:["https://i.ibb.co/TBQ2DcYN/IMG-20260817-114459.png"], s:["Free Size"], d:"• Type: Lace Hair Bow Clip<br>• Trend: Vintage Floral"},
-      {id:"3", c:"accessories", cd:"GA-103", t:"LED Light Up Butterfly Hair Clip (Pack of 2)", pn:199, p:"₹199", i:["https://i.ibb.co/mVgrwGCz/IMG-20260817-121041.jpg"], s:["Free Size"], d:"• Type: Glowing LED Clip (Pack of 2)<br>• Feature: Optical Fiber Braid"},
-      {id:"4", c:"accessories", cd:"GA-104", t:"Exquisite Princess Pearl Butterfly Tiara Crown", pn:349, p:"₹349", i:["https://i.ibb.co/DPsmtDdc/IMG-20260817-124016.jpg"], s:["Free Size"], d:"• Type: Princess Tiara Crown<br>• Finish: Pearl & Butterfly Embellishments"},
-      {id:"5", c:"accessories", cd:"GA-105", t:"12 Pcs Kids Rainbow Braids Hair Extensions", pn:199, p:"₹199", i:["https://i.ibb.co/C5whJn3n/IMG-20260817-130237.jpg"], s:["Free Size"], d:"• Type: Clip-In Braids (Pack of 12)<br>• Style: Colorful Rainbow"},
-      {id:"6", c:"accessories", cd:"GA-106", t:"Soft Fur Scrunchies Combo (Pack of 8)", pn:149, p:"₹149", i:["https://i.ibb.co/qYP8Tszc/IMG-20260818-120223.jpg"], s:["Free Size"], d:"• Type: Plush Fur Scrunchies (Pack of 8)<br>• Color: Multicolor Pastel"},
-      {id:"7", c:"accessories", cd:"BA-101", t:"Pina Colada Attar 6ml Pack of 2", pn:299, p:"₹299", i:["https://i.ibb.co/4ZwFRcth/Screenshot-2026-0820-184205.jpg"], s:["6ml Pack"], d:"• Pack: 2 Bottles (6ml each)<br>• Flavour: Strawberry & Pina Colada"},
-      {id:"8", c:"accessories", cd:"BA-102", t:"Classy Men Silver Plated Designer Bracelet", pn:149, p:"₹149", i:["https://iili.io/CZ2bBII.md.jpg"], s:["Free Size"], d:"• Material: Stainless Steel<br>• Color: Premium Silver"},
-      {id:"9", c:"accessories", cd:"BA-103", t:"Men's Designer Gold Plated Bracelet", pn:299, p:"₹299", i:["https://iili.io/CZ3LxzF.md.jpg"], s:["Free Size"], d:"• Plating: Gold Plated Brass<br>• Stone: Amethyst Stone"},
-      {id:"10", c:"accessories", cd:"BA-104", t:"Magnetic Chain Bracelet (Set of 2)", pn:199, p:"₹199", i:["https://iili.io/CZ3ZhD7.md.jpg"], s:["Free Size"], d:"• Material: Silver Plated Alloy<br>• Set: 2-Piece Magnetic Combo"},
-      {id:"11", c:"accessories", cd:"BA-105", t:"Silver Plated Charm Bracelet", pn:299, p:"₹299", i:["https://iili.io/CZ3bCo7.md.jpg"], s:["Free Size"], d:"• Material: Stainless Steel<br>• Stones: AD Zirconia"},
-      {id:"12", c:"accessories", cd:"BA-106", t:"Brass Gold Plated Kada Bracelet", pn:249, p:"₹249", i:["https://iili.io/CZ3yzKX.md.jpg"], s:["8-Inch"], d:"• Material: Solid Brass Gold Plated<br>• Size: 8-Inch Adjustable"},
-      {id:"13", c:"accessories", cd:"BA-107", t:"SIXER PRO Double Blade Plastic Cricket Bat", pn:399, p:"₹399", i:["https://iili.io/CZF2scP.md.jpg"], s:["Full Size"], d:"• Model: Double Blade Hard Plastic<br>• Use: Recreational Tennis Cricket"},
-      {id:"14", c:"accessories", cd:"BA-108", t:"Black Analog-Digital Sport Watch", pn:249, p:"₹249", i:["https://iili.io/CZFC2Ul.md.jpg"], s:["Free Size"], d:"• Display: Dual Analog & Digital<br>• Strap: Durable Silicone"},
-      {id:"15", c:"accessories", cd:"BA-109", t:"Unisex Sleek Black Digital Watch", pn:280, p:"₹280", i:["https://iili.io/CZFuQwl.md.jpg"], s:["Free Size"], d:"• Display: Clear Minimal Screen<br>• Style: Casual Modern"},
-      {id:"16", c:"accessories", cd:"BA-110", t:"Matte Black Analog Quartz Watch", pn:295, p:"₹295", i:["https://iili.io/CZF5nyJ.md.jpg"], s:["Free Size"], d:"• Movement: High-Precision Quartz<br>• Dial Size: 35mm"},
-      {id:"17", c:"accessories", cd:"BA-111", t:"Classic Silver Steel Analog Watch", pn:299, p:"₹299", i:["https://iili.io/CZFYosp.md.jpg"], s:["Free Size"], d:"• Dial: Black 30mm<br>• Chain: Stainless Steel Link"},
-      {id:"18", c:"accessories", cd:"BA-112", t:"Multi-Strand Black Leather Bracelet", pn:199, p:"₹199", i:["https://iili.io/CZFjunt.md.jpg"], s:["Free Size"], d:"• Material: Styled Black Leather & Alloy<br>• Sizing: Slip-On"},
-      {id:"19", c:"accessories", cd:"BA-113", t:"Crozon Premium Cotton Handkerchief (Pack of 6)", pn:269, p:"₹269", i:["https://iili.io/CZKfnCG.md.jpg"], s:["Pack of 6"], d:"• Material: 100% Pure Soft Cotton<br>• Size: 43cm x 43cm Large"},
-      {id:"20", c:"accessories", cd:"BA-114", t:"Unisex Outdoor Tactical Bucket Hat", pn:258, p:"₹258", i:["https://iili.io/CZKR8l9.md.jpg"], s:["Standard Fit"], d:"• Size: 56–58cm Standard Fit<br>• Windproof String"}
-    ];
-
-    let allProducts = [...defaultProducts];
-
-    async function loadProductsFromSheet(){
-      try{
-        const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
-        const res = await fetch(url);
-        const text = await res.text();
-        const json = JSON.parse(text.substring(47).slice(0, -2));
-        const rows = json.table.rows;
-        
-        if(rows && rows.length > 0){
-          let sheetItems = [];
-          rows.forEach((r, idx)=>{
-            const c = r.c;
-            if(!c || !c[3] || !c[3].v) return;
-            const id = c[0] && c[0].v ? String(c[0].v) : String(100 + idx);
-            const cat = (c[1] && c[1].v ? String(c[1].v) : "accessories").toLowerCase().trim();
-            const cd = c[2] && c[2].v ? String(c[2].v) : "MWT-" + id;
-            const title = String(c[3].v);
-            const priceNum = c[4] && c[4].v ? Number(c[4].v) : 199;
-            const rawImgs = c[5] && c[5].v ? String(c[5].v).split(',').map(s=>s.trim()).filter(Boolean) : ["https://i.ibb.co/Ld0X8PQv/Screenshot-2026-0816-064613.jpg"];
-            const rawSizes = c[6] && c[6].v ? String(c[6].v).split(',').map(s=>s.trim()).filter(Boolean) : ["Free Size"];
-            const desc = c[7] && c[7].v ? String(c[7].v) : "• Trending Fashion Pick";
-
-            sheetItems.push({
-              id: id, c: cat, cd: cd, t: title, pn: priceNum, p: `₹${priceNum}`,
-              i: rawImgs, s: rawSizes, d: desc
-            });
-          });
-
-          if(sheetItems.length > 0){
-            allProducts = [...sheetItems.reverse(), ...defaultProducts];
-            renderGrid();
-          }
-        }
-      }catch(e){
-        console.log("Sheet notice:", e);
-      }
-    }
-
-    function handleSearch(val){
-      searchQuery = val.toLowerCase().trim();
-      renderGrid();
-    }
-
-    function renderGrid(){
-      let g = document.getElementById('productGrid');
-      if(!g) return;
-      g.innerHTML = '';
-      let foundCount = 0;
-
-      allProducts.forEach(x => {
-        let matchesCategory = (currTab === 'all' || x.c === currTab);
-        let matchesSearch = !searchQuery || x.t.toLowerCase().includes(searchQuery) || x.cd.toLowerCase().includes(searchQuery);
-
-        if(matchesCategory && matchesSearch){
-          foundCount++;
-          let firstImg = Array.isArray(x.i) ? x.i[0] : x.i;
-          
-          let sizeHtml = '';
-          if(x.s && x.s.length > 0){
-            let displayList = x.s.slice(0, 4);
-            sizeHtml = `<div class="card-sizes">` + 
-              displayList.map(sz => `<span class="size-tag">${sz}</span>`).join('') +
-              (x.s.length > 4 ? `<span class="size-tag">+${x.s.length - 4}</span>` : '') +
-              `</div>`;
-          } else {
-            sizeHtml = `<div class="card-sizes"><span class="size-tag">Free Size</span></div>`;
-          }
-
-          g.innerHTML += `<div class="card" onclick="openModal('${x.id}')">
-            <div class="card-img-wrapper"><img src="${firstImg}" alt="${x.t}" loading="lazy" draggable="false"></div>
-            <div class="card-info">
-              <h3>${x.t}</h3>
-              <div class="price">${x.p}</div>
-              ${sizeHtml}
-              <span class="btn-view">View Details</span>
-            </div>
-          </div>`;
-        }
-      });
-
-      if(foundCount === 0){
-        g.innerHTML = `<div style="grid-column:1/-1; padding:40px 10px; background:#fff; border-radius:18px; border:1px solid var(--border);"><div style="font-size:36px; margin-bottom:6px;">🥺</div><h4 style="color:var(--text);">Koi item nahi mila!</h4><p style="font-size:12px; color:var(--muted); margin-top:4px;">Kuch aur search karke dekhein</p></div>`;
-      }
-    }
-
-    function setTab(tab, btn){
-      currTab = tab;
-      document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      renderGrid();
-    }
-
-    function getProdById(id){
-      return allProducts.find(p => String(p.id) === String(id));
-    }
-
-    function setupSlider(imgs){
-      currentImages = Array.isArray(imgs) ? imgs : [imgs];
-      currentSlideIdx = 0;
-      updateSliderView();
-    }
-
-    function updateSliderView(){
-      document.getElementById('mImg').src = currentImages[currentSlideIdx];
-      let dotsCont = document.getElementById('sliderDots');
-      let leftBtn = document.getElementById('slideLeft');
-      let rightBtn = document.getElementById('slideRight');
-
-      if(currentImages.length <= 1){
-        dotsCont.style.display = 'none';
-        leftBtn.style.display = 'none';
-        rightBtn.style.display = 'none';
-      } else {
-        dotsCont.style.display = 'flex';
-        leftBtn.style.display = 'flex';
-        rightBtn.style.display = 'flex';
-
-        let dotsHtml = '';
-        currentImages.forEach((_, idx)=>{
-          dotsHtml += `<div class="slider-dot ${idx===currentSlideIdx?'active':''}" onclick="goToSlide(${idx})"></div>`;
-        });
-        dotsCont.innerHTML = dotsHtml;
-      }
-    }
-
-    function changeSlide(dir){
-      currentSlideIdx += dir;
-      if(currentSlideIdx < 0) currentSlideIdx = currentImages.length - 1;
-      if(currentSlideIdx >= currentImages.length) currentSlideIdx = 0;
-      updateSliderView();
-    }
-
-    function goToSlide(idx){
-      currentSlideIdx = idx;
-      updateSliderView();
-    }
-
-    function getTrackingHTML(order){
-      let timestamp = order.timestamp || Date.now();
-      let orderId = order.orderId;
-      let status = order.status || "active";
-
-      if(status === "cancelled"){
-        return `<div class="timeline">
-          <div class="t-item done"><div style="font-weight:700;">Order Cancelled</div><div style="font-size:11px; color:var(--muted);">Cancellation request received & approved</div></div>
-          <div class="t-item cancelled"><div style="font-weight:700;">Shipment Halted</div><div style="font-size:11px; color:var(--muted);">Dispatch stopped at warehouse</div></div>
-          <div class="t-item done"><div style="font-weight:700;">Order Closed</div><div style="font-size:11px; color:var(--muted);">COD item closed, no payment needed 🎉</div></div>
-        </div>`;
-      }
-
-      if(status === "return_requested"){
-        let returnTimestamp = order.returnTimestamp || Date.now();
-        let diffReturnHours = Math.floor((Date.now() - returnTimestamp) / (1000 * 60 * 60));
-
-        let r1 = "done", r2 = "returned", r3 = "", r4 = "";
-        let t2 = "Logistics partner assigned (Pickup within 24–48 hrs)", t3 = "Courier agent will call prior to pickup", t4 = "Refund or closure upon doorstep inspection";
-
-        if(diffReturnHours >= 24 && diffReturnHours < 48){
-          r2 = "done"; r3 = "returned";
-          t3 = "Courier partner is out for doorstep parcel pickup today";
-        } else if(diffReturnHours >= 48){
-          r2 = "done"; r3 = "done"; r4 = "done";
-          t3 = "Package handed over to courier agent";
-          t4 = "Item returned successfully! Thank you 🎉";
-        }
-
-        return `<div class="timeline">
-          <div class="t-item ${r1}"><div style="font-weight:700; color:var(--blue);">Return Approved</div><div style="font-size:11px; color:var(--muted);">Request verified for pickup</div></div>
-          <div class="t-item ${r2}"><div style="font-weight:700;">Pickup Assigned</div><div style="font-size:11px; color:var(--muted);">${t2}</div></div>
-          <div class="t-item ${r3}"><div style="font-weight:700;">Out for Pickup</div><div style="font-size:11px; color:var(--muted);">${t3}</div></div>
-          <div class="t-item ${r4}"><div style="font-weight:700;">Return Completed</div><div style="font-size:11px; color:var(--muted);">${t4}</div></div>
-        </div>`;
-      }
-
-      let diffDays = Math.floor((Date.now() - timestamp) / (1000 * 60 * 60 * 24));
-      let s1 = "done", s2 = "done", s3 = "", s4 = "";
-      let t2 = "Item safely packed", t3 = "Carrier assignment in progress", t4 = "Courier partner will call you", t5 = "Cash payment required upon delivery";
-
-      if(diffDays === 0){
-        s2 = "active"; t2 = "Item currently being packed at warehouse";
-      } else if(diffDays <= 2){
-        s3 = "active"; t3 = "Package left sorting facility in transit";
-      } else if(diffDays <= 5){
-        s3 = "done"; s4 = "active"; t3 = "Arrived at local regional hub"; t4 = "Scheduled for final courier run";
-      } else if(diffDays === 6){
-        s3 = "done"; s4 = "active"; t4 = "Out for delivery today with courier partner";
-      } else {
-        s3 = "done"; s4 = "done"; s5 = "done"; t4 = "Arrived at doorstep"; t5 = "Package delivered! Thank you for shopping with us 🎉";
-      }
-
-      return `<div class="timeline">
-        <div class="t-item ${s1}"><div style="font-weight:700;">Order Confirmed</div><div style="font-size:11px; color:var(--muted);">Order #${orderId} verified</div></div>
-        <div class="t-item ${s2}"><div style="font-weight:700;">Order Packed</div><div style="font-size:11px; color:var(--muted);">${t2}</div></div>
-        <div class="t-item ${s3}"><div style="font-weight:700;">Shipped via Express Logistics</div><div style="font-size:11px; color:var(--muted);">${t3}</div></div>
-        <div class="t-item ${s4}"><div style="font-weight:700;">Out for Delivery</div><div style="font-size:11px; color:var(--muted);">${t4}</div></div>
-        <div class="t-item ${s5}"><div style="font-weight:700;">Delivered</div><div style="font-size:11px; color:var(--muted);">${t5}</div></div>
-      </div>`;
-    }
-
-    function openModal(id){
-      currId = id; 
-      let x = getProdById(id); 
-      if(!x) return;
-      setupSlider(x.i);
-      document.getElementById('mTitle').innerText = x.t;
-      document.getElementById('mPrice').innerText = x.p; 
-      
-      let sText = (x.s && x.s.length > 0) ? x.s.join(', ') : 'Free Size';
-      document.getElementById('mSizesDisplay').innerText = `📏 Available: ${sText}`;
-      
-      document.getElementById('mDesc').innerHTML = x.d;
-      document.getElementById('productModal').style.display = 'flex';
-      window.history.pushState(null,'',`#product-${id}`);
-    }
-
-    function closeModal(mId){
-      document.getElementById(mId).style.display = 'none';
-      window.history.pushState(null,'',window.location.pathname+window.location.search);
-      sessionStorage.removeItem('chk_draft');
-    }
-
-    function startCheckout(fromDraft = false){
-      document.getElementById('productModal').style.display='none';
-      let x = getProdById(currId); 
-      if(!x) return;
-      let firstImg = Array.isArray(x.i) ? x.i[0] : x.i;
-      document.getElementById('cMiniImg1').src = firstImg; 
-      document.getElementById('cMiniTitle1').innerText = x.t;
-      document.getElementById('cMiniPrice1').innerText = x.p;
-
-      let sBox = document.getElementById('cSizeBox'), sOpts = document.getElementById('cSizeOpts');
-      sOpts.innerHTML = '';
-      if(x.s && x.s.length > 0 && !(x.s.length === 1 && x.s[0].toLowerCase().includes('free'))){
-        if(!selSize || !x.s.includes(selSize)) selSize = x.s[0];
-        x.s.forEach(s=>{
-          sOpts.innerHTML += `<button class="size-btn ${s===selSize?'active':''}" onclick="selectSize('${s}', this)">${s}</button>`;
-        });
-        sBox.style.display = 'block';
-      } else { 
-        selSize = (x.s && x.s.length > 0) ? x.s[0] : "Free Size"; 
-        sBox.style.display = 'none'; 
-      }
-
-      document.getElementById('cQtyVal').innerText = selQty;
-      document.getElementById('checkoutModal').style.display = 'flex';
-      if(!fromDraft) goToStep(1);
-    }
-
-    function selectSize(s, btn){
-      document.querySelectorAll('.size-btn').forEach(b=>b.classList.remove('active'));
-      btn.classList.add('active'); selSize = s; saveDraft();
-    }
-
-    function setQty(d){
-      selQty = Math.max(1, Math.min(20, selQty + d));
-      document.getElementById('cQtyVal').innerText = selQty; saveDraft();
-    }
-
-    function jumpStep(st){
-      if(activeStep===5) return;
-      if(st > 2){
-        let phoneVal = document.getElementById('cPhone').value.trim();
-        let nameVal = document.getElementById('cName').value.trim();
-        let pinVal = document.getElementById('cPin').value.trim();
-        if(!nameVal || !phoneVal || phoneVal.length !== 10 || !pinVal){
-          alert("Pehle Valid 10-Digit Mobile Number aur Address bharein! 🌸"); 
-          goToStep(2); return;
-        }
-      }
-      goToStep(st);
-    }
-
-    function goToStep(st){
-      activeStep = st;
-      for(let i=1; i<=5; i++){
-        let el = document.getElementById(`cStep${i}`); if(el) el.classList.remove('active');
-        let dt = document.getElementById(`dot${i}`); if(dt) dt.classList.remove('active');
-      }
-      document.getElementById(`cStep${st}`).classList.add('active');
-      if(st <= 4){
-        document.getElementById(`dot${st}`).classList.add('active');
-        document.getElementById('stepBar').style.display = 'flex';
-        window.history.pushState(null,'',`#checkout-step${st}`);
-      } else {
-        document.getElementById('stepBar').style.display = 'none';
-        window.history.pushState(null,'',`#confirmed`);
-      }
-      saveDraft();
-
-      let x = getProdById(currId), tot = (x ? x.pn : 0) * selQty;
-      if(st === 3){
-        document.getElementById('bMrp').innerText = `₹${tot + 100}`;
-        document.getElementById('bTot').innerText = `₹${tot}`;
-      }
-      if(st === 4){
-        let firstImg = Array.isArray(x.i) ? x.i[0] : x.i;
-        document.getElementById('cMiniImg4').src = firstImg; 
-        document.getElementById('cMiniTitle4').innerText = x.t;
-        document.getElementById('cRevQty').innerText = `Qty: ${selQty}` + (selSize ? ` | Option: ${selSize}` : '');
-        document.getElementById('cRevTot').innerText = `Total: ₹${tot} (COD)`;
-        document.getElementById('cRevAddr').innerText = `${document.getElementById('cName').value}, ${document.getElementById('cPhone').value}\n${document.getElementById('cAddr').value}, ${document.getElementById('cCity').value} - ${document.getElementById('cPin').value}`;
-      }
-    }
-
-    function validateAddr(){
-      let name = document.getElementById('cName').value.trim();
-      let phone = document.getElementById('cPhone').value.trim();
-      let addr = document.getElementById('cAddr').value.trim();
-      let pin = document.getElementById('cPin').value.trim();
-
-      if(!name){ alert("Kripya apna Full Name dalein! 🌸"); return; }
-      if(!phone || phone.length !== 10 || !/^[6-9]\d{9}$/.test(phone)){
-        alert("Kripya valid 10-digit mobile number enter karein! (Example: 98XXXXXXXX) 🌸"); 
-        document.getElementById('cPhone').focus();
-        return;
-      }
-      if(!addr){ alert("Kripya complete Delivery Address dalein! 🌸"); return; }
-      if(!pin || pin.length !== 6){ alert("Kripya 6-digit Pincode enter karein! 🌸"); return; }
-      goToStep(3);
-    }
-
-    function saveDraft(){
-      sessionStorage.setItem('chk_draft', JSON.stringify({
-        id:currId, step:activeStep, qty:selQty, size:selSize,
-        name:document.getElementById('cName').value, phone:document.getElementById('cPhone').value,
-        addr:document.getElementById('cAddr').value, city:document.getElementById('cCity').value, pin:document.getElementById('cPin').value
-      }));
-    }
-
-    function placeOrder(){
-      let phone = document.getElementById('cPhone').value.trim();
-      if(!phone || phone.length !== 10 || !/^[6-9]\d{9}$/.test(phone)){
-        alert("Valid 10-digit mobile number zaroori hai! 🌸");
-        goToStep(2); return;
-      }
-
-      let btn = document.getElementById('btnPlace'); btn.innerText = "Placing Order..."; btn.disabled = true;
-      let x = getProdById(currId), oId = "MWT-" + Math.floor(10000 + Math.random()*90000), tot = x.pn * selQty, now = Date.now();
-      let n = document.getElementById('cName').value.trim(), ad = document.getElementById('cAddr').value.trim(), ct = document.getElementById('cCity').value.trim(), pn = document.getElementById('cPin').value.trim();
-      let firstImg = Array.isArray(x.i) ? x.i[0] : x.i;
-
-      let order = {
-        productId:currId, orderId:oId, title:x.t, img:firstImg, code:x.cd, price:tot, qty:selQty, size:selSize,
-        name:n, phone:phone, address:`${ad}, ${ct} - ${pn}`, date:new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}),
-        timestamp:now, status:"active"
-      };
-
-      let list = JSON.parse(localStorage.getItem('all_orders_mwt') || "[]");
-      list.unshift(order);
-      localStorage.setItem('all_orders_mwt', JSON.stringify(list));
-      sessionStorage.removeItem('chk_draft');
-
-      let tgMessage = 
-        `🛍️ *NEW ORDER CONFIRMED!* 🛍️\n\n` +
-        `🆔 *Order ID:* #${oId}\n` +
-        `📦 *Item:* ${x.t}\n` +
-        `🔢 *Code:* ${x.cd}\n` +
-        (selSize ? `📏 *Option/Size:* ${selSize}\n` : '') +
-        `🔢 *Quantity:* ${selQty}\n` +
-        `💰 *Total Amount:* ₹${tot} (COD)\n\n` +
-        `👤 *Customer Name:* ${n}\n` +
-        `📞 *Mobile Number:* ${phone}\n` +
-        `📍 *Delivery Address:* ${ad}, ${ct} - ${pn}\n\n` +
-        `🖼️ *Product Photo Link:*\n${firstImg}`;
-
-      fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
-        method:"POST", headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({ chat_id:TG_CHAT, text:tgMessage })
-      }).catch(()=>{});
-
-      document.getElementById('confId').innerText = `Order #${oId}`;
-      document.getElementById('confTimeline').innerHTML = getTrackingHTML(order);
-      btn.innerText = "Place Order (COD) 🎉"; btn.disabled = false;
-      goToStep(5);
-    }
-
-    function openMyOrdersPage(){
-      renderOrdersList(); document.getElementById('ordersPage').style.display='block';
-      window.scrollTo(0,0); window.history.pushState(null,'','#my-orders');
-    }
-
-    function closeMyOrdersPage(){
-      document.getElementById('ordersPage').style.display='none';
-      window.history.pushState(null,'',window.location.pathname+window.location.search);
-    }
-
-    function cancelOrder(idx){
-      let list = JSON.parse(localStorage.getItem('all_orders_mwt') || "[]");
-      let o = list[idx];
-      if(!o) return;
-
-      if(!confirm(`Kya aap sachme Order #${o.orderId} cancel karna chahte hain?`)) return;
-
-      let reason = prompt("Cancel karne ki wajah batayein (Optional):", "Ordered by mistake") || "Ordered by mistake";
-      o.status = "cancelled";
-      localStorage.setItem('all_orders_mwt', JSON.stringify(list));
-
-      let cancelMsg = 
-        `🚨 *ORDER CANCELLED BY CUSTOMER* 🚨\n\n` +
-        `🆔 *Order ID:* #${o.orderId}\n` +
-        `📦 *Item:* ${o.title}\n` +
-        `🔢 *Code:* ${o.code}\n` +
-        `👤 *Customer:* ${o.name}\n` +
-        `📞 *Phone:* ${o.phone}\n` +
-        `💰 *Amount:* ₹${o.price}\n` +
-        `❌ *Reason:* ${reason}\n\n` +
-        `🖼️ *Product Photo Link:*\n${o.img}`;
-
-      fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
-        method:"POST", headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({ chat_id:TG_CHAT, text:cancelMsg })
-      }).catch(()=>{});
-
-      alert(`Order #${o.orderId} successfully cancel ho gaya! 🌸`);
-      renderOrdersList();
-    }
-
-    function requestReturn(idx){
-      let list = JSON.parse(localStorage.getItem('all_orders_mwt') || "[]");
-      let o = list[idx];
-      if(!o) return;
-
-      let diffDays = Math.floor((Date.now() - (o.timestamp || Date.now())) / (1000 * 60 * 60 * 24));
-      let deliveredDaysAgo = diffDays - 7;
-
-      if(deliveredDaysAgo > 5){
-        alert("Sorry! 5 days return policy expire ho chuki hai. 🌸");
-        return;
-      }
-
-      let reason = prompt("Return karne ka karan batayein (Size issue / Defective / Not satisfied):");
-      if(!reason) return;
-
-      o.status = "return_requested";
-      o.returnTimestamp = Date.now();
-      localStorage.setItem('all_orders_mwt', JSON.stringify(list));
-
-      let returnMsg = 
-        `🔄 *RETURN REQUEST RECEIVED* 🔄\n\n` +
-        `🆔 *Order ID:* #${o.orderId}\n` +
-        `📦 *Item:* ${o.title}\n` +
-        `🔢 *Code:* ${o.code}\n` +
-        `👤 *Customer:* ${o.name}\n` +
-        `📞 *Phone:* ${o.phone}\n` +
-        `📍 *Pickup Address:* ${o.address}\n` +
-        `📝 *Reason:* ${reason}\n` +
-        `📅 *Delivered:* ${deliveredDaysAgo} days ago\n\n` +
-        `🖼️ *Product Photo Link:*\n${o.img}`;
-
-      fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
-        method:"POST", headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({ chat_id:TG_CHAT, text:returnMsg })
-      }).catch(()=>{});
-
-      alert(`Aapki Return Request darj ho gayi hai! 2 din ke andar delivery partner pickup ke liye aayega. 🌸`);
-      renderOrdersList();
-    }
-
-    function renderOrdersList(){
-      let list = JSON.parse(localStorage.getItem('all_orders_mwt') || "[]"), cont = document.getElementById('ordersList');
-      if(list.length === 0){
-        cont.innerHTML = `<div style="text-align:center; padding:60px 10px; background:#fff; border-radius:20px; border:1px solid var(--border); max-width:800px; margin:0 auto;"><div style="font-size:44px; margin-bottom:10px;">🛍️</div><h3 style="margin-bottom:6px;">No Orders Yet</h3><p style="font-size:12.5px; color:var(--muted); margin-bottom:16px;">Browse our cute collection & place your first order! 🎀</p><button class="btn-pink" style="max-width:200px; margin:0 auto;" onclick="closeMyOrdersPage()">Start Shopping</button></div>`;
-        return;
-      }
-      let html = '';
-      list.forEach((o, idx)=>{
-        let prodKey = o.productId || 1;
-        let diffDays = Math.floor((Date.now() - (o.timestamp || Date.now())) / (1000 * 60 * 60 * 24));
-        let isDelivered = diffDays >= 7;
-        let deliveredDaysAgo = diffDays - 7;
-        let isCancelled = o.status === "cancelled";
-        let isReturned = o.status === "return_requested";
-
-        let badge = "● In Transit";
-        let badgeColor = "#e8f8f2", badgeText = "var(--green)";
-        if(isCancelled){
-          badge = "● Cancelled";
-          badgeColor = "#ffebee"; badgeText = "var(--red)";
-        } else if(isReturned){
-          badge = "● Return in Progress";
-          badgeColor = "#e8f4fd"; badgeText = "var(--blue)";
-        } else if(isDelivered){
-          badge = "● Delivered";
-        }
-
-        let actionBtnHtml = '';
-        if(!isCancelled && !isReturned){
-          if(!isDelivered){
-            actionBtnHtml = `<button class="btn-action btn-cancel" onclick="cancelOrder(${idx})">❌ Cancel Order</button>`;
-          } else {
-            if(deliveredDaysAgo <= 5){
-              actionBtnHtml = `<button class="btn-action btn-return" onclick="requestReturn(${idx})">🔄 Return Order (5 Days Left)</button>`;
-            } else {
-              actionBtnHtml = `<button class="btn-action btn-disabled" disabled title="Return window expired">🔄 Return Expired (5 Days Passed)</button>`;
-            }
-          }
-        }
-
-        html += `<div class="order-box">
-          <div style="display:flex; justify-content:space-between; border-bottom:1px dashed var(--border); padding-bottom:10px; margin-bottom:12px; font-size:12px;">
-            <div><strong>Order #${o.orderId}</strong><span style="color:var(--muted); margin-left:6px;">• ${o.date}</span></div>
-            <span style="background:${badgeColor}; color:${badgeText}; padding:4px 8px; border-radius:6px; font-weight:700; font-size:11px;">${badge}</span>
-          </div>
-          <div style="display:flex; gap:12px; align-items:center; cursor:pointer;" onclick="openModal('${prodKey}')" title="Click to open product">
-            <img src="${o.img}" style="width:65px; height:65px; border-radius:10px; object-fit:contain; background:#fff8fa; border:1px solid var(--border);" draggable="false">
-            <div style="flex:1;"><h4 style="font-size:13px; font-weight:700;">${o.title} ➔</h4><div style="font-size:11.5px; color:var(--muted); margin-top:2px;">Qty: ${o.qty} ${o.size?'| Option: '+o.size:''}</div><div style="color:var(--pink); font-weight:800; font-size:13.5px; margin-top:3px;">₹${o.price} <span style="font-size:10px; font-weight:normal; color:var(--muted);">(COD)</span></div></div>
-          </div>
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px; gap:8px; flex-wrap:wrap;">
-            <div style="display:flex; gap:6px;">
-              <button style="padding:8px 12px; background:#fff0f5; border:1px solid var(--pink-accent); color:var(--pink); font-weight:700; border-radius:8px; cursor:pointer; font-size:11.5px;" onclick="toggleTrack(${idx})">🚚 Track Status ▼</button>
-              ${actionBtnHtml}
-            </div>
-            <button style="padding:8px 14px; background:linear-gradient(135deg,#ff4d88,#ff2a6d); border:none; color:#fff; font-weight:700; border-radius:8px; cursor:pointer; font-size:11.5px;" onclick="currId='${prodKey}'; startCheckout();">🔁 Buy Again</button>
-          </div>
-          <div id="trackBox-${idx}" style="display:none; margin-top:14px; padding-top:14px; border-top:1px solid var(--border);">
-            <div style="background:#fff9fb; border:1px solid var(--border); border-radius:12px; padding:10px 14px; font-size:12px; margin-bottom:14px;"><strong style="color:var(--text);">Delivery Address:</strong><div style="color:var(--muted); margin-top:2px;">${o.name} (${o.phone})<br>${o.address}</div></div>
-            ${getTrackingHTML(o)}
-          </div>
-        </div>`;
-      });
-      cont.innerHTML = html;
-    }
-
-    function toggleTrack(i){
-      let b = document.getElementById(`trackBox-${i}`);
-      b.style.display = b.style.display === 'block' ? 'none' : 'block';
-    }
-
-    window.addEventListener('popstate', restoreState);
-    function restoreState(){
-      let h = window.location.hash;
-      document.getElementById('productModal').style.display='none';
-      document.getElementById('checkoutModal').style.display='none';
-      document.getElementById('ordersPage').style.display='none';
-
-      if(h.startsWith('#product-')){
-        let id = h.replace('#product-',''); 
-        if(getProdById(id)) openModal(id);
-      } else if(h.startsWith('#checkout-step')){
-        let st = parseInt(h.replace('#checkout-step','')) || 1;
-        let d = JSON.parse(sessionStorage.getItem('chk_draft') || "null");
-        if(d && getProdById(d.id)){
-          currId = d.id; selQty = d.qty || 1; selSize = d.size || "";
-          if(d.name) document.getElementById('cName').value = d.name;
-          if(d.phone) document.getElementById('cPhone').value = d.phone;
-          if(d.addr) document.getElementById('cAddr').value = d.addr;
-          if(d.city) document.getElementById('cCity').value = d.city;
-          if(d.pin) document.getElementById('cPin').value = d.pin;
-          startCheckout(true); goToStep(st);
-        }
-      } else if(h === '#my-orders'){
-        renderOrdersList(); document.getElementById('ordersPage').style.display='block';
-      }
-    }
-
-    renderGrid();
-    restoreState();
-    loadProductsFromSheet();
-  </script>
-</body>
-</html>
+        <h4 style="margin-bottom:12px; f

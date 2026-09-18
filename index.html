@@ -9,18 +9,30 @@
     *{margin:0;padding:0;box-sizing:border-box;font-family:'Plus Jakarta Sans',sans-serif;}
     :root{--bg:#fff5f8;--pink:#ff4d88;--pink-soft:#ffe4ec;--pink-accent:#ff85a2;--text:#2d1e2f;--muted:#7a6a7c;--border:#ffd1dc;--green:#038d63;}
     body{background:var(--bg);color:var(--text);padding:15px 12px 60px;text-align:center;min-height:100vh;}
+    
     .header{padding:14px;background:#fff;border-radius:20px;border:1px solid var(--border);box-shadow:0 8px 24px rgba(255,105,180,0.08);max-width:900px;margin:0 auto 14px;}
     .h-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
     .brand-title{font-family:'Quicksand',sans-serif;font-size:21px;color:var(--pink);display:flex;align-items:center;gap:5px;}
     .cat-wiggle{display:inline-block;animation:wiggle 2s infinite ease-in-out;}
     @keyframes wiggle{0%,100%{transform:rotate(0deg);}25%{transform:rotate(-10deg);}75%{transform:rotate(10deg);}}
     .btn-orders{background:#fff0f5;color:var(--pink);border:1px solid var(--pink-accent);padding:6px 14px;border-radius:999px;font-size:11.5px;font-weight:700;cursor:pointer;}
+    
     .voice-btn{background:linear-gradient(135deg,#ff6584,#ff2e63);color:#fff;border:none;padding:11px 18px;border-radius:999px;font-size:13px;font-weight:700;cursor:pointer;animation:pulse 2.2s infinite;box-shadow:0 6px 16px rgba(255,46,99,0.35);}
     @keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.04);}}
     .voice-popup{display:none;background:#fff;border:2px dashed var(--pink);border-radius:16px;padding:12px 16px;margin:10px auto;max-width:900px;font-size:13px;color:#b01a48;font-weight:600;}
-    .filter-bar{display:flex;justify-content:center;gap:8px;margin:14px auto 20px;max-width:500px;background:#fff;padding:4px;border-radius:999px;border:1px solid var(--border);}
+    
+    /* Search Bar */
+    .search-wrapper{max-width:500px;margin:0 auto 14px;position:relative;}
+    .search-input{width:100%;padding:11px 16px 11px 40px;background:#fff;border:1.5px solid var(--border);border-radius:999px;font-size:13px;color:var(--text);outline:none;box-shadow:0 4px 12px rgba(255,105,180,0.06);transition:all 0.2s;}
+    .search-input:focus{border-color:var(--pink);box-shadow:0 4px 16px rgba(255,77,136,0.18);}
+    .search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:15px;color:var(--pink-accent);pointer-events:none;}
+    
+    /* Filter Bar */
+    .filter-bar{display:flex;justify-content:center;gap:8px;margin:0 auto 20px;max-width:500px;background:#fff;padding:4px;border-radius:999px;border:1px solid var(--border);}
     .filter-tab{flex:1;padding:9px;border-radius:999px;border:none;background:transparent;color:var(--muted);font-size:13px;font-weight:700;cursor:pointer;}
     .filter-tab.active{background:var(--pink);color:#fff;}
+    
+    /* Grid */
     .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;max-width:900px;margin:0 auto;}
     .card{background:#fff;border-radius:16px;overflow:hidden;border:1px solid var(--border);cursor:pointer;text-align:left;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 4px 12px rgba(255,105,180,0.05);}
     .card-img-wrapper{width:100%;height:185px;background:#fff8fa;display:flex;align-items:center;justify-content:center;padding:6px;}
@@ -29,11 +41,25 @@
     .card-info h3{font-size:12.5px;color:var(--text);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:34px;}
     .price{color:var(--pink);font-weight:800;font-size:14px;margin:6px 0;}
     .btn-view{display:block;text-align:center;background:var(--pink-soft);color:var(--pink);padding:8px;border-radius:8px;font-size:11.5px;font-weight:700;}
+    
+    /* Modals */
     .modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(45,30,47,0.65);backdrop-filter:blur(6px);justify-content:center;align-items:center;padding:12px;z-index:3000;}
     .modal-content{background:#fff;border-radius:22px;max-width:420px;width:100%;border:1px solid var(--border);overflow:hidden;position:relative;max-height:92vh;overflow-y:auto;text-align:left;}
     .close-btn{position:absolute;top:12px;right:12px;font-size:18px;background:#fff;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;border:1px solid var(--border);font-weight:bold;z-index:10;}
     .modal-body{padding:18px;}
     .btn-pink{display:block;width:100%;padding:13px;background:linear-gradient(135deg,#ff4d88,#ff2a6d);color:#fff;font-weight:700;border-radius:12px;border:none;cursor:pointer;font-size:13.5px;text-align:center;}
+    
+    /* Product Slider Styles */
+    .slider-box{position:relative;width:100%;background:#fff8fa;border-bottom:1px solid var(--border);padding:8px;overflow:hidden;}
+    .slider-img{width:100%;max-height:360px;object-fit:contain;display:block;}
+    .slider-arrow{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.85);border:1px solid var(--border);color:var(--pink);width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;font-weight:bold;z-index:5;user-select:none;}
+    .slider-arrow.left{left:10px;}
+    .slider-arrow.right{right:10px;}
+    .slider-dots{display:flex;justify-content:center;gap:6px;padding:6px 0;background:#fff8fa;}
+    .slider-dot{width:7px;height:7px;border-radius:50%;background:#e0d0d8;cursor:pointer;transition:all 0.2s;}
+    .slider-dot.active{background:var(--pink);width:16px;border-radius:10px;}
+
+    /* Checkout Steps */
     .step-bar{display:flex;justify-content:space-between;padding:14px 18px 10px;background:#fff9fb;border-bottom:1px solid var(--border);}
     .step-dot{font-size:11px;font-weight:700;color:var(--muted);cursor:pointer;padding:4px 6px;border-radius:6px;}
     .step-dot.active{color:var(--pink);background:#ffeef3;}
@@ -57,6 +83,8 @@
     .t-item::before{content:'';position:absolute;left:-24px;top:2px;width:14px;height:14px;border-radius:50%;background:#fff;border:2px solid #ccc;}
     .t-item.done::before{background:var(--green);border-color:var(--green);}
     .t-item.active::before{background:var(--pink);border-color:var(--pink);animation:pulse 1.5s infinite;}
+    
+    /* My Orders Page */
     #ordersPage{display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:var(--bg);z-index:2000;overflow-y:auto;text-align:left;padding:16px 14px 60px;}
     .orders-top{display:flex;align-items:center;gap:12px;background:#fff;padding:12px 16px;border-radius:16px;border:1px solid var(--border);margin:0 auto 16px;max-width:800px;}
     .order-box{background:#fff;border-radius:18px;border:1px solid var(--border);padding:14px 16px;margin:0 auto 14px;max-width:800px;}
@@ -72,11 +100,18 @@
     <p style="font-size:12px; color:var(--muted); text-align:left; font-weight:600;">Babu ki har demand yahan poori hoti hai 🐾💖</p>
   </header>
 
-  <div style="margin-bottom:16px;">
+  <div style="margin-bottom:14px;">
     <button class="voice-btn" onclick="playVoice()">🔊 Baby Ka Msg Suno 🥺</button>
     <div id="voicePopup" class="voice-popup">"Haan haan pata hai bohot pyaar karte ho mujhse... par thoda sa pyaar yahan order button pe click karke bhi dikha do na! 🥺🛍️"</div>
   </div>
 
+  <!-- Live Search Bar -->
+  <div class="search-wrapper">
+    <span class="search-icon">🔍</span>
+    <input type="text" class="search-input" id="searchBox" oninput="handleSearch(this.value)" placeholder="Search dress, earrings, bracelet, watch...">
+  </div>
+
+  <!-- Filter Bar -->
   <div class="filter-bar">
     <button class="filter-tab active" onclick="setTab('all', this)">All</button>
     <button class="filter-tab" onclick="setTab('accessories', this)">Accessories</button>
@@ -85,11 +120,19 @@
 
   <div class="grid" id="productGrid"></div>
 
-  <!-- Modal 1: Product Details -->
+  <!-- Modal 1: Product Details with Multi-Image Slider -->
   <div class="modal" id="productModal" onclick="if(event.target.id==='productModal')closeModal('productModal')">
     <div class="modal-content">
       <div class="close-btn" onclick="closeModal('productModal')">&times;</div>
-      <div style="background:#fff8fa; padding:8px; border-bottom:1px solid var(--border);"><img id="mImg" style="width:100%; max-height:360px; object-fit:contain; display:block;"></div>
+      
+      <!-- Multi-Image Slider Box -->
+      <div class="slider-box">
+        <div class="slider-arrow left" id="slideLeft" onclick="changeSlide(-1)">‹</div>
+        <img id="mImg" class="slider-img" src="" alt="Product">
+        <div class="slider-arrow right" id="slideRight" onclick="changeSlide(1)">›</div>
+      </div>
+      <div class="slider-dots" id="sliderDots"></div>
+
       <div class="modal-body">
         <h2 id="mTitle" style="font-size:16px; font-weight:700; margin-bottom:4px;"></h2>
         <div id="mPrice" style="font-size:19px; color:var(--pink); font-weight:800; margin-bottom:12px;"></div>
@@ -159,11 +202,14 @@
   </div>
 
   <script>
-    // Asli Verified Bot Token & Chat ID
+    // Live Bot & Google Sheet Integration
     const TG_TOKEN = "8845393046:AAHOOcZUlXl6DJuIzXJeyOltlCKWByATM94";
     const TG_CHAT = "8106405157";
+    const SHEET_ID = "1VuDMLMixAeBJxFLtgGNxkI5kzUFsNM3RABdQLV6DdRs";
 
     let currId = null, selQty = 1, selSize = "", currTab = 'all', activeStep = 1;
+    let searchQuery = "";
+    let currentSlideIdx = 0, currentImages = [];
     const vAudio = new Audio("site.mp3");
 
     function playVoice(){
@@ -176,46 +222,152 @@
       });
     }
 
-    const P = {
-      1:{c:"accessories",cd:"GA-101",t:"Combo of 12 Pair Earrings with Velvet Box",pn:673,p:"₹673",i:"https://i.ibb.co/Ld0X8PQv/Screenshot-2026-0816-064613.jpg",d:"• Type: Jhumkhas (12 Pair Combo)<br>• Trend: Floral, Oxidised Silver"},
-      2:{c:"accessories",cd:"GA-102",t:"Vintage Floral Embroidered Lace Hair Bow",pn:150,p:"₹150",i:"https://i.ibb.co/TBQ2DcYN/IMG-20260817-114459.png",d:"• Type: Lace Hair Bow Clip<br>• Trend: Vintage Floral"},
-      3:{c:"accessories",cd:"GA-103",t:"LED Light Up Butterfly Hair Clip (Pack of 2)",pn:199,p:"₹199",i:"https://i.ibb.co/mVgrwGCz/IMG-20260817-121041.jpg",d:"• Type: Glowing LED Clip (Pack of 2)<br>• Feature: Optical Fiber Braid"},
-      4:{c:"accessories",cd:"GA-104",t:"Exquisite Princess Pearl Butterfly Tiara Crown",pn:349,p:"₹349",i:"https://i.ibb.co/DPsmtDdc/IMG-20260817-124016.jpg",d:"• Type: Princess Tiara Crown<br>• Finish: Pearl & Butterfly Embellishments"},
-      5:{c:"accessories",cd:"GA-105",t:"12 Pcs Kids Rainbow Braids Hair Extensions",pn:199,p:"₹199",i:"https://i.ibb.co/C5whJn3n/IMG-20260817-130237.jpg",d:"• Type: Clip-In Braids (Pack of 12)<br>• Style: Colorful Rainbow"},
-      6:{c:"accessories",cd:"GA-106",t:"Soft Fur Scrunchies Combo (Pack of 8)",pn:149,p:"₹149",i:"https://i.ibb.co/qYP8Tszc/IMG-20260818-120223.jpg",d:"• Type: Plush Fur Scrunchies (Pack of 8)<br>• Color: Multicolor Pastel"},
-      7:{c:"accessories",cd:"BA-101",t:"Pina Colada Attar 6ml Pack of 2",pn:299,p:"₹299",i:"https://i.ibb.co/4ZwFRcth/Screenshot-2026-0820-184205.jpg",d:"• Pack: 2 Bottles (6ml each)<br>• Flavour: Strawberry & Pina Colada"},
-      8:{c:"accessories",cd:"BA-102",t:"Classy Men Silver Plated Designer Bracelet",pn:149,p:"₹149",i:"https://iili.io/CZ2bBII.md.jpg",d:"• Material: Stainless Steel<br>• Color: Premium Silver"},
-      9:{c:"accessories",cd:"BA-103",t:"Men's Designer Gold Plated Bracelet",pn:299,p:"₹299",i:"https://iili.io/CZ3LxzF.md.jpg",d:"• Plating: Gold Plated Brass<br>• Stone: Amethyst Stone"},
-      10:{c:"accessories",cd:"BA-104",t:"Magnetic Chain Bracelet (Set of 2)",pn:199,p:"₹199",i:"https://iili.io/CZ3ZhD7.md.jpg",d:"• Material: Silver Plated Alloy<br>• Set: 2-Piece Magnetic Combo"},
-      11:{c:"accessories",cd:"BA-105",t:"Silver Plated Charm Bracelet",pn:299,p:"₹299",i:"https://iili.io/CZ3bCo7.md.jpg",d:"• Material: Stainless Steel<br>• Stones: AD Zirconia"},
-      12:{c:"accessories",cd:"BA-106",t:"Brass Gold Plated Kada Bracelet",pn:249,p:"₹249",i:"https://iili.io/CZ3yzKX.md.jpg",d:"• Material: Solid Brass Gold Plated<br>• Size: 8-Inch Adjustable"},
-      13:{c:"accessories",cd:"BA-107",t:"SIXER PRO Double Blade Plastic Cricket Bat",pn:399,p:"₹399",i:"https://iili.io/CZF2scP.md.jpg",d:"• Model: Double Blade Hard Plastic<br>• Use: Recreational Tennis Cricket"},
-      14:{c:"accessories",cd:"BA-108",t:"Black Analog-Digital Sport Watch",pn:249,p:"₹249",i:"https://iili.io/CZFC2Ul.md.jpg",d:"• Display: Dual Analog & Digital<br>• Strap: Durable Silicone"},
-      15:{c:"accessories",cd:"BA-109",t:"Unisex Sleek Black Digital Watch",pn:280,p:"₹280",i:"https://iili.io/CZFuQwl.md.jpg",d:"• Display: Clear Minimal Screen<br>• Style: Casual Modern"},
-      16:{c:"accessories",cd:"BA-110",t:"Matte Black Analog Quartz Watch",pn:295,p:"₹295",i:"https://iili.io/CZF5nyJ.md.jpg",d:"• Movement: High-Precision Quartz<br>• Dial Size: 35mm"},
-      17:{c:"accessories",cd:"BA-111",t:"Classic Silver Steel Analog Watch",pn:299,p:"₹299",i:"https://iili.io/CZFYosp.md.jpg",d:"• Dial: Black 30mm<br>• Chain: Stainless Steel Link"},
-      18:{c:"accessories",cd:"BA-112",t:"Multi-Strand Black Leather Bracelet",pn:199,p:"₹199",i:"https://iili.io/CZFjunt.md.jpg",d:"• Material: Styled Black Leather & Alloy<br>• Sizing: Slip-On"},
-      19:{c:"accessories",cd:"BA-113",t:"Crozon Premium Cotton Handkerchief (Pack of 6)",pn:269,p:"₹269",i:"https://iili.io/CZKfnCG.md.jpg",d:"• Material: 100% Pure Soft Cotton<br>• Size: 43cm x 43cm Large"},
-      20:{c:"accessories",cd:"BA-114",t:"Unisex Outdoor Tactical Bucket Hat",pn:258,p:"₹258",i:"https://iili.io/CZKR8l9.md.jpg",d:"• Size: 56–58cm Standard Fit<br>• Windproof String"},
-      21:{c:"dresses",cd:"WC-101",t:"Vintage Floral Print Bodycon Midi Dress",pn:695,p:"₹695",i:"https://i.ibb.co/qYyQ0R8T/Screenshot-2026-0819-174125.jpg",s:["XS","S","M","L","XL","XXL"],d:"• Type: Aesthetic Ribbon Shoulder Bodycon Midi Dress<br>• Fabric: Super Net with Inner Lining<br>• Pattern: Vintage Floral"}
+    // Default Products (Sheet sync fallback)
+    let P = {
+      1:{c:"accessories",cd:"GA-101",t:"Combo of 12 Pair Earrings with Velvet Box",pn:673,p:"₹673",i:["https://i.ibb.co/Ld0X8PQv/Screenshot-2026-0816-064613.jpg"],d:"• Type: Jhumkhas (12 Pair Combo)<br>• Trend: Floral, Oxidised Silver"},
+      2:{c:"accessories",cd:"GA-102",t:"Vintage Floral Embroidered Lace Hair Bow",pn:150,p:"₹150",i:["https://i.ibb.co/TBQ2DcYN/IMG-20260817-114459.png"],d:"• Type: Lace Hair Bow Clip<br>• Trend: Vintage Floral"},
+      3:{c:"accessories",cd:"GA-103",t:"LED Light Up Butterfly Hair Clip (Pack of 2)",pn:199,p:"₹199",i:["https://i.ibb.co/mVgrwGCz/IMG-20260817-121041.jpg"],d:"• Type: Glowing LED Clip (Pack of 2)<br>• Feature: Optical Fiber Braid"},
+      4:{c:"accessories",cd:"GA-104",t:"Exquisite Princess Pearl Butterfly Tiara Crown",pn:349,p:"₹349",i:["https://i.ibb.co/DPsmtDdc/IMG-20260817-124016.jpg"],d:"• Type: Princess Tiara Crown<br>• Finish: Pearl & Butterfly Embellishments"},
+      5:{c:"accessories",cd:"GA-105",t:"12 Pcs Kids Rainbow Braids Hair Extensions",pn:199,p:"₹199",i:["https://i.ibb.co/C5whJn3n/IMG-20260817-130237.jpg"],d:"• Type: Clip-In Braids (Pack of 12)<br>• Style: Colorful Rainbow"},
+      6:{c:"accessories",cd:"GA-106",t:"Soft Fur Scrunchies Combo (Pack of 8)",pn:149,p:"₹149",i:["https://i.ibb.co/qYP8Tszc/IMG-20260818-120223.jpg"],d:"• Type: Plush Fur Scrunchies (Pack of 8)<br>• Color: Multicolor Pastel"},
+      7:{c:"accessories",cd:"BA-101",t:"Pina Colada Attar 6ml Pack of 2",pn:299,p:"₹299",i:["https://i.ibb.co/4ZwFRcth/Screenshot-2026-0820-184205.jpg"],d:"• Pack: 2 Bottles (6ml each)<br>• Flavour: Strawberry & Pina Colada"},
+      8:{c:"accessories",cd:"BA-102",t:"Classy Men Silver Plated Designer Bracelet",pn:149,p:"₹149",i:["https://iili.io/CZ2bBII.md.jpg"],d:"• Material: Stainless Steel<br>• Color: Premium Silver"},
+      9:{c:"accessories",cd:"BA-103",t:"Men's Designer Gold Plated Bracelet",pn:299,p:"₹299",i:["https://iili.io/CZ3LxzF.md.jpg"],d:"• Plating: Gold Plated Brass<br>• Stone: Amethyst Stone"},
+      10:{c:"accessories",cd:"BA-104",t:"Magnetic Chain Bracelet (Set of 2)",pn:199,p:"₹199",i:["https://iili.io/CZ3ZhD7.md.jpg"],d:"• Material: Silver Plated Alloy<br>• Set: 2-Piece Magnetic Combo"},
+      11:{c:"accessories",cd:"BA-105",t:"Silver Plated Charm Bracelet",pn:299,p:"₹299",i:["https://iili.io/CZ3bCo7.md.jpg"],d:"• Material: Stainless Steel<br>• Stones: AD Zirconia"},
+      12:{c:"accessories",cd:"BA-106",t:"Brass Gold Plated Kada Bracelet",pn:249,p:"₹249",i:["https://iili.io/CZ3yzKX.md.jpg"],d:"• Material: Solid Brass Gold Plated<br>• Size: 8-Inch Adjustable"},
+      13:{c:"accessories",cd:"BA-107",t:"SIXER PRO Double Blade Plastic Cricket Bat",pn:399,p:"₹399",i:["https://iili.io/CZF2scP.md.jpg"],d:"• Model: Double Blade Hard Plastic<br>• Use: Recreational Tennis Cricket"},
+      14:{c:"accessories",cd:"BA-108",t:"Black Analog-Digital Sport Watch",pn:249,p:"₹249",i:["https://iili.io/CZFC2Ul.md.jpg"],d:"• Display: Dual Analog & Digital<br>• Strap: Durable Silicone"},
+      15:{c:"accessories",cd:"BA-109",t:"Unisex Sleek Black Digital Watch",pn:280,p:"₹280",i:["https://iili.io/CZFuQwl.md.jpg"],d:"• Display: Clear Minimal Screen<br>• Style: Casual Modern"},
+      16:{c:"accessories",cd:"BA-110",t:"Matte Black Analog Quartz Watch",pn:295,p:"₹295",i:["https://iili.io/CZF5nyJ.md.jpg"],d:"• Movement: High-Precision Quartz<br>• Dial Size: 35mm"},
+      17:{c:"accessories",cd:"BA-111",t:"Classic Silver Steel Analog Watch",pn:299,p:"₹299",i:["https://iili.io/CZFYosp.md.jpg"],d:"• Dial: Black 30mm<br>• Chain: Stainless Steel Link"},
+      18:{c:"accessories",cd:"BA-112",t:"Multi-Strand Black Leather Bracelet",pn:199,p:"₹199",i:["https://iili.io/CZFjunt.md.jpg"],d:"• Material: Styled Black Leather & Alloy<br>• Sizing: Slip-On"},
+      19:{c:"accessories",cd:"BA-113",t:"Crozon Premium Cotton Handkerchief (Pack of 6)",pn:269,p:"₹269",i:["https://iili.io/CZKfnCG.md.jpg"],d:"• Material: 100% Pure Soft Cotton<br>• Size: 43cm x 43cm Large"},
+      20:{c:"accessories",cd:"BA-114",t:"Unisex Outdoor Tactical Bucket Hat",pn:258,p:"₹258",i:["https://iili.io/CZKR8l9.md.jpg"],d:"• Size: 56–58cm Standard Fit<br>• Windproof String"},
+      21:{c:"dresses",cd:"WC-101",t:"Vintage Floral Print Bodycon Midi Dress",pn:695,p:"₹695",i:["https://i.ibb.co/qYyQ0R8T/Screenshot-2026-0819-174125.jpg"],s:["XS","S","M","L","XL","XXL"],d:"• Type: Ribbon Shoulder Midi Dress<br>• Fabric: Super Net with Inner Lining"}
     };
+
+    // Google Sheets Live Fetch
+    async function loadProductsFromSheet(){
+      try{
+        const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
+        const res = await fetch(url);
+        const text = await res.text();
+        const json = JSON.parse(text.substring(47).slice(0, -2));
+        const rows = json.table.rows;
+        
+        if(rows && rows.length > 0){
+          let newP = {};
+          rows.forEach((r, idx)=>{
+            const c = r.c;
+            if(!c || !c[3]) return; // Skip if no title
+            const id = c[0] && c[0].v ? String(c[0].v) : String(idx + 1);
+            const cat = (c[1] && c[1].v ? String(c[1].v) : "accessories").toLowerCase().trim();
+            const cd = c[2] && c[2].v ? String(c[2].v) : "MWT-" + id;
+            const title = String(c[3].v);
+            const priceNum = c[4] && c[4].v ? Number(c[4].v) : 199;
+            const rawImgs = c[5] && c[5].v ? String(c[5].v).split(',').map(s=>s.trim()).filter(Boolean) : ["https://i.ibb.co/Ld0X8PQv/Screenshot-2026-0816-064613.jpg"];
+            const rawSizes = c[6] && c[6].v ? String(c[6].v).split(',').map(s=>s.trim()).filter(Boolean) : null;
+            const desc = c[7] && c[7].v ? String(c[7].v) : "• Premium Trending Product";
+
+            newP[id] = {
+              c: cat,
+              cd: cd,
+              t: title,
+              pn: priceNum,
+              p: `₹${priceNum}`,
+              i: rawImgs,
+              s: rawSizes,
+              d: desc
+            };
+          });
+
+          if(Object.keys(newP).length > 0){
+            P = newP;
+            renderGrid();
+          }
+        }
+      }catch(err){
+        console.log("Using backup products", err);
+        renderGrid();
+      }
+    }
+
+    // Live Search Handler
+    function handleSearch(val){
+      searchQuery = val.toLowerCase().trim();
+      renderGrid();
+    }
 
     function renderGrid(){
       let g = document.getElementById('productGrid'); g.innerHTML='';
+      let foundCount = 0;
+
       for(let id in P){
         let x = P[id];
-        if(currTab==='all'||x.c===currTab){
-          g.innerHTML += `<div class="card" onclick="openModal(${id})">
-            <div class="card-img-wrapper"><img src="${x.i}" alt="${x.t}" loading="lazy"></div>
+        let matchesCategory = (currTab === 'all' || x.c === currTab);
+        let matchesSearch = !searchQuery || x.t.toLowerCase().includes(searchQuery) || x.cd.toLowerCase().includes(searchQuery);
+
+        if(matchesCategory && matchesSearch){
+          foundCount++;
+          let firstImg = Array.isArray(x.i) ? x.i[0] : x.i;
+          g.innerHTML += `<div class="card" onclick="openModal('${id}')">
+            <div class="card-img-wrapper"><img src="${firstImg}" alt="${x.t}" loading="lazy"></div>
             <div class="card-info"><h3>${x.t}</h3><div class="price">${x.p}</div><span class="btn-view">View Details</span></div>
           </div>`;
         }
+      }
+
+      if(foundCount === 0){
+        g.innerHTML = `<div style="grid-column:1/-1; padding:40px 10px; background:#fff; border-radius:18px; border:1px solid var(--border);"><div style="font-size:36px; margin-bottom:6px;">🥺</div><h4 style="color:var(--text);">Koi item nahi mila!</h4><p style="font-size:12px; color:var(--muted); margin-top:4px;">Kuch aur search karke dekhein</p></div>`;
       }
     }
 
     function setTab(tab, btn){
       currTab=tab; document.querySelectorAll('.filter-tab').forEach(b=>b.classList.remove('active'));
       btn.classList.add('active'); renderGrid();
+    }
+
+    // Multi-Image Slider Engine
+    function setupSlider(imgs){
+      currentImages = Array.isArray(imgs) ? imgs : [imgs];
+      currentSlideIdx = 0;
+      updateSliderView();
+    }
+
+    function updateSliderView(){
+      document.getElementById('mImg').src = currentImages[currentSlideIdx];
+      let dotsCont = document.getElementById('sliderDots');
+      let leftBtn = document.getElementById('slideLeft');
+      let rightBtn = document.getElementById('slideRight');
+
+      if(currentImages.length <= 1){
+        dotsCont.style.display = 'none';
+        leftBtn.style.display = 'none';
+        rightBtn.style.display = 'none';
+      } else {
+        dotsCont.style.display = 'flex';
+        leftBtn.style.display = 'flex';
+        rightBtn.style.display = 'flex';
+
+        let dotsHtml = '';
+        currentImages.forEach((_, idx)=>{
+          dotsHtml += `<div class="slider-dot ${idx===currentSlideIdx?'active':''}" onclick="goToSlide(${idx})"></div>`;
+        });
+        dotsCont.innerHTML = dotsHtml;
+      }
+    }
+
+    function changeSlide(dir){
+      currentSlideIdx += dir;
+      if(currentSlideIdx < 0) currentSlideIdx = currentImages.length - 1;
+      if(currentSlideIdx >= currentImages.length) currentSlideIdx = 0;
+      updateSliderView();
+    }
+
+    function goToSlide(idx){
+      currentSlideIdx = idx;
+      updateSliderView();
     }
 
     function getTrackingHTML(timestamp, orderId){
@@ -246,8 +398,10 @@
 
     function openModal(id){
       currId = id; let x = P[id]; if(!x) return;
-      document.getElementById('mImg').src = x.i; document.getElementById('mTitle').innerText = x.t;
-      document.getElementById('mPrice').innerText = x.p; document.getElementById('mDesc').innerHTML = x.d;
+      setupSlider(x.i);
+      document.getElementById('mTitle').innerText = x.t;
+      document.getElementById('mPrice').innerText = x.p; 
+      document.getElementById('mDesc').innerHTML = x.d;
       document.getElementById('productModal').style.display = 'flex';
       window.history.pushState(null,'',`#product-${id}`);
     }
@@ -261,7 +415,9 @@
     function startCheckout(fromDraft = false){
       document.getElementById('productModal').style.display='none';
       let x = P[currId]; if(!x) return;
-      document.getElementById('cMiniImg1').src = x.i; document.getElementById('cMiniTitle1').innerText = x.t;
+      let firstImg = Array.isArray(x.i) ? x.i[0] : x.i;
+      document.getElementById('cMiniImg1').src = firstImg; 
+      document.getElementById('cMiniTitle1').innerText = x.t;
       document.getElementById('cMiniPrice1').innerText = x.p;
 
       let sBox = document.getElementById('cSizeBox'), sOpts = document.getElementById('cSizeOpts');
@@ -326,7 +482,9 @@
         document.getElementById('bTot').innerText = `₹${tot}`;
       }
       if(st === 4){
-        document.getElementById('cMiniImg4').src = x.i; document.getElementById('cMiniTitle4').innerText = x.t;
+        let firstImg = Array.isArray(x.i) ? x.i[0] : x.i;
+        document.getElementById('cMiniImg4').src = firstImg; 
+        document.getElementById('cMiniTitle4').innerText = x.t;
         document.getElementById('cRevQty').innerText = `Qty: ${selQty}` + (selSize ? ` | Size: ${selSize}` : '');
         document.getElementById('cRevTot').innerText = `Total: ₹${tot} (COD)`;
         document.getElementById('cRevAddr').innerText = `${document.getElementById('cName').value}, ${document.getElementById('cPhone').value}\n${document.getElementById('cAddr').value}, ${document.getElementById('cCity').value} - ${document.getElementById('cPin').value}`;
@@ -339,20 +497,14 @@
       let addr = document.getElementById('cAddr').value.trim();
       let pin = document.getElementById('cPin').value.trim();
 
-      if(!name){
-        alert("Kripya apna Full Name dalein! 🌸"); return;
-      }
+      if(!name){ alert("Kripya apna Full Name dalein! 🌸"); return; }
       if(!phone || phone.length !== 10 || !/^[6-9]\d{9}$/.test(phone)){
         alert("Kripya valid 10-digit mobile number enter karein! (Example: 98XXXXXXXX) 🌸"); 
         document.getElementById('cPhone').focus();
         return;
       }
-      if(!addr){
-        alert("Kripya complete Delivery Address dalein! 🌸"); return;
-      }
-      if(!pin || pin.length !== 6){
-        alert("Kripya 6-digit Pincode enter karein! 🌸"); return;
-      }
+      if(!addr){ alert("Kripya complete Delivery Address dalein! 🌸"); return; }
+      if(!pin || pin.length !== 6){ alert("Kripya 6-digit Pincode enter karein! 🌸"); return; }
       goToStep(3);
     }
 
@@ -368,16 +520,16 @@
       let phone = document.getElementById('cPhone').value.trim();
       if(!phone || phone.length !== 10 || !/^[6-9]\d{9}$/.test(phone)){
         alert("Valid 10-digit mobile number zaroori hai! 🌸");
-        goToStep(2);
-        return;
+        goToStep(2); return;
       }
 
       let btn = document.getElementById('btnPlace'); btn.innerText = "Placing Order..."; btn.disabled = true;
       let x = P[currId], oId = "MWT-" + Math.floor(10000 + Math.random()*90000), tot = x.pn * selQty, now = Date.now();
       let n = document.getElementById('cName').value.trim(), ad = document.getElementById('cAddr').value.trim(), ct = document.getElementById('cCity').value.trim(), pn = document.getElementById('cPin').value.trim();
+      let firstImg = Array.isArray(x.i) ? x.i[0] : x.i;
 
       let order = {
-        productId:currId, orderId:oId, title:x.t, img:x.i, code:x.cd, price:tot, qty:selQty, size:selSize,
+        productId:currId, orderId:oId, title:x.t, img:firstImg, code:x.cd, price:tot, qty:selQty, size:selSize,
         name:n, phone:phone, address:`${ad}, ${ct} - ${pn}`, date:new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}),
         timestamp:now
       };
@@ -398,7 +550,7 @@
         `👤 *Customer Name:* ${n}\n` +
         `📞 *Mobile Number:* ${phone}\n` +
         `📍 *Delivery Address:* ${ad}, ${ct} - ${pn}\n\n` +
-        `🖼️ *Product Photo Link:*\n${x.i}`;
+        `🖼️ *Product Photo Link:*\n${firstImg}`;
 
       fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
         method:"POST", headers:{"Content-Type":"application/json"},
@@ -441,13 +593,13 @@
             <div><strong>Order #${o.orderId}</strong><span style="color:var(--muted); margin-left:6px;">• ${o.date}</span></div>
             <span style="background:#e8f8f2; color:var(--green); padding:4px 8px; border-radius:6px; font-weight:700; font-size:11px;">${badge}</span>
           </div>
-          <div style="display:flex; gap:12px; align-items:center; cursor:pointer;" onclick="openModal(${prodKey})" title="Click to open product">
+          <div style="display:flex; gap:12px; align-items:center; cursor:pointer;" onclick="openModal('${prodKey}')" title="Click to open product">
             <img src="${o.img}" style="width:65px; height:65px; border-radius:10px; object-fit:contain; background:#fff8fa; border:1px solid var(--border);">
             <div style="flex:1;"><h4 style="font-size:13px; font-weight:700;">${o.title} ➔</h4><div style="font-size:11.5px; color:var(--muted); margin-top:2px;">Qty: ${o.qty} ${o.size?'| Size: '+o.size:''}</div><div style="color:var(--pink); font-weight:800; font-size:13.5px; margin-top:3px;">₹${o.price} <span style="font-size:10px; font-weight:normal; color:var(--muted);">(COD)</span></div></div>
           </div>
           <div style="display:flex; gap:8px; margin-top:12px;">
             <button style="flex:1.3; padding:10px; background:#fff0f5; border:1px solid var(--pink-accent); color:var(--pink); font-weight:700; border-radius:10px; cursor:pointer; font-size:12px;" onclick="toggleTrack(${idx})">🚚 Track Order ▼</button>
-            <button style="flex:1; padding:10px; background:linear-gradient(135deg,#ff4d88,#ff2a6d); border:none; color:#fff; font-weight:700; border-radius:10px; cursor:pointer; font-size:12px;" onclick="currId=${prodKey}; startCheckout();">🔁 Buy Again</button>
+            <button style="flex:1; padding:10px; background:linear-gradient(135deg,#ff4d88,#ff2a6d); border:none; color:#fff; font-weight:700; border-radius:10px; cursor:pointer; font-size:12px;" onclick="currId='${prodKey}'; startCheckout();">🔁 Buy Again</button>
           </div>
           <div id="trackBox-${idx}" style="display:none; margin-top:14px; padding-top:14px; border-top:1px solid var(--border);">
             <div style="background:#fff9fb; border:1px solid var(--border); border-radius:12px; padding:10px 14px; font-size:12px; margin-bottom:14px;"><strong style="color:var(--text);">Delivery Address:</strong><div style="color:var(--muted); margin-top:2px;">${o.name} (${o.phone})<br>${o.address}</div></div>
@@ -471,7 +623,7 @@
       document.getElementById('ordersPage').style.display='none';
 
       if(h.startsWith('#product-')){
-        let id = parseInt(h.replace('#product-','')); if(P[id]) openModal(id);
+        let id = h.replace('#product-',''); if(P[id]) openModal(id);
       } else if(h.startsWith('#checkout-step')){
         let st = parseInt(h.replace('#checkout-step','')) || 1;
         let d = JSON.parse(sessionStorage.getItem('chk_draft') || "null");
@@ -489,7 +641,8 @@
       }
     }
 
-    renderGrid();
+    // Auto-load Sheet on Start
+    loadProductsFromSheet();
     restoreState();
   </script>
 </body>

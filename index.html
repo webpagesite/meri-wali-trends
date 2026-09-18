@@ -39,7 +39,12 @@
     .card-img-wrapper img{width:100%;height:100%;object-fit:contain;}
     .card-info{padding:10px 12px;}
     .card-info h3{font-size:12.5px;color:var(--text);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:34px;}
-    .price{color:var(--pink);font-weight:800;font-size:14px;margin:6px 0;}
+    .price{color:var(--pink);font-weight:800;font-size:14px;margin:4px 0;}
+    
+    /* Direct Size Tags on Card */
+    .card-sizes{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px;min-height:22px;}
+    .size-tag{font-size:10px;font-weight:700;color:var(--pink);background:#fff0f5;border:1px solid var(--border);padding:2px 6px;border-radius:6px;}
+    
     .btn-view{display:block;text-align:center;background:var(--pink-soft);color:var(--pink);padding:8px;border-radius:8px;font-size:11.5px;font-weight:700;}
     
     /* Modals */
@@ -144,7 +149,11 @@
 
       <div class="modal-body">
         <h2 id="mTitle" style="font-size:16px; font-weight:700; margin-bottom:4px;"></h2>
-        <div id="mPrice" style="font-size:19px; color:var(--pink); font-weight:800; margin-bottom:12px;"></div>
+        <div id="mPrice" style="font-size:19px; color:var(--pink); font-weight:800; margin-bottom:8px;"></div>
+        
+        <!-- Direct Size Display in Detail Modal -->
+        <div id="mSizesDisplay" style="margin-bottom:12px; background:#fff0f5; padding:8px 12px; border-radius:10px; border:1px solid var(--border); font-size:12px; font-weight:700; color:var(--pink);"></div>
+
         <div id="mDesc" style="font-size:12.5px; color:var(--muted); line-height:1.55; margin-bottom:18px; background:#fff9fb; padding:12px; border-radius:12px;"></div>
         <button class="btn-pink" onclick="startCheckout()">Buy Now 🛍️</button>
       </div>
@@ -232,26 +241,26 @@
 
     let defaultProducts = [
       {id:"21", c:"dresses", cd:"WC-101", t:"Vintage Floral Print Bodycon Midi Dress", pn:695, p:"₹695", i:["https://i.ibb.co/qYyQ0R8T/Screenshot-2026-0819-174125.jpg"], s:["XS","S","M","L","XL","XXL"], d:"• Type: Aesthetic Ribbon Shoulder Bodycon Midi Dress<br>• Fabric: Super Net with Inner Lining<br>• Pattern: Vintage Floral"},
-      {id:"1", c:"accessories", cd:"GA-101", t:"Combo of 12 Pair Earrings with Velvet Box", pn:673, p:"₹673", i:["https://i.ibb.co/Ld0X8PQv/Screenshot-2026-0816-064613.jpg"], d:"• Type: Jhumkhas (12 Pair Combo)<br>• Trend: Floral, Oxidised Silver"},
-      {id:"2", c:"accessories", cd:"GA-102", t:"Vintage Floral Embroidered Lace Hair Bow", pn:150, p:"₹150", i:["https://i.ibb.co/TBQ2DcYN/IMG-20260817-114459.png"], d:"• Type: Lace Hair Bow Clip<br>• Trend: Vintage Floral"},
-      {id:"3", c:"accessories", cd:"GA-103", t:"LED Light Up Butterfly Hair Clip (Pack of 2)", pn:199, p:"₹199", i:["https://i.ibb.co/mVgrwGCz/IMG-20260817-121041.jpg"], d:"• Type: Glowing LED Clip (Pack of 2)<br>• Feature: Optical Fiber Braid"},
-      {id:"4", c:"accessories", cd:"GA-104", t:"Exquisite Princess Pearl Butterfly Tiara Crown", pn:349, p:"₹349", i:["https://i.ibb.co/DPsmtDdc/IMG-20260817-124016.jpg"], d:"• Type: Princess Tiara Crown<br>• Finish: Pearl & Butterfly Embellishments"},
-      {id:"5", c:"accessories", cd:"GA-105", t:"12 Pcs Kids Rainbow Braids Hair Extensions", pn:199, p:"₹199", i:["https://i.ibb.co/C5whJn3n/IMG-20260817-130237.jpg"], d:"• Type: Clip-In Braids (Pack of 12)<br>• Style: Colorful Rainbow"},
-      {id:"6", c:"accessories", cd:"GA-106", t:"Soft Fur Scrunchies Combo (Pack of 8)", pn:149, p:"₹149", i:["https://i.ibb.co/qYP8Tszc/IMG-20260818-120223.jpg"], d:"• Type: Plush Fur Scrunchies (Pack of 8)<br>• Color: Multicolor Pastel"},
-      {id:"7", c:"accessories", cd:"BA-101", t:"Pina Colada Attar 6ml Pack of 2", pn:299, p:"₹299", i:["https://i.ibb.co/4ZwFRcth/Screenshot-2026-0820-184205.jpg"], d:"• Pack: 2 Bottles (6ml each)<br>• Flavour: Strawberry & Pina Colada"},
-      {id:"8", c:"accessories", cd:"BA-102", t:"Classy Men Silver Plated Designer Bracelet", pn:149, p:"₹149", i:["https://iili.io/CZ2bBII.md.jpg"], d:"• Material: Stainless Steel<br>• Color: Premium Silver"},
-      {id:"9", c:"accessories", cd:"BA-103", t:"Men's Designer Gold Plated Bracelet", pn:299, p:"₹299", i:["https://iili.io/CZ3LxzF.md.jpg"], d:"• Plating: Gold Plated Brass<br>• Stone: Amethyst Stone"},
-      {id:"10", c:"accessories", cd:"BA-104", t:"Magnetic Chain Bracelet (Set of 2)", pn:199, p:"₹199", i:["https://iili.io/CZ3ZhD7.md.jpg"], d:"• Material: Silver Plated Alloy<br>• Set: 2-Piece Magnetic Combo"},
-      {id:"11", c:"accessories", cd:"BA-105", t:"Silver Plated Charm Bracelet", pn:299, p:"₹299", i:["https://iili.io/CZ3bCo7.md.jpg"], d:"• Material: Stainless Steel<br>• Stones: AD Zirconia"},
-      {id:"12", c:"accessories", cd:"BA-106", t:"Brass Gold Plated Kada Bracelet", pn:249, p:"₹249", i:["https://iili.io/CZ3yzKX.md.jpg"], d:"• Material: Solid Brass Gold Plated<br>• Size: 8-Inch Adjustable"},
-      {id:"13", c:"accessories", cd:"BA-107", t:"SIXER PRO Double Blade Plastic Cricket Bat", pn:399, p:"₹399", i:["https://iili.io/CZF2scP.md.jpg"], d:"• Model: Double Blade Hard Plastic<br>• Use: Recreational Tennis Cricket"},
-      {id:"14", c:"accessories", cd:"BA-108", t:"Black Analog-Digital Sport Watch", pn:249, p:"₹249", i:["https://iili.io/CZFC2Ul.md.jpg"], d:"• Display: Dual Analog & Digital<br>• Strap: Durable Silicone"},
-      {id:"15", c:"accessories", cd:"BA-109", t:"Unisex Sleek Black Digital Watch", pn:280, p:"₹280", i:["https://iili.io/CZFuQwl.md.jpg"], d:"• Display: Clear Minimal Screen<br>• Style: Casual Modern"},
-      {id:"16", c:"accessories", cd:"BA-110", t:"Matte Black Analog Quartz Watch", pn:295, p:"₹295", i:["https://iili.io/CZF5nyJ.md.jpg"], d:"• Movement: High-Precision Quartz<br>• Dial Size: 35mm"},
-      {id:"17", c:"accessories", cd:"BA-111", t:"Classic Silver Steel Analog Watch", pn:299, p:"₹299", i:["https://iili.io/CZFYosp.md.jpg"], d:"• Dial: Black 30mm<br>• Chain: Stainless Steel Link"},
-      {id:"18", c:"accessories", cd:"BA-112", t:"Multi-Strand Black Leather Bracelet", pn:199, p:"₹199", i:["https://iili.io/CZFjunt.md.jpg"], d:"• Material: Styled Black Leather & Alloy<br>• Sizing: Slip-On"},
-      {id:"19", c:"accessories", cd:"BA-113", t:"Crozon Premium Cotton Handkerchief (Pack of 6)", pn:269, p:"₹269", i:["https://iili.io/CZKfnCG.md.jpg"], d:"• Material: 100% Pure Soft Cotton<br>• Size: 43cm x 43cm Large"},
-      {id:"20", c:"accessories", cd:"BA-114", t:"Unisex Outdoor Tactical Bucket Hat", pn:258, p:"₹258", i:["https://iili.io/CZKR8l9.md.jpg"], d:"• Size: 56–58cm Standard Fit<br>• Windproof String"}
+      {id:"1", c:"accessories", cd:"GA-101", t:"Combo of 12 Pair Earrings with Velvet Box", pn:673, p:"₹673", i:["https://i.ibb.co/Ld0X8PQv/Screenshot-2026-0816-064613.jpg"], s:["Free Size"], d:"• Type: Jhumkhas (12 Pair Combo)<br>• Trend: Floral, Oxidised Silver"},
+      {id:"2", c:"accessories", cd:"GA-102", t:"Vintage Floral Embroidered Lace Hair Bow", pn:150, p:"₹150", i:["https://i.ibb.co/TBQ2DcYN/IMG-20260817-114459.png"], s:["Free Size"], d:"• Type: Lace Hair Bow Clip<br>• Trend: Vintage Floral"},
+      {id:"3", c:"accessories", cd:"GA-103", t:"LED Light Up Butterfly Hair Clip (Pack of 2)", pn:199, p:"₹199", i:["https://i.ibb.co/mVgrwGCz/IMG-20260817-121041.jpg"], s:["Free Size"], d:"• Type: Glowing LED Clip (Pack of 2)<br>• Feature: Optical Fiber Braid"},
+      {id:"4", c:"accessories", cd:"GA-104", t:"Exquisite Princess Pearl Butterfly Tiara Crown", pn:349, p:"₹349", i:["https://i.ibb.co/DPsmtDdc/IMG-20260817-124016.jpg"], s:["Free Size"], d:"• Type: Princess Tiara Crown<br>• Finish: Pearl & Butterfly Embellishments"},
+      {id:"5", c:"accessories", cd:"GA-105", t:"12 Pcs Kids Rainbow Braids Hair Extensions", pn:199, p:"₹199", i:["https://i.ibb.co/C5whJn3n/IMG-20260817-130237.jpg"], s:["Free Size"], d:"• Type: Clip-In Braids (Pack of 12)<br>• Style: Colorful Rainbow"},
+      {id:"6", c:"accessories", cd:"GA-106", t:"Soft Fur Scrunchies Combo (Pack of 8)", pn:149, p:"₹149", i:["https://i.ibb.co/qYP8Tszc/IMG-20260818-120223.jpg"], s:["Free Size"], d:"• Type: Plush Fur Scrunchies (Pack of 8)<br>• Color: Multicolor Pastel"},
+      {id:"7", c:"accessories", cd:"BA-101", t:"Pina Colada Attar 6ml Pack of 2", pn:299, p:"₹299", i:["https://i.ibb.co/4ZwFRcth/Screenshot-2026-0820-184205.jpg"], s:["6ml Pack"], d:"• Pack: 2 Bottles (6ml each)<br>• Flavour: Strawberry & Pina Colada"},
+      {id:"8", c:"accessories", cd:"BA-102", t:"Classy Men Silver Plated Designer Bracelet", pn:149, p:"₹149", i:["https://iili.io/CZ2bBII.md.jpg"], s:["Free Size"], d:"• Material: Stainless Steel<br>• Color: Premium Silver"},
+      {id:"9", c:"accessories", cd:"BA-103", t:"Men's Designer Gold Plated Bracelet", pn:299, p:"₹299", i:["https://iili.io/CZ3LxzF.md.jpg"], s:["Free Size"], d:"• Plating: Gold Plated Brass<br>• Stone: Amethyst Stone"},
+      {id:"10", c:"accessories", cd:"BA-104", t:"Magnetic Chain Bracelet (Set of 2)", pn:199, p:"₹199", i:["https://iili.io/CZ3ZhD7.md.jpg"], s:["Free Size"], d:"• Material: Silver Plated Alloy<br>• Set: 2-Piece Magnetic Combo"},
+      {id:"11", c:"accessories", cd:"BA-105", t:"Silver Plated Charm Bracelet", pn:299, p:"₹299", i:["https://iili.io/CZ3bCo7.md.jpg"], s:["Free Size"], d:"• Material: Stainless Steel<br>• Stones: AD Zirconia"},
+      {id:"12", c:"accessories", cd:"BA-106", t:"Brass Gold Plated Kada Bracelet", pn:249, p:"₹249", i:["https://iili.io/CZ3yzKX.md.jpg"], s:["8-Inch"], d:"• Material: Solid Brass Gold Plated<br>• Size: 8-Inch Adjustable"},
+      {id:"13", c:"accessories", cd:"BA-107", t:"SIXER PRO Double Blade Plastic Cricket Bat", pn:399, p:"₹399", i:["https://iili.io/CZF2scP.md.jpg"], s:["Full Size"], d:"• Model: Double Blade Hard Plastic<br>• Use: Recreational Tennis Cricket"},
+      {id:"14", c:"accessories", cd:"BA-108", t:"Black Analog-Digital Sport Watch", pn:249, p:"₹249", i:["https://iili.io/CZFC2Ul.md.jpg"], s:["Free Size"], d:"• Display: Dual Analog & Digital<br>• Strap: Durable Silicone"},
+      {id:"15", c:"accessories", cd:"BA-109", t:"Unisex Sleek Black Digital Watch", pn:280, p:"₹280", i:["https://iili.io/CZFuQwl.md.jpg"], s:["Free Size"], d:"• Display: Clear Minimal Screen<br>• Style: Casual Modern"},
+      {id:"16", c:"accessories", cd:"BA-110", t:"Matte Black Analog Quartz Watch", pn:295, p:"₹295", i:["https://iili.io/CZF5nyJ.md.jpg"], s:["Free Size"], d:"• Movement: High-Precision Quartz<br>• Dial Size: 35mm"},
+      {id:"17", c:"accessories", cd:"BA-111", t:"Classic Silver Steel Analog Watch", pn:299, p:"₹299", i:["https://iili.io/CZFYosp.md.jpg"], s:["Free Size"], d:"• Dial: Black 30mm<br>• Chain: Stainless Steel Link"},
+      {id:"18", c:"accessories", cd:"BA-112", t:"Multi-Strand Black Leather Bracelet", pn:199, p:"₹199", i:["https://iili.io/CZFjunt.md.jpg"], s:["Free Size"], d:"• Material: Styled Black Leather & Alloy<br>• Sizing: Slip-On"},
+      {id:"19", c:"accessories", cd:"BA-113", t:"Crozon Premium Cotton Handkerchief (Pack of 6)", pn:269, p:"₹269", i:["https://iili.io/CZKfnCG.md.jpg"], s:["Pack of 6"], d:"• Material: 100% Pure Soft Cotton<br>• Size: 43cm x 43cm Large"},
+      {id:"20", c:"accessories", cd:"BA-114", t:"Unisex Outdoor Tactical Bucket Hat", pn:258, p:"₹258", i:["https://iili.io/CZKR8l9.md.jpg"], s:["Standard Fit"], d:"• Size: 56–58cm Standard Fit<br>• Windproof String"}
     ];
 
     let allProducts = [...defaultProducts];
@@ -275,7 +284,7 @@
             const title = String(c[3].v);
             const priceNum = c[4] && c[4].v ? Number(c[4].v) : 199;
             const rawImgs = c[5] && c[5].v ? String(c[5].v).split(',').map(s=>s.trim()).filter(Boolean) : ["https://i.ibb.co/Ld0X8PQv/Screenshot-2026-0816-064613.jpg"];
-            const rawSizes = c[6] && c[6].v ? String(c[6].v).split(',').map(s=>s.trim()).filter(Boolean) : null;
+            const rawSizes = c[6] && c[6].v ? String(c[6].v).split(',').map(s=>s.trim()).filter(Boolean) : ["Free Size"];
             const desc = c[7] && c[7].v ? String(c[7].v) : "• Trending Fashion Pick";
 
             sheetItems.push({
@@ -312,9 +321,27 @@
         if(matchesCategory && matchesSearch){
           foundCount++;
           let firstImg = Array.isArray(x.i) ? x.i[0] : x.i;
+          
+          // Direct Size Tags on Card
+          let sizeHtml = '';
+          if(x.s && x.s.length > 0){
+            let displayList = x.s.slice(0, 4);
+            sizeHtml = `<div class="card-sizes">` + 
+              displayList.map(sz => `<span class="size-tag">${sz}</span>`).join('') +
+              (x.s.length > 4 ? `<span class="size-tag">+${x.s.length - 4}</span>` : '') +
+              `</div>`;
+          } else {
+            sizeHtml = `<div class="card-sizes"><span class="size-tag">Free Size</span></div>`;
+          }
+
           g.innerHTML += `<div class="card" onclick="openModal('${x.id}')">
             <div class="card-img-wrapper"><img src="${firstImg}" alt="${x.t}" loading="lazy"></div>
-            <div class="card-info"><h3>${x.t}</h3><div class="price">${x.p}</div><span class="btn-view">View Details</span></div>
+            <div class="card-info">
+              <h3>${x.t}</h3>
+              <div class="price">${x.p}</div>
+              ${sizeHtml}
+              <span class="btn-view">View Details</span>
+            </div>
           </div>`;
         }
       });
@@ -376,13 +403,11 @@
       updateSliderView();
     }
 
-    // Realistic Timeline Generator (Standard / Cancel / 2-Day Return)
     function getTrackingHTML(order){
       let timestamp = order.timestamp || Date.now();
       let orderId = order.orderId;
       let status = order.status || "active";
 
-      // 1. Cancelled Timeline Flow
       if(status === "cancelled"){
         return `<div class="timeline">
           <div class="t-item done"><div style="font-weight:700;">Order Cancelled</div><div style="font-size:11px; color:var(--muted);">Cancellation request received & approved</div></div>
@@ -391,7 +416,6 @@
         </div>`;
       }
 
-      // 2. Realistic 2-Day Return Timeline Flow
       if(status === "return_requested"){
         let returnTimestamp = order.returnTimestamp || Date.now();
         let diffReturnHours = Math.floor((Date.now() - returnTimestamp) / (1000 * 60 * 60));
@@ -416,7 +440,6 @@
         </div>`;
       }
 
-      // 3. Regular 7-Day Forward Delivery Timeline
       let diffDays = Math.floor((Date.now() - timestamp) / (1000 * 60 * 60 * 24));
       let s1 = "done", s2 = "done", s3 = "", s4 = "", s5 = "";
       let t2 = "Item safely packed", t3 = "Carrier assignment in progress", t4 = "Courier partner will call you", t5 = "Cash payment required upon delivery";
@@ -449,6 +472,11 @@
       setupSlider(x.i);
       document.getElementById('mTitle').innerText = x.t;
       document.getElementById('mPrice').innerText = x.p; 
+      
+      // Direct Size Text in Detail Modal
+      let sText = (x.s && x.s.length > 0) ? x.s.join(', ') : 'Free Size';
+      document.getElementById('mSizesDisplay').innerText = `📏 Available Sizes: ${sText}`;
+      
       document.getElementById('mDesc').innerHTML = x.d;
       document.getElementById('productModal').style.display = 'flex';
       window.history.pushState(null,'',`#product-${id}`);
@@ -471,13 +499,16 @@
 
       let sBox = document.getElementById('cSizeBox'), sOpts = document.getElementById('cSizeOpts');
       sOpts.innerHTML = '';
-      if(x.s && x.s.length > 0){
+      if(x.s && x.s.length > 0 && !(x.s.length === 1 && x.s[0].toLowerCase().includes('free'))){
         if(!selSize || !x.s.includes(selSize)) selSize = x.s[0];
         x.s.forEach(s=>{
           sOpts.innerHTML += `<button class="size-btn ${s===selSize?'active':''}" onclick="selectSize('${s}', this)">${s}</button>`;
         });
         sBox.style.display = 'block';
-      } else { selSize = ""; sBox.style.display = 'none'; }
+      } else { 
+        selSize = (x.s && x.s.length > 0) ? x.s[0] : "Free Size"; 
+        sBox.style.display = 'none'; 
+      }
 
       document.getElementById('cQtyVal').innerText = selQty;
       document.getElementById('checkoutModal').style.display = 'flex';
@@ -670,7 +701,7 @@
       if(!reason) return;
 
       o.status = "return_requested";
-      o.returnTimestamp = Date.now(); // 2-Day realistic pickup start
+      o.returnTimestamp = Date.now();
       localStorage.setItem('all_orders_mwt', JSON.stringify(list));
 
       let returnMsg = 

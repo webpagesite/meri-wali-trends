@@ -111,7 +111,6 @@
     .wheel-center-pin{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:40px;height:40px;background:#fff;border-radius:50%;border:3px solid var(--pink);display:flex;align-items:center;justify-content:center;font-size:16px;z-index:5;}
     .fortune-result-box{display:none;background:#fff0f5;border:2px dashed var(--pink);border-radius:16px;padding:14px;margin-top:14px;font-size:12.5px;font-weight:700;color:var(--text);line-height:1.5;}
 
-    /* Confetti Particle Styles */
     .confetti-piece {
       position: fixed;
       top: -20px;
@@ -429,7 +428,19 @@
       window.history.pushState(null,'',window.location.pathname+window.location.search);
     }
 
-    /* UNIVERSAL NATIVE SHARE FUNCTION */
+    /* DIRECT LINK PARSER: Auto-opens product on arrival */
+    function checkDirectProductLink(){
+      let hash = window.location.hash || "";
+      if(hash.startsWith('#product-')){
+        let pId = hash.replace('#product-', '').trim();
+        let target = getProdById(pId);
+        if(target){
+          openModal(pId);
+        }
+      }
+    }
+
+    /* UNIVERSAL NATIVE SHARE FUNCTION (With direct product hash) */
     function universalShareProduct(){
       let x = getProdById(currId);
       if(!x) return;
@@ -444,12 +455,12 @@
       if(navigator.share){
         navigator.share(shareData).catch(()=>{});
       } else {
-        // Fallback for desktop or unsupported browsers
         navigator.clipboard.writeText(`${shareData.text}\n${shareData.url}`);
         alert("Product link copied to clipboard! 📋✨ Share it anywhere!");
       }
     }
 
+    /* HINT TO BABU (Direct Product Link to WhatsApp) */
     function sendHintToBabu(){
       let x = getProdById(currId);
       if(!x) return;
@@ -551,7 +562,6 @@
       goToStep(3);
     }
 
-    /* FLYING CONFETTI BLAST FUNCTION (HEARTS, FLOWERS & STARS) */
     function triggerConfettiBlast(){
       const emojis = ['💖', '🌸', '✨', '🎀', '💐', '💕'];
       for(let i=0; i<35; i++){
@@ -606,7 +616,6 @@
       document.getElementById('confTimeline').innerHTML = getTrackingHTML(order);
       btn.innerText = "Place Order (COD) 🎉"; btn.disabled = false;
       
-      // Blast Confetti on Order Confirmation
       triggerConfettiBlast();
       goToStep(5);
     }
@@ -676,7 +685,6 @@
     let currentWheelRotation = 0;
     let isSpinning = false;
 
-    // 24 Hours / 3 Spins Rule
     function getSpinInfo(){
       let data = JSON.parse(localStorage.getItem('mwt_spin_data') || "null");
       let now = Date.now();
@@ -781,10 +789,12 @@
     }
     setInterval(triggerRecentPopup, 18000);
 
-    // Render Immediate Fallback
+    // Initial Safe Render
     renderGrid();
+    checkDirectProductLink();
+    window.addEventListener('hashchange', checkDirectProductLink);
 
-    // Safe Sync from Google Sheet
+    // Safe Sheet Load
     async function loadProductsFromSheet(){
       try{
         const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
@@ -813,6 +823,7 @@
           if(sheetItems.length > 0){
             allProducts = [...sheetItems.reverse(), ...defaultProducts];
             renderGrid();
+            checkDirectProductLink();
           }
         }
       }catch(e){}

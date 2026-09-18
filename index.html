@@ -10,6 +10,17 @@
     :root{--bg:#fff5f8;--pink:#ff4d88;--pink-soft:#ffe4ec;--pink-accent:#ff85a2;--text:#2d1e2f;--muted:#7a6a7c;--border:#ffd1dc;--green:#038d63;--red:#e63946;--blue:#0288d1;}
     body{background:var(--bg);color:var(--text);padding:15px 12px 60px;text-align:center;min-height:100vh;}
     
+    /* Security: Disable selection & callouts */
+    img {
+      -webkit-touch-callout: none !important;
+      -webkit-user-select: none !important;
+      -khtml-user-select: none !important;
+      -moz-user-select: none !important;
+      -ms-user-select: none !important;
+      user-select: none !important;
+      pointer-events: auto;
+    }
+
     .header{padding:14px;background:#fff;border-radius:20px;border:1px solid var(--border);box-shadow:0 8px 24px rgba(255,105,180,0.08);max-width:900px;margin:0 auto 14px;}
     .h-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
     .brand-title{font-family:'Quicksand',sans-serif;font-size:21px;color:var(--pink);display:flex;align-items:center;gap:5px;}
@@ -105,7 +116,7 @@
     .btn-disabled{background:#f0f0f0;color:#9e9e9e;border:1px solid #e0e0e0;cursor:not-allowed;}
   </style>
 </head>
-<body>
+<body oncontextmenu="return false;">
 
   <header class="header">
     <div class="h-row">
@@ -142,7 +153,7 @@
       
       <div class="slider-box">
         <div class="slider-arrow left" id="slideLeft" onclick="changeSlide(-1)">‹</div>
-        <img id="mImg" class="slider-img" src="" alt="Product">
+        <img id="mImg" class="slider-img" src="" alt="Product" draggable="false">
         <div class="slider-arrow right" id="slideRight" onclick="changeSlide(1)">›</div>
       </div>
       <div class="slider-dots" id="sliderDots"></div>
@@ -172,8 +183,8 @@
       </div>
 
       <div class="step-body active" id="cStep1">
-        <div class="mini-card"><img id="cMiniImg1"><div><h4 id="cMiniTitle1" style="font-size:13px;"></h4><div id="cMiniPrice1" style="color:var(--pink); font-weight:800;"></div></div></div>
-        <div id="cSizeBox" style="display:none; margin-bottom:14px; background:#fff9fb; padding:10px 14px; border-radius:12px; border:1px solid var(--border);"><span style="font-size:12px; font-weight:700; display:block; margin-bottom:8px;">Select Size: *</span><div id="cSizeOpts"></div></div>
+        <div class="mini-card"><img id="cMiniImg1" draggable="false"><div><h4 id="cMiniTitle1" style="font-size:13px;"></h4><div id="cMiniPrice1" style="color:var(--pink); font-weight:800;"></div></div></div>
+        <div id="cSizeBox" style="display:none; margin-bottom:14px; background:#fff9fb; padding:10px 14px; border-radius:12px; border:1px solid var(--border);"><span style="font-size:12px; font-weight:700; display:block; margin-bottom:8px;">Select Option / Size: *</span><div id="cSizeOpts"></div></div>
         <div class="qty-row"><span style="font-size:13px; font-weight:700;">Quantity:</span><div style="display:flex; align-items:center; gap:10px;"><button class="qty-btn" onclick="setQty(-1)">−</button><span id="cQtyVal" style="font-weight:800;">1</span><button class="qty-btn" onclick="setQty(1)">+</button></div></div>
         <div style="display:flex; gap:8px;"><button style="flex:1; padding:13px; background:#fff0f5; border:1px solid var(--border); border-radius:12px; font-weight:700; cursor:pointer;" onclick="closeModal('checkoutModal'); openModal(currId);">← Back</button><button style="flex:2;" class="btn-pink" onclick="goToStep(2)">Continue to Address ➔</button></div>
       </div>
@@ -197,7 +208,7 @@
 
       <div class="step-body" id="cStep4">
         <h4 style="margin-bottom:12px; font-size:14px;">Review Order 📦</h4>
-        <div class="mini-card"><img id="cMiniImg4"><div><h4 id="cMiniTitle4" style="font-size:12.5px;"></h4><div id="cRevQty" style="font-size:11.5px; color:var(--muted);"></div><div id="cRevTot" style="color:var(--pink); font-weight:800; font-size:13px;"></div></div></div>
+        <div class="mini-card"><img id="cMiniImg4" draggable="false"><div><h4 id="cMiniTitle4" style="font-size:12.5px;"></h4><div id="cRevQty" style="font-size:11.5px; color:var(--muted);"></div><div id="cRevTot" style="color:var(--pink); font-weight:800; font-size:13px;"></div></div></div>
         <div style="background:#fff9fb; border:1px solid var(--border); border-radius:12px; padding:10px; font-size:12px; margin-bottom:14px;"><strong style="color:var(--text);">Delivering To:</strong><div id="cRevAddr" style="color:var(--muted); margin-top:2px;"></div></div>
         <div style="display:flex; gap:8px;"><button style="flex:1; padding:13px; background:#fff0f5; border:1px solid var(--border); border-radius:12px; font-weight:700; cursor:pointer;" onclick="goToStep(3)">← Back</button><button style="flex:2;" class="btn-pink" id="btnPlace" onclick="placeOrder()">Place Order (COD) 🎉</button></div>
       </div>
@@ -228,6 +239,13 @@
     let searchQuery = "";
     let currentSlideIdx = 0, currentImages = [];
     const vAudio = new Audio("site.mp3");
+
+    // Block right click / long press on all images
+    document.addEventListener('contextmenu', function(e) {
+      if(e.target.tagName === 'IMG') {
+        e.preventDefault();
+      }
+    });
 
     function playVoice(){
       document.getElementById('voicePopup').style.display='block';
@@ -322,7 +340,6 @@
           foundCount++;
           let firstImg = Array.isArray(x.i) ? x.i[0] : x.i;
           
-          // Direct Size Tags on Card
           let sizeHtml = '';
           if(x.s && x.s.length > 0){
             let displayList = x.s.slice(0, 4);
@@ -335,7 +352,7 @@
           }
 
           g.innerHTML += `<div class="card" onclick="openModal('${x.id}')">
-            <div class="card-img-wrapper"><img src="${firstImg}" alt="${x.t}" loading="lazy"></div>
+            <div class="card-img-wrapper"><img src="${firstImg}" alt="${x.t}" loading="lazy" draggable="false"></div>
             <div class="card-info">
               <h3>${x.t}</h3>
               <div class="price">${x.p}</div>
@@ -441,7 +458,7 @@
       }
 
       let diffDays = Math.floor((Date.now() - timestamp) / (1000 * 60 * 60 * 24));
-      let s1 = "done", s2 = "done", s3 = "", s4 = "", s5 = "";
+      let s1 = "done", s2 = "done", s3 = "", s4 = "";
       let t2 = "Item safely packed", t3 = "Carrier assignment in progress", t4 = "Courier partner will call you", t5 = "Cash payment required upon delivery";
 
       if(diffDays === 0){
@@ -473,9 +490,8 @@
       document.getElementById('mTitle').innerText = x.t;
       document.getElementById('mPrice').innerText = x.p; 
       
-      // Direct Size Text in Detail Modal
       let sText = (x.s && x.s.length > 0) ? x.s.join(', ') : 'Free Size';
-      document.getElementById('mSizesDisplay').innerText = `📏 Available Sizes: ${sText}`;
+      document.getElementById('mSizesDisplay').innerText = `📏 Available: ${sText}`;
       
       document.getElementById('mDesc').innerHTML = x.d;
       document.getElementById('productModal').style.display = 'flex';
@@ -565,7 +581,7 @@
         let firstImg = Array.isArray(x.i) ? x.i[0] : x.i;
         document.getElementById('cMiniImg4').src = firstImg; 
         document.getElementById('cMiniTitle4').innerText = x.t;
-        document.getElementById('cRevQty').innerText = `Qty: ${selQty}` + (selSize ? ` | Size: ${selSize}` : '');
+        document.getElementById('cRevQty').innerText = `Qty: ${selQty}` + (selSize ? ` | Option: ${selSize}` : '');
         document.getElementById('cRevTot').innerText = `Total: ₹${tot} (COD)`;
         document.getElementById('cRevAddr').innerText = `${document.getElementById('cName').value}, ${document.getElementById('cPhone').value}\n${document.getElementById('cAddr').value}, ${document.getElementById('cCity').value} - ${document.getElementById('cPin').value}`;
       }
@@ -624,7 +640,7 @@
         `🆔 *Order ID:* #${oId}\n` +
         `📦 *Item:* ${x.t}\n` +
         `🔢 *Code:* ${x.cd}\n` +
-        (selSize ? `📏 *Size:* ${selSize}\n` : '') +
+        (selSize ? `📏 *Option/Size:* ${selSize}\n` : '') +
         `🔢 *Quantity:* ${selQty}\n` +
         `💰 *Total Amount:* ₹${tot} (COD)\n\n` +
         `👤 *Customer Name:* ${n}\n` +
@@ -771,8 +787,8 @@
             <span style="background:${badgeColor}; color:${badgeText}; padding:4px 8px; border-radius:6px; font-weight:700; font-size:11px;">${badge}</span>
           </div>
           <div style="display:flex; gap:12px; align-items:center; cursor:pointer;" onclick="openModal('${prodKey}')" title="Click to open product">
-            <img src="${o.img}" style="width:65px; height:65px; border-radius:10px; object-fit:contain; background:#fff8fa; border:1px solid var(--border);">
-            <div style="flex:1;"><h4 style="font-size:13px; font-weight:700;">${o.title} ➔</h4><div style="font-size:11.5px; color:var(--muted); margin-top:2px;">Qty: ${o.qty} ${o.size?'| Size: '+o.size:''}</div><div style="color:var(--pink); font-weight:800; font-size:13.5px; margin-top:3px;">₹${o.price} <span style="font-size:10px; font-weight:normal; color:var(--muted);">(COD)</span></div></div>
+            <img src="${o.img}" style="width:65px; height:65px; border-radius:10px; object-fit:contain; background:#fff8fa; border:1px solid var(--border);" draggable="false">
+            <div style="flex:1;"><h4 style="font-size:13px; font-weight:700;">${o.title} ➔</h4><div style="font-size:11.5px; color:var(--muted); margin-top:2px;">Qty: ${o.qty} ${o.size?'| Option: '+o.size:''}</div><div style="color:var(--pink); font-weight:800; font-size:13.5px; margin-top:3px;">₹${o.price} <span style="font-size:10px; font-weight:normal; color:var(--muted);">(COD)</span></div></div>
           </div>
           <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px; gap:8px; flex-wrap:wrap;">
             <div style="display:flex; gap:6px;">

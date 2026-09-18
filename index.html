@@ -156,7 +156,6 @@
   <div class="modal" id="productModal" onclick="if(event.target.id==='productModal')closeModal('productModal')">
     <div class="modal-content">
       <div class="modal-top-actions">
-        <!-- Native Universal Share Button -->
         <div class="action-icon-btn" onclick="universalShareProduct()" title="Share Product">
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#ff4d88" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="18" cy="5" r="3"></circle>
@@ -298,13 +297,29 @@
       });
     }
 
+    // ORIGINAL 21 DEFAULT PRODUCTS
     let defaultProducts = [
-      {id:"28", c:"accessories", cd:"GA-113", t:"Coffee Brown Crochet Bow Keychain Cute Purse Hanging Accessory", pn:149, p:"₹149", i:["https://images.meesho.com/images/products/931269856/njrar_512.avif?width=512","https://images.meesho.com/images/products/931269857/zxjsu_512.avif?width=512","https://images.meesho.com/images/products/931269858/lleko_512.avif?width=512","https://images.meesho.com/images/products/931269859/bnzwf_512.avif?width=512"], s:["Pink","Blue","Black","Brown"], d:"• Handmade Crochet Bow Design • Multipurpose Bag Charm"},
-      {id:"27", c:"accessories", cd:"GA-112", t:"Silver Plated Minimal Infinite Cuff Bracelet", pn:205, p:"₹205", i:["https://images.meesho.com/images/products/946102443/sewjl_512.avif?width=512","https://images.meesho.com/images/products/946102443/bgfwb_512.avif?width=512","https://images.meesho.com/images/products/946102443/wv6qr_512.avif?width=512","https://images.meesho.com/images/products/946102443/0puvc_512.avif?width=512"], s:["Free Size"], d:"• Silver Plated Minimal Design • Adjustable Cuff"},
-      {id:"26", c:"accessories", cd:"GA-111", t:"Cute Hair Rubber Band and Beads Clutcher Brown Multicolor", pn:233, p:"₹233", i:["https://images.meesho.com/images/products/438998683/ebhqq_512.avif?width=512","https://images.meesho.com/images/products/438998683/ump3w_512.avif?width=512","https://images.meesho.com/images/products/438998683/lewm0_512.avif?width=512"], s:["Free Size"], d:"• Material: ABS Plastic • Multicolor Beads Clutcher"},
-      {id:"25", c:"accessories", cd:"GA-110", t:"Korean Aesthetic Pearl Velvet Bow Hair Clip", pn:235, p:"₹235", i:["https://images.meesho.com/images/products/892783961/2wtfh_512.avif?width=512","https://images.meesho.com/images/products/892783961/yitdo_512.avif?width=512","https://images.meesho.com/images/products/892783961/ymq5e_512.avif?width=512","https://images.meesho.com/images/products/892783961/kknds_512.avif?width=512"], s:["Free Size"], d:"• Premium Velvet Finish • Pearl Drop Embellishment"},
-      {id:"24", c:"accessories", cd:"GA-109", t:"Rhinestone Golden Hair Claw Clip Embellished Korean Clutcher", pn:258, p:"₹258", i:["https://images.meesho.com/images/products/579188023/kehz2_512.avif?width=512","https://images.meesho.com/images/products/579188023/qtscv_512.avif?width=512","https://images.meesho.com/images/products/579188023/yeyno_512.avif?width=512","https://images.meesho.com/images/products/579188023/n2mqu_512.avif?width=512"], s:["Free Size"], d:"• Pack of 1 Pcs Hair Claw • Material: Metal with Rhinestone"},
-      {id:"21", c:"dresses", cd:"WC-101", t:"Vintage Floral Print Bodycon Midi Dress", pn:695, p:"₹695", i:["https://i.ibb.co/qYyQ0R8T/Screenshot-2026-0819-174125.jpg"], s:["XS","S","M","L","XL","XXL"], d:"• Type: Aesthetic Ribbon Shoulder Bodycon Midi Dress<br>• Fabric: Super Net with Inner Lining"}
+      {id:"21", c:"dresses", cd:"WC-101", t:"Vintage Floral Print Bodycon Midi Dress", pn:695, p:"₹695", i:["https://i.ibb.co/qYyQ0R8T/Screenshot-2026-0819-174125.jpg"], s:["XS","S","M","L","XL","XXL"], d:"• Type: Aesthetic Ribbon Shoulder Bodycon Midi Dress<br>• Fabric: Super Net with Inner Lining<br>• Pattern: Vintage Floral"},
+      {id:"1", c:"accessories", cd:"GA-101", t:"Combo of 12 Pair Earrings with Velvet Box", pn:673, p:"₹673", i:["https://i.ibb.co/Ld0X8PQv/Screenshot-2026-0816-064613.jpg"], s:["Free Size"], d:"• Type: Jhumkhas (12 Pair Combo)<br>• Trend: Floral, Oxidised Silver"},
+      {id:"2", c:"accessories", cd:"GA-102", t:"Vintage Floral Embroidered Lace Hair Bow", pn:150, p:"₹150", i:["https://i.ibb.co/TBQ2DcYN/IMG-20260817-114459.png"], s:["Free Size"], d:"• Type: Lace Hair Bow Clip<br>• Trend: Vintage Floral"},
+      {id:"3", c:"accessories", cd:"GA-103", t:"LED Light Up Butterfly Hair Clip (Pack of 2)", pn:199, p:"₹199", i:["https://i.ibb.co/mVgrwGCz/IMG-20260817-121041.jpg"], s:["Free Size"], d:"• Type: Glowing LED Clip (Pack of 2)<br>• Feature: Optical Fiber Braid"},
+      {id:"4", c:"accessories", cd:"GA-104", t:"Exquisite Princess Pearl Butterfly Tiara Crown", pn:349, p:"₹349", i:["https://i.ibb.co/DPsmtDdc/IMG-20260817-124016.jpg"], s:["Free Size"], d:"• Type: Princess Tiara Crown<br>• Finish: Pearl & Butterfly Embellishments"},
+      {id:"5", c:"accessories", cd:"GA-105", t:"12 Pcs Kids Rainbow Braids Hair Extensions", pn:199, p:"₹199", i:["https://i.ibb.co/C5whJn3n/IMG-20260817-130237.jpg"], s:["Free Size"], d:"• Type: Clip-In Braids (Pack of 12)<br>• Style: Colorful Rainbow"},
+      {id:"6", c:"accessories", cd:"GA-106", t:"Soft Fur Scrunchies Combo (Pack of 8)", pn:149, p:"₹149", i:["https://i.ibb.co/qYP8Tszc/IMG-20260818-120223.jpg"], s:["Free Size"], d:"• Type: Plush Fur Scrunchies (Pack of 8)<br>• Color: Multicolor Pastel"},
+      {id:"7", c:"accessories", cd:"BA-101", t:"Pina Colada Attar 6ml Pack of 2", pn:299, p:"₹299", i:["https://i.ibb.co/4ZwFRcth/Screenshot-2026-0820-184205.jpg"], s:["6ml Pack"], d:"• Pack: 2 Bottles (6ml each)<br>• Flavour: Strawberry & Pina Colada"},
+      {id:"8", c:"accessories", cd:"BA-102", t:"Classy Men Silver Plated Designer Bracelet", pn:149, p:"₹149", i:["https://iili.io/CZ2bBII.md.jpg"], s:["Free Size"], d:"• Material: Stainless Steel<br>• Color: Premium Silver"},
+      {id:"9", c:"accessories", cd:"BA-103", t:"Men's Designer Gold Plated Bracelet", pn:299, p:"₹299", i:["https://iili.io/CZ3LxzF.md.jpg"], s:["Free Size"], d:"• Plating: Gold Plated Brass<br>• Stone: Amethyst Stone"},
+      {id:"10", c:"accessories", cd:"BA-104", t:"Magnetic Chain Bracelet (Set of 2)", pn:199, p:"₹199", i:["https://iili.io/CZ3ZhD7.md.jpg"], s:["Free Size"], d:"• Material: Silver Plated Alloy<br>• Set: 2-Piece Magnetic Combo"},
+      {id:"11", c:"accessories", cd:"BA-105", t:"Silver Plated Charm Bracelet", pn:299, p:"₹299", i:["https://iili.io/CZ3bCo7.md.jpg"], s:["Free Size"], d:"• Material: Stainless Steel<br>• Stones: AD Zirconia"},
+      {id:"12", c:"accessories", cd:"BA-106", t:"Brass Gold Plated Kada Bracelet", pn:249, p:"₹249", i:["https://iili.io/CZ3yzKX.md.jpg"], s:["8-Inch"], d:"• Material: Solid Brass Gold Plated<br>• Size: 8-Inch Adjustable"},
+      {id:"13", c:"accessories", cd:"BA-107", t:"SIXER PRO Double Blade Plastic Cricket Bat", pn:399, p:"₹399", i:["https://iili.io/CZF2scP.md.jpg"], s:["Full Size"], d:"• Model: Double Blade Hard Plastic<br>• Use: Recreational Tennis Cricket"},
+      {id:"14", c:"accessories", cd:"BA-108", t:"Black Analog-Digital Sport Watch", pn:249, p:"₹249", i:["https://iili.io/CZFC2Ul.md.jpg"], s:["Free Size"], d:"• Display: Dual Analog & Digital<br>• Strap: Durable Silicone"},
+      {id:"15", c:"accessories", cd:"BA-109", t:"Unisex Sleek Black Digital Watch", pn:280, p:"₹280", i:["https://iili.io/CZFuQwl.md.jpg"], s:["Free Size"], d:"• Display: Clear Minimal Screen<br>• Style: Casual Modern"},
+      {id:"16", c:"accessories", cd:"BA-110", t:"Matte Black Analog Quartz Watch", pn:295, p:"₹295", i:["https://iili.io/CZF5nyJ.md.jpg"], s:["Free Size"], d:"• Movement: High-Precision Quartz<br>• Dial Size: 35mm"},
+      {id:"17", c:"accessories", cd:"BA-111", t:"Classic Silver Steel Analog Watch", pn:299, p:"₹299", i:["https://iili.io/CZFYosp.md.jpg"], s:["Free Size"], d:"• Dial: Black 30mm<br>• Chain: Stainless Steel Link"},
+      {id:"18", c:"accessories", cd:"BA-112", t:"Multi-Strand Black Leather Bracelet", pn:199, p:"₹199", i:["https://iili.io/CZFjunt.md.jpg"], s:["Free Size"], d:"• Material: Styled Black Leather & Alloy<br>• Sizing: Slip-On"},
+      {id:"19", c:"accessories", cd:"BA-113", t:"Crozon Premium Cotton Handkerchief (Pack of 6)", pn:269, p:"₹269", i:["https://iili.io/CZKfnCG.md.jpg"], s:["Pack of 6"], d:"• Material: 100% Pure Soft Cotton<br>• Size: 43cm x 43cm Large"},
+      {id:"20", c:"accessories", cd:"BA-114", t:"Unisex Outdoor Tactical Bucket Hat", pn:258, p:"₹258", i:["https://iili.io/CZKR8l9.md.jpg"], s:["Standard Fit"], d:"• Size: 56–58cm Standard Fit<br>• Windproof String"}
     ];
 
     let allProducts = [...defaultProducts];
@@ -363,7 +378,7 @@
     }
 
     function getProdById(id){
-      return allProducts.find(p => String(p.id) === String(id));
+      return allProducts.find(p => String(p.id).trim() === String(id).trim());
     }
 
     function setupSlider(imgs){
@@ -428,7 +443,7 @@
       window.history.pushState(null,'',window.location.pathname+window.location.search);
     }
 
-    /* DIRECT LINK PARSER: Auto-opens product on arrival */
+    /* DIRECT LINK AUTO-OPENER */
     function checkDirectProductLink(){
       let hash = window.location.hash || "";
       if(hash.startsWith('#product-')){
@@ -440,7 +455,7 @@
       }
     }
 
-    /* UNIVERSAL NATIVE SHARE FUNCTION (With direct product hash) */
+    /* UNIVERSAL SHARE BUTTON */
     function universalShareProduct(){
       let x = getProdById(currId);
       if(!x) return;
@@ -460,7 +475,7 @@
       }
     }
 
-    /* HINT TO BABU (Direct Product Link to WhatsApp) */
+    /* SEND HINT TO BABU */
     function sendHintToBabu(){
       let x = getProdById(currId);
       if(!x) return;
@@ -794,7 +809,7 @@
     checkDirectProductLink();
     window.addEventListener('hashchange', checkDirectProductLink);
 
-    // Safe Sheet Load
+    // DEDUPLICATED SMART SHEET SYNC
     async function loadProductsFromSheet(){
       try{
         const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
@@ -820,8 +835,17 @@
               d: c[7] && c[7].v ? String(c[7].v) : "• Trending Pick"
             });
           });
+
           if(sheetItems.length > 0){
-            allProducts = [...sheetItems.reverse(), ...defaultProducts];
+            // STRICT DEDUPLICATION: Removes duplicate IDs completely
+            let combined = [...sheetItems.reverse(), ...defaultProducts];
+            let seen = new Set();
+            allProducts = combined.filter(item => {
+              let idStr = String(item.id).trim();
+              if(seen.has(idStr)) return false;
+              seen.add(idStr);
+              return true;
+            });
             renderGrid();
             checkDirectProductLink();
           }

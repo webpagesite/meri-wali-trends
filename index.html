@@ -47,7 +47,10 @@
     
     .modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(45,30,47,0.65);backdrop-filter:blur(6px);justify-content:center;align-items:center;padding:12px;z-index:3000;}
     .modal-content{background:#fff;border-radius:22px;max-width:420px;width:100%;border:1px solid var(--border);overflow:hidden;position:relative;max-height:92vh;overflow-y:auto;text-align:left;}
-    .close-btn{position:absolute;top:12px;right:12px;font-size:18px;background:#fff;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;border:1px solid var(--border);font-weight:bold;z-index:10;}
+    .modal-top-actions{position:absolute;top:12px;right:12px;display:flex;gap:8px;z-index:10;}
+    .action-icon-btn{background:#fff;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;border:1px solid var(--border);box-shadow:0 2px 8px rgba(0,0,0,0.08);}
+    .close-btn{font-size:18px;font-weight:bold;color:var(--text);}
+    
     .modal-body{padding:18px;}
     .btn-pink{display:block;width:100%;padding:13px;background:linear-gradient(135deg,#ff4d88,#ff2a6d);color:#fff;font-weight:700;border-radius:12px;border:none;cursor:pointer;font-size:13.5px;text-align:center;}
     .btn-hint{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:10px;background:#e8f8f2;color:var(--green);border:1.5px dashed #a5d6a7;font-weight:700;border-radius:12px;cursor:pointer;font-size:12.5px;margin-top:8px;}
@@ -107,6 +110,19 @@
     .spin-wheel{width:100%;height:100%;border-radius:50%;border:5px solid #fff;box-shadow:0 4px 18px rgba(255,77,136,0.3);background:conic-gradient(#ff85a2 0deg 45deg,#ffe4ec 45deg 90deg,#ff4d88 90deg 135deg,#ffd1dc 135deg 180deg,#ff85a2 180deg 225deg,#ffe4ec 225deg 270deg,#ff4d88 270deg 315deg,#ffd1dc 315deg 360deg);transition:transform 3.2s cubic-bezier(0.15,0.9,0.25,1);}
     .wheel-center-pin{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:40px;height:40px;background:#fff;border-radius:50%;border:3px solid var(--pink);display:flex;align-items:center;justify-content:center;font-size:16px;z-index:5;}
     .fortune-result-box{display:none;background:#fff0f5;border:2px dashed var(--pink);border-radius:16px;padding:14px;margin-top:14px;font-size:12.5px;font-weight:700;color:var(--text);line-height:1.5;}
+
+    /* Confetti Particle Styles */
+    .confetti-piece {
+      position: fixed;
+      top: -20px;
+      z-index: 9999;
+      pointer-events: none;
+      animation: fallDown 3.5s linear forwards;
+    }
+    @keyframes fallDown {
+      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(105vh) rotate(720deg); opacity: 0; }
+    }
   </style>
 </head>
 <body oncontextmenu="return false;">
@@ -140,7 +156,20 @@
   <!-- Product Modal -->
   <div class="modal" id="productModal" onclick="if(event.target.id==='productModal')closeModal('productModal')">
     <div class="modal-content">
-      <div class="close-btn" onclick="closeModal('productModal')">&times;</div>
+      <div class="modal-top-actions">
+        <!-- Native Universal Share Button -->
+        <div class="action-icon-btn" onclick="universalShareProduct()" title="Share Product">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#ff4d88" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="18" cy="5" r="3"></circle>
+            <circle cx="6" cy="12" r="3"></circle>
+            <circle cx="18" cy="19" r="3"></circle>
+            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+          </svg>
+        </div>
+        <div class="action-icon-btn close-btn" onclick="closeModal('productModal')">&times;</div>
+      </div>
+
       <div class="slider-box">
         <div class="slider-arrow left" id="slideLeft" onclick="changeSlide(-1)">‹</div>
         <img id="mImg" class="slider-img" src="" alt="Product" draggable="false">
@@ -161,7 +190,7 @@
   <!-- Checkout Modal -->
   <div class="modal" id="checkoutModal" onclick="if(event.target.id==='checkoutModal')closeModal('checkoutModal')">
     <div class="modal-content">
-      <div class="close-btn" onclick="closeModal('checkoutModal')">&times;</div>
+      <div class="close-btn" style="position:absolute; top:12px; right:12px; width:34px; height:34px; background:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; border:1px solid var(--border);" onclick="closeModal('checkoutModal')">&times;</div>
       <div class="step-bar" id="stepBar">
         <div class="step-dot active" id="dot1" onclick="jumpStep(1)">① Select</div>
         <div class="step-dot" id="dot2" onclick="jumpStep(2)">② Address</div>
@@ -212,13 +241,13 @@
     <div id="ordersList"></div>
   </div>
 
-  <!-- Spin Wheel Modal -->
+  <!-- Spin Wheel Modal (Max 3 spins in 24 Hours) -->
   <div class="modal" id="wheelModal" onclick="if(event.target.id==='wheelModal')closeModal('wheelModal')">
     <div class="modal-content" style="max-width:360px; text-align:center;">
-      <div class="close-btn" onclick="closeModal('wheelModal')">&times;</div>
+      <div class="close-btn" style="position:absolute; top:12px; right:12px; width:34px; height:34px; background:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; border:1px solid var(--border);" onclick="closeModal('wheelModal')">&times;</div>
       <div style="padding:20px 16px;">
         <h3 style="color:var(--pink); font-size:18px; font-family:'Quicksand',sans-serif;">🎡 Spin & Win Babu's Love! 💖</h3>
-        <p style="font-size:11.5px; color:var(--muted); margin-top:3px;">Wheel ghumaao aur dekho Babu ka secret message 🥺</p>
+        <p style="font-size:11.5px; color:var(--muted); margin-top:3px;" id="spinCountText">Daily Limit: 3 Spins (24 Hours)</p>
         <div class="wheel-container">
           <div class="wheel-arrow"></div>
           <div class="spin-wheel" id="mainSpinWheel"></div>
@@ -400,6 +429,27 @@
       window.history.pushState(null,'',window.location.pathname+window.location.search);
     }
 
+    /* UNIVERSAL NATIVE SHARE FUNCTION */
+    function universalShareProduct(){
+      let x = getProdById(currId);
+      if(!x) return;
+      let baseUrl = window.location.origin + window.location.pathname;
+      let productDirectLink = `${baseUrl}#product-${currId}`;
+      let shareData = {
+        title: x.t,
+        text: `Hey! Check out this cute ${x.t} on Meri Wali Trends 🎀✨`,
+        url: productDirectLink
+      };
+
+      if(navigator.share){
+        navigator.share(shareData).catch(()=>{});
+      } else {
+        // Fallback for desktop or unsupported browsers
+        navigator.clipboard.writeText(`${shareData.text}\n${shareData.url}`);
+        alert("Product link copied to clipboard! 📋✨ Share it anywhere!");
+      }
+    }
+
     function sendHintToBabu(){
       let x = getProdById(currId);
       if(!x) return;
@@ -501,6 +551,22 @@
       goToStep(3);
     }
 
+    /* FLYING CONFETTI BLAST FUNCTION (HEARTS, FLOWERS & STARS) */
+    function triggerConfettiBlast(){
+      const emojis = ['💖', '🌸', '✨', '🎀', '💐', '💕'];
+      for(let i=0; i<35; i++){
+        let p = document.createElement('div');
+        p.className = 'confetti-piece';
+        p.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+        p.style.left = Math.random() * 95 + 'vw';
+        p.style.fontSize = Math.floor(18 + Math.random() * 20) + 'px';
+        p.style.animationDuration = (2.2 + Math.random() * 1.8) + 's';
+        p.style.animationDelay = (Math.random() * 0.5) + 's';
+        document.body.appendChild(p);
+        setTimeout(() => p.remove(), 4500);
+      }
+    }
+
     function placeOrder(){
       let btn = document.getElementById('btnPlace'); btn.innerText = "Placing Order..."; btn.disabled = true;
       let x = getProdById(currId), oId = "MWT-" + Math.floor(10000 + Math.random()*90000), tot = x.pn * selQty, now = Date.now();
@@ -539,6 +605,9 @@
       document.getElementById('confId').innerText = `Order #${oId}`;
       document.getElementById('confTimeline').innerHTML = getTrackingHTML(order);
       btn.innerText = "Place Order (COD) 🎉"; btn.disabled = false;
+      
+      // Blast Confetti on Order Confirmation
+      triggerConfettiBlast();
       goToStep(5);
     }
 
@@ -592,27 +661,66 @@
     }
 
     const wheelCompliments = [
-      "Aapka Babu aapse bohot pyaar karta hai, bas sharmata hai! 🥺💖",
-      "Is poori duniya me aap sabse zyada cute ho! 🎀",
-      "Secret Luck: Aaj order karne se Babu ka mood 100x accha rahega! ✨",
-      "Jaldi hi aapko Babu ki taraf se ek unexpectedly pyara gift milega 🌸",
-      "Jab aap muskurati ho toh uska poora din ban jata hai! 🥰"
+      "Aapka Babu aapse bohot pyaar karta hai, bas bolne me sharmata hai! 🥺💖",
+      "Universe Notice: Is poori duniya me aap sabse zyada cute ho, ek gift toh banta hai! 🎀",
+      "Secret Luck: Aaj order karne se Babu ka mood agle 7 din tak 100x accha rahega! ✨",
+      "Astrology: Jaldi hi aapko Babu ki taraf se ek unexpectedly pyara surprise milne wala hai 🌸",
+      "Babu ke dil ka raaz: Jab aap muskurati ho toh uska poora din ban jata hai! 🥰",
+      "Aapka aura itna aesthetic hai ki Babu aapko dekhte hi kho jaata hai! 💫",
+      "Love Alert: Aap dono ki jodi duniya ki sabse pyari jodi hai, nazar na lage! 🧿",
+      "Kismat Ka Ishara: Ye cute cheez aapke upar sabse zyada suit karegi! 🛍️",
+      "Babu ki diary: 'Wo gusse me bhi kitni cute lagti hai yaar!' 🥺👉👈",
+      "Secret Fortune: Babu ko ek hint bhej do, wo bina bole order kar dega! 💌"
     ];
 
     let currentWheelRotation = 0;
     let isSpinning = false;
+
+    // 24 Hours / 3 Spins Rule
+    function getSpinInfo(){
+      let data = JSON.parse(localStorage.getItem('mwt_spin_data') || "null");
+      let now = Date.now();
+      if(!data || (now - data.startTime) > (24 * 60 * 60 * 1000)){
+        data = { count: 0, startTime: now };
+        localStorage.setItem('mwt_spin_data', JSON.stringify(data));
+      }
+      return data;
+    }
 
     function openWheelModal(){
       let m = document.getElementById('wheelModal');
       if(m) m.style.display = 'flex';
       let resBox = document.getElementById('spinResultBox');
       if(resBox) resBox.style.display = 'none';
+      
+      let spinData = getSpinInfo();
+      let left = Math.max(0, 3 - spinData.count);
       let btn = document.getElementById('btnSpinNow');
-      if(btn){ btn.disabled = false; btn.innerText = "Spin the Wheel 🎡✨"; }
+      let txt = document.getElementById('spinCountText');
+
+      if(left > 0){
+        if(txt) txt.innerText = `You have ${left} spin${left > 1 ? 's' : ''} left today! 🎡`;
+        if(btn){
+          btn.disabled = false;
+          btn.innerText = "Spin the Wheel 🎡✨";
+        }
+      } else {
+        if(txt) txt.innerText = "Daily Limit Reached (3/3 Spins Used) 🥺";
+        if(btn){
+          btn.disabled = true;
+          btn.innerText = "Come back tomorrow for 3 new spins! 🎀";
+        }
+      }
     }
 
     function startWheelSpin(){
       if(isSpinning) return;
+      let spinData = getSpinInfo();
+      if(spinData.count >= 3){
+        alert("Aapke aaj ke 3 spins khatam ho gaye hain! 🥺 Naye secret messages kal milenge 🎀");
+        return;
+      }
+
       isSpinning = true;
       let btn = document.getElementById('btnSpinNow');
       if(btn){ btn.disabled = true; btn.innerText = "Spinning... 🎡"; }
@@ -625,7 +733,23 @@
 
       setTimeout(() => {
         isSpinning = false;
-        if(btn){ btn.innerText = "Spin Again 🔁"; btn.disabled = false; }
+        spinData.count += 1;
+        localStorage.setItem('mwt_spin_data', JSON.stringify(spinData));
+
+        let left = Math.max(0, 3 - spinData.count);
+        let txt = document.getElementById('spinCountText');
+        if(txt) txt.innerText = left > 0 ? `${left} spin${left > 1 ? 's' : ''} left today! 🎡` : "Daily Limit Reached (3/3 Spins Used) 🥺";
+
+        if(btn){
+          if(left > 0){
+            btn.innerText = `Spin Again (${left} left) 🔁`;
+            btn.disabled = false;
+          } else {
+            btn.innerText = "Come back tomorrow for 3 new spins! 🎀";
+            btn.disabled = true;
+          }
+        }
+
         let randCompliment = wheelCompliments[Math.floor(Math.random() * wheelCompliments.length)];
         let resTxt = document.getElementById('spinResultText');
         if(resTxt) resTxt.innerText = `"${randCompliment}"`;
@@ -657,10 +781,10 @@
     }
     setInterval(triggerRecentPopup, 18000);
 
-    // Initial Safe Render
+    // Render Immediate Fallback
     renderGrid();
 
-    // Safe Sheet Load
+    // Safe Sync from Google Sheet
     async function loadProductsFromSheet(){
       try{
         const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;

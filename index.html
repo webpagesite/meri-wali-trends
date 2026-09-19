@@ -104,6 +104,31 @@
     .recent-popup img{width:40px;height:40px;border-radius:8px;object-fit:cover;border:1px solid var(--border);}
     .recent-popup-txt{font-size:11px;color:var(--text);line-height:1.35;}
 
+    /* FLOATING INSTAGRAM BUTTON (RIGHT SIDE ABOVE SPIN) */
+    .float-insta-btn {
+      position: fixed;
+      bottom: 74px;
+      right: 16px;
+      background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+      color: #fff;
+      padding: 8px 14px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 11.5px;
+      font-weight: 800;
+      text-decoration: none;
+      box-shadow: 0 6px 18px rgba(220, 39, 67, 0.35);
+      z-index: 2400;
+      border: 2px solid #fff;
+      animation: instaFloat 2.6s infinite ease-in-out;
+    }
+    @keyframes instaFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+
     .float-spin-btn{position:fixed;bottom:20px;right:16px;background:linear-gradient(135deg,#ff4d88,#ff2a6d);color:#fff;padding:10px 16px;border-radius:999px;display:flex;align-items:center;gap:6px;font-size:12px;font-weight:800;cursor:pointer;box-shadow:0 6px 20px rgba(255,42,109,0.4);z-index:2400;border:2px solid #fff;}
     .wheel-container{position:relative;width:240px;height:240px;margin:18px auto;}
     .wheel-arrow{position:absolute;top:-10px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:12px solid transparent;border-right:12px solid transparent;border-top:20px solid var(--pink);z-index:10;}
@@ -261,6 +286,17 @@
     </div>
   </div>
 
+  <!-- FLOATING INSTAGRAM BUTTON (DIRECT LINK TO INSTAGRAM) -->
+  <a href="https://instagram.com/meriwalitrends" target="_blank" rel="noopener noreferrer" class="float-insta-btn" title="Follow us on Instagram">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+      <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+    </svg>
+    <span>Instagram 📸</span>
+  </a>
+
+  <!-- FLOATING SPIN WHEEL BUTTON -->
   <div class="float-spin-btn" onclick="openWheelModal()"><span>🎡</span> Spin Babu's Wheel ✨</div>
 
   <div class="recent-popup" id="recentPopup">

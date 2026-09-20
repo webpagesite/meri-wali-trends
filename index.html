@@ -1099,17 +1099,35 @@
       }
     }
 
-    // DIRECT REDIRECT LOGIN HANDLER
+    // SAFE POPUP LOGIN HANDLER (BYPASSES SESSION STORAGE REDIRECT ERRORS)
     function loginWithGoogle(fromCheckout = false){
       try {
         if(!fbAuth || !googleProvider){
           alert("Firebase load ho raha hai, 2 second wait karein!");
           return;
         }
+
         if(fromCheckout){
           sessionStorage.setItem('mwt_redirect_from_checkout', 'yes');
         }
-        fbAuth.signInWithRedirect(googleProvider);
+
+        // Mobile aur desktop dono ke liye 100% safe popup method
+        fbAuth.signInWithPopup(googleProvider).then(result => {
+          if(result && result.user && result.user.email){
+            let fromCheck = sessionStorage.getItem('mwt_redirect_from_checkout') === 'yes';
+            sessionStorage.removeItem('mwt_redirect_from_checkout');
+            handleSuccessfulGoogleLogin(result.user.email, fromCheck);
+            if(fromCheck && currId) goToStep(2);
+          }
+        }).catch(error => {
+          console.error("Popup Error:", error);
+          if (error.code === 'auth/popup-blocked') {
+            alert("Popup block ho gaya hai! Kripya browser settings me popups allow karein.");
+          } else if (error.code !== 'auth/popup-closed-by-user') {
+            alert("Login error: " + error.message);
+          }
+        });
+
       } catch(err) {
         alert("Error: " + err.message);
       }
@@ -1145,30 +1163,14 @@
       syncUserOrdersCloud(currentUserEmail);
     }
 
-    // ABSOLUTE FIX: CATCH GOOGLE REDIRECT RESULT ON PAGE LOAD
-    window.addEventListener('DOMContentLoaded', () => {
-      if(fbAuth){
-        fbAuth.getRedirectResult().then(result => {
-          if(result && result.user && result.user.email){
-            let fromCheck = sessionStorage.getItem('mwt_redirect_from_checkout') === 'yes';
-            sessionStorage.removeItem('mwt_redirect_from_checkout');
-            handleSuccessfulGoogleLogin(result.user.email, fromCheck);
-            if(fromCheck && currId) goToStep(2);
-          }
-        }).catch(err => {
-          console.error("Redirect Result Error:", err);
-        });
-
-        fbAuth.onAuthStateChanged(user => {
-          if(user && user.email && !currentUserEmail){
-            let fromCheck = sessionStorage.getItem('mwt_redirect_from_checkout') === 'yes';
-            sessionStorage.removeItem('mwt_redirect_from_checkout');
-            handleSuccessfulGoogleLogin(user.email, fromCheck);
-            if(fromCheck && currId) goToStep(2);
-          }
-        });
-      }
-    });
+    // PERSISTENCE LISTENER
+    if(fbAuth){
+      fbAuth.onAuthStateChanged(user => {
+        if(user && user.email && !currentUserEmail){
+          handleSuccessfulGoogleLogin(user.email, false);
+        }
+      });
+    }
 
     function handleDashboardLogout(){
       if(fbAuth) fbAuth.signOut().catch(()=>{});

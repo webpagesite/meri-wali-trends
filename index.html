@@ -1095,17 +1095,55 @@
       }
     }
 
-    // 100% PURE REDIRECT GOOGLE LOGIN (NO POPUP CRASH)
+    // Google Sign-In (Mobile Redirect + Desktop Popup)
     function loginWithGoogle(fromCheckout = false){
-      if(!fbAuth || !googleProvider){
-        alert("Firebase initialize ho raha hai, 2 second wait karein!");
+      if(typeof firebase === 'undefined' || !fbAuth || !googleProvider){
+        alert("Firebase load nahi hua. Page ko refresh karke dobara try karein.");
+        console.error("Firebase Auth is not initialized.");
         return;
       }
+
       if(fromCheckout){
         sessionStorage.setItem('mwt_redirect_from_checkout', 'yes');
       }
-      fbAuth.signInWithRedirect(googleProvider);
+
+      const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent || '');
+
+      // Mobile browsers par redirect zyada reliable hota hai.
+      if(isMobile){
+        fbAuth.signInWithRedirect(googleProvider)
+          .catch(error => {
+            console.error("Mobile redirect login error:", error);
+            alert("Login error: " + (error.message || error.code));
+          });
+        return;
+      }
+
+      // Desktop par popup use karo. Popup block hone par redirect fallback.
+      fbAuth.signInWithPopup(googleProvider)
+        .then(result => {
+          if(result && result.user && result.user.email){
+            handleSuccessfulGoogleLogin(result.user.email, fromCheckout);
+          }
+        })
+        .catch(error => {
+          console.error("Popup login error:", error);
+          if(error.code === 'auth/popup-blocked' ||
+             error.code === 'auth/popup-closed-by-user' ||
+             error.code === 'auth/cancelled-popup-request'){
+            fbAuth.signInWithRedirect(googleProvider)
+              .catch(redirectError => {
+                console.error("Redirect fallback error:", redirectError);
+                alert("Login error: " + (redirectError.message || redirectError.code));
+              });
+          } else {
+            alert("Login error: " + (error.message || error.code));
+          }
+        });
     }
+
+    // Inline onclick ke liye function ko explicitly global rakhein.
+    window.loginWithGoogle = loginWithGoogle;
 
     function handleSuccessfulGoogleLogin(emailStr, fromCheckout = false){
       currentUserEmail = emailStr.toLowerCase();
@@ -1147,7 +1185,10 @@
             handleSuccessfulGoogleLogin(result.user.email, fromCheck);
             if(fromCheck && currId) goToStep(2);
           }
-        }).catch(()=>{});
+        }).catch(error => {
+          console.error("Redirect result error:", error);
+          alert("Login error: " + (error.message || error.code));
+        });
       }
     });
 

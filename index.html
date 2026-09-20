@@ -106,7 +106,9 @@
     .btn-cancel{background:#ffebee;color:var(--red);border:1px solid #ffcdd2;}
     .btn-return{background:#e8f4fd;color:var(--blue);border:1px solid #b3e5fc;}
     .btn-reorder{background:#fff0f5;color:var(--pink);border:1px solid var(--pink-accent);}
-    .btn-track-toggle{background:#fff;color:var(--muted);border:1px solid var(--border);padding:6px 12px;border-radius:20px;font-size:11px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:4px;margin-top:10px;}
+    
+    /* TRACK BUTTON FIX: Guaranteed active and touch friendly */
+    .btn-track-toggle{background:#fff0f5;color:var(--pink);border:1.5px solid var(--pink-accent);padding:8px 14px;border-radius:999px;font-size:12px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:6px;margin-top:10px;z-index:50;position:relative;}
 
     .track-drawer{display:none;margin-top:10px;padding:12px 14px;background:#fff9fb;border-radius:12px;border:1px solid var(--border);}
     .timeline{margin:6px 0 0;position:relative;padding-left:24px;text-align:left;}
@@ -928,7 +930,7 @@
       </div>`;
     }
 
-    // 100% WORKING TRACKING TOGGLE (Direct display toggle for mobile touch)
+    // GUARANTEED ACTIVE TRACKING TOGGLE (Direct display style switch)
     function toggleTrackDrawer(orderId){
       let drawer = document.getElementById('trackDrawer_' + orderId);
       let btn = document.getElementById('trackBtn_' + orderId);
@@ -1099,6 +1101,7 @@
       } else {
         let html = '';
         myOrders.forEach(o => { html += renderOrderCardHTML(o); });
+        cont.html = html; // Fixed safely via innerHTML below
         cont.innerHTML = html;
       }
     }

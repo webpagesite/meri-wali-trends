@@ -7,6 +7,7 @@
   
   <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
   <style>
@@ -63,6 +64,8 @@
     .btn-pink{display:block;width:100%;padding:13px;background:linear-gradient(135deg,#ff4d88,#ff2a6d);color:#fff;font-weight:700;border-radius:12px;border:none;cursor:pointer;font-size:13.5px;text-align:center;}
     .btn-hint{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:11px;background:#fff0f5;color:var(--pink);border:1.5px dashed var(--pink);font-weight:700;border-radius:12px;cursor:pointer;font-size:12.5px;margin-bottom:12px;}
     
+    .btn-google{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:12px;background:#fff;color:#333;font-weight:700;border-radius:12px;border:1.5px solid var(--border);cursor:pointer;font-size:13.5px;box-shadow:0 4px 12px rgba(0,0,0,0.06);}
+
     .slider-box{position:relative;width:100%;height:350px;background:#fff8fa;border-bottom:1px solid var(--border);overflow:hidden;touch-action:pan-y;user-select:none;display:flex;align-items:center;justify-content:center;}
     .slider-img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;display:block;margin:auto;}
     .slider-badge{position:absolute;top:12px;left:12px;background:rgba(0,0,0,0.55);color:#fff;font-size:11px;font-weight:700;padding:4px 10px;border-radius:12px;backdrop-filter:blur(4px);z-index:10;}
@@ -92,7 +95,6 @@
     .bill-row{display:flex;justify-content:space-between;margin-bottom:8px;color:var(--muted);font-weight:600;}
     .bill-row.total{border-top:1px dashed var(--border);padding-top:8px;color:var(--text);font-weight:800;font-size:14.5px;}
 
-    /* Orders & Dashboard Pages */
     #ordersPage,#accountPage{display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:var(--bg);z-index:4000;overflow-y:auto;text-align:left;padding:16px 14px 60px;}
     .page-top{display:flex;align-items:center;gap:12px;background:#fff;padding:12px 16px;border-radius:16px;border:1px solid var(--border);margin:0 auto 16px;max-width:800px;}
     .order-box{background:#fff;border-radius:18px;border:1px solid var(--border);padding:14px 16px;margin:0 auto 14px;max-width:800px;}
@@ -115,7 +117,6 @@
     .t-item.cancelled::before{background:var(--red);border-color:var(--red);}
     .t-item.returned::before{background:var(--blue);border-color:var(--blue);}
 
-    /* Dashboard UI Elements */
     .profile-card{background:#fff;border-radius:18px;border:1px solid var(--border);padding:18px;margin:0 auto 16px;max-width:800px;}
     .dash-stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:14px;}
     .dash-stat-box{background:#fff9fb;border:1px solid var(--border);border-radius:14px;padding:12px;text-align:center;}
@@ -200,7 +201,7 @@
 
   <div class="grid" id="productGrid"></div>
 
-  <!-- Product Modal (Swipeable + Thumbnails) -->
+  <!-- Product Modal -->
   <div class="modal" id="productModal" onclick="if(event.target.id==='productModal')history.back()">
     <div class="modal-content">
       <div class="modal-top-actions">
@@ -255,7 +256,22 @@
       </div>
       <div class="step-body" id="cStep2">
         <h4 style="margin-bottom:12px; font-size:14px;">Delivery Address 📍</h4>
-        <div class="form-group"><label>Email ID (To Sync & Track Orders) *</label><input type="email" id="cEmail" placeholder="e.g. name@gmail.com"></div>
+        
+        <!-- Google Verified Email Box -->
+        <div id="cEmailSection" style="margin-bottom:12px;">
+          <label style="font-size:11.5px; font-weight:700; color:var(--muted); display:block; margin-bottom:4px;">Verified Google Account *</label>
+          <div id="cEmailLoggedInBox" style="display:none; background:#e8f8f2; border:1px solid #b7e8d6; padding:10px 12px; border-radius:10px; font-size:12.5px; font-weight:700; color:var(--green);">
+            ✓ Logged in as: <span id="cVerifiedEmailText"></span>
+          </div>
+          <div id="cEmailLoginPrompt">
+            <button class="btn-google" type="button" onclick="loginWithGoogle(true)">
+              <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
+              <span>Sign in with Google to Continue</span>
+            </button>
+            <span style="font-size:11px; color:var(--red); font-weight:600; display:block; margin-top:4px;">* Order confirm karne ke liye Google account verify karna zaroori hai</span>
+          </div>
+        </div>
+
         <div class="form-group"><label>Full Name *</label><input type="text" id="cName" placeholder="Full Name"></div>
         <div class="form-group"><label>10-Digit Mobile Number *</label><input type="tel" id="cPhone" maxlength="10" placeholder="Enter 10-digit phone number"></div>
         <div class="form-group"><label>Address *</label><textarea id="cAddr" rows="2" placeholder="House no, Street, Colony"></textarea></div>
@@ -290,22 +306,24 @@
       <div><h2 style="font-size:17px;">User Dashboard 👤</h2><p style="font-size:11px; color:var(--muted);">Manage your orders, profile & deliveries</p></div>
     </div>
 
-    <!-- Login View (If not logged in) -->
-    <div id="dashLoginView" class="profile-card" style="display:none; text-align:center; padding:24px 18px;">
+    <!-- Login View (Verified Phone Google ID) -->
+    <div id="dashLoginView" class="profile-card" style="display:none; text-align:center; padding:28px 18px;">
       <div style="font-size:38px; margin-bottom:8px;">🎀</div>
-      <h3 style="font-size:17px; color:var(--text); margin-bottom:4px;">Official Customer Login</h3>
-      <p style="font-size:12px; color:var(--muted); margin-bottom:18px;">Enter your Email ID to instantly sync all your orders across any phone</p>
-      <div class="form-group" style="text-align:left;"><label>Registered Email ID</label><input type="email" id="dashEmailInput" placeholder="Enter your email (e.g. name@gmail.com)"></div>
-      <button class="btn-pink" onclick="handleDashboardLogin()">Continue to Dashboard ➔</button>
+      <h3 style="font-size:17px; color:var(--text); margin-bottom:4px;">Verified Customer Login</h3>
+      <p style="font-size:12px; color:var(--muted); margin-bottom:20px;">Apne phone ki Google ID se secure 1-tap login karein taaki sirf aap apne orders dekh sakein</p>
+      <button class="btn-google" id="btnGoogleAuth" onclick="loginWithGoogle(false)">
+        <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
+        <span>Continue with Google</span>
+      </button>
     </div>
 
-    <!-- Main Dashboard View (If logged in) -->
+    <!-- Main Dashboard View -->
     <div id="dashMainView" style="display:none;">
       <div class="profile-card">
         <div style="display:flex; justify-content:space-between; align-items:center;">
           <div>
-            <h3 style="font-size:16px; color:var(--text);" id="dashUserEmail">user@email.com</h3>
-            <span style="font-size:11px; color:var(--green); font-weight:700;">● Cloud Connected</span>
+            <h3 style="font-size:16px; color:var(--text);" id="dashUserEmail">user@gmail.com</h3>
+            <span style="font-size:11px; color:var(--green); font-weight:700;">● Phone Google Verified</span>
           </div>
           <button style="background:#ffebee; color:var(--red); border:1px solid #ffcdd2; padding:5px 12px; border-radius:8px; font-size:11.5px; font-weight:700; cursor:pointer;" onclick="handleDashboardLogout()">Logout</button>
         </div>
@@ -316,7 +334,7 @@
       </div>
       <div style="max-width:800px; margin:0 auto 12px; display:flex; justify-content:space-between; align-items:center;">
         <h4 style="font-size:14.5px; color:var(--text);">Order History & Live Tracking</h4>
-        <button style="background:#fff; border:1px solid var(--border); color:var(--pink); padding:4px 10px; border-radius:6px; font-size:11px; font-weight:700; cursor:pointer;" onclick="syncUserOrdersCloud(currentUserEmail)">↻ Refresh</button>
+        <button style="background:#fff; border:1px solid var(--border); color:var(--pink); padding:4px 10px; border-radius:6px; font-size:11px; font-weight:700; cursor:pointer;" id="btnSyncDash" onclick="refreshDashboardOrders()">↻ Refresh</button>
       </div>
       <div id="dashOrdersList"></div>
     </div>
@@ -376,19 +394,13 @@
   </div>
 
   <script>
-    // Main Orders Bot
     const TG_TOKEN = "8845393046:AAHOOcZUlXl6DJuIzXJeyOltlCKWByATM94";
     const TG_CHAT = "8106405157";
-
-    // Cancel & Return Bot (@Cancel_return_bot)
     const TG_CANCEL_TOKEN = "8748466480:AAF8RsQ-5xkVIzXvQfKFZfLOou4oBZjUbfE";
     const TG_CANCEL_CHAT = "8106405157";
-
-    // Live Visitor Tracker Bot (@Visitor_meriwalitrends_bot)
     const TG_VISITOR_TOKEN = "8956961710:AAHGJXvB_gWyqaoSsU1eXjrwcITj9jFalg8";
     const TG_VISITOR_CHAT = "8106405157";
 
-    // Firebase Database Setup
     const firebaseConfig = {
       apiKey: "AIzaSyBT_wtsRiTFZ_Q_yIr3oeLVhNnZCS1_6AU",
       authDomain: "meriwalitrends.firebaseapp.com",
@@ -399,10 +411,12 @@
       appId: "1:234797686035:web:ae3984d32872ec2a108ee6"
     };
 
-    let fbApp, fbDb;
+    let fbApp, fbDb, fbAuth, googleProvider;
     try {
       fbApp = firebase.initializeApp(firebaseConfig);
       fbDb = firebase.database();
+      fbAuth = firebase.auth();
+      googleProvider = new firebase.auth.GoogleAuthProvider();
     } catch(e) {}
 
     const SHEET_ID = "1VuDMLMixAeBJxFLtgGNxkI5kzUFsNM3RABdQLV6DdRs";
@@ -411,6 +425,7 @@
     let searchQuery = "";
     let currentSlideIdx = 0, currentImages = [];
     let currentUserEmail = localStorage.getItem('mwt_logged_in_email') || "";
+    let latestLoadedOrders = []; // PURE CLOUD IN-MEMORY STORAGE
     const vAudio = new Audio("site.mp3");
 
     document.addEventListener('contextmenu', function(e) {
@@ -597,6 +612,20 @@
     function goToStep(st){ if(!currId) return; location.hash = `checkout-${currId}-step${st}`; }
     function jumpStep(st){ if(activeStep === 5) return; goToStep(st); }
 
+    function updateCheckoutEmailState(){
+      let prompt = document.getElementById('cEmailLoginPrompt');
+      let box = document.getElementById('cEmailLoggedInBox');
+      let txt = document.getElementById('cVerifiedEmailText');
+      if(currentUserEmail){
+        if(prompt) prompt.style.display = 'none';
+        if(box) box.style.display = 'block';
+        if(txt) txt.innerText = currentUserEmail;
+      } else {
+        if(prompt) prompt.style.display = 'block';
+        if(box) box.style.display = 'none';
+      }
+    }
+
     function handleRoute(){
       let hash = window.location.hash.replace('#', '').trim();
 
@@ -617,14 +646,25 @@
       if(!hash) return;
 
       if(hash === 'orders'){
-        renderOrdersList();
-        oPage.style.display = 'block';
+        if(currentUserEmail){
+          syncUserOrdersCloud(currentUserEmail, () => {
+            renderOrdersList(latestLoadedOrders);
+            oPage.style.display = 'block';
+          });
+        } else {
+          renderOrdersList([]);
+          oPage.style.display = 'block';
+        }
         return;
       }
 
       if(hash === 'account'){
-        renderAccountDashboard();
         aPage.style.display = 'block';
+        if(currentUserEmail){
+          syncUserOrdersCloud(currentUserEmail);
+        } else {
+          renderAccountDashboard([]);
+        }
         return;
       }
 
@@ -711,9 +751,7 @@
             }
             document.getElementById('cQtyVal').innerText = selQty;
           } else if(step === 2){
-            if(currentUserEmail && !document.getElementById('cEmail').value){
-              document.getElementById('cEmail').value = currentUserEmail;
-            }
+            updateCheckoutEmailState();
           } else if(step === 3){
             document.getElementById('bMrp').innerText = `₹${tot + 100}`;
             document.getElementById('bTot').innerText = `₹${tot}`;
@@ -723,7 +761,7 @@
             document.getElementById('cMiniTitle4').innerText = x.t;
             document.getElementById('cRevQty').innerText = `Qty: ${selQty}` + (selSize ? ` | Option: ${selSize}` : '');
             document.getElementById('cRevTot').innerText = `Total: ₹${tot} (COD)`;
-            document.getElementById('cRevAddr').innerText = `${document.getElementById('cName').value}, ${document.getElementById('cPhone').value}\n${document.getElementById('cEmail').value}\n${document.getElementById('cAddr').value}, ${document.getElementById('cCity').value} - ${document.getElementById('cPin').value}`;
+            document.getElementById('cRevAddr').innerText = `${document.getElementById('cName').value}, ${document.getElementById('cPhone').value}\n${currentUserEmail}\n${document.getElementById('cAddr').value}, ${document.getElementById('cCity').value} - ${document.getElementById('cPin').value}`;
           }
         }
       }
@@ -743,18 +781,17 @@
       document.getElementById('cQtyVal').innerText = selQty; 
     }
 
+    // STRICT VALIDATION: GOOGLE SIGN-IN REQUIRED
     function validateAddr(){
-      let email = document.getElementById('cEmail').value.trim();
+      if(!currentUserEmail){
+        alert("⚠️ Kripya pehle 'Sign in with Google' par tap karke apne phone ki Google ID se sign-in karein taaki aapka order सुरक्षित rahe! 🌸");
+        return;
+      }
       let name = document.getElementById('cName').value.trim();
       let phone = document.getElementById('cPhone').value.trim();
       let addr = document.getElementById('cAddr').value.trim();
       let pin = document.getElementById('cPin').value.trim();
 
-      if(!email || !email.includes('@') || !email.includes('.')){
-        alert("Kripya valid Email ID dalein taaki aapka order save ho sake! 🌸");
-        document.getElementById('cEmail').focus();
-        return;
-      }
       if(!name){ alert("Kripya apna Full Name dalein! 🌸"); return; }
       if(!phone || phone.length !== 10 || !/^[6-9]\d{9}$/.test(phone)){
         alert("Kripya valid 10-digit mobile number enter karein! 🌸"); 
@@ -764,9 +801,6 @@
       if(!addr){ alert("Kripya complete Delivery Address dalein! 🌸"); return; }
       if(!pin || pin.length !== 6){ alert("Kripya 6-digit Pincode enter karein! 🌸"); return; }
 
-      currentUserEmail = email.toLowerCase();
-      localStorage.setItem('mwt_logged_in_email', currentUserEmail);
-      updateHeaderAccountBtn();
       goToStep(3);
     }
 
@@ -814,28 +848,28 @@
     }
 
     function placeOrder(){
+      if(!currentUserEmail){
+        alert("⚠️ Order place karne ke liye verified Google ID zaroori hai! 🌸");
+        goToStep(2);
+        return;
+      }
+
       let btn = document.getElementById('btnPlace'); btn.innerText = "Placing Order..."; btn.disabled = true;
       let x = getProdById(currId), oId = "MWT-" + Math.floor(10000 + Math.random()*90000), tot = x.pn * selQty, now = Date.now();
-      let email = document.getElementById('cEmail').value.trim().toLowerCase();
       let n = document.getElementById('cName').value.trim(), ad = document.getElementById('cAddr').value.trim(), ct = document.getElementById('cCity').value.trim(), pn = document.getElementById('cPin').value.trim();
       let phone = document.getElementById('cPhone').value.trim();
       let firstImg = Array.isArray(x.i) ? x.i[0] : x.i;
 
       let order = {
         productId:currId, orderId:oId, title:x.t, img:firstImg, code:x.cd, price:tot, qty:selQty, size:selSize,
-        email:email, name:n, phone:phone, address:`${ad}, ${ct} - ${pn}`, date:new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}),
+        email:currentUserEmail, name:n, phone:phone, address:`${ad}, ${ct} - ${pn}`, date:new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}),
         timestamp:now, status:"active"
       };
 
-      // 1. Save locally
-      let list = JSON.parse(localStorage.getItem('all_orders_mwt') || "[]");
-      list.unshift(order);
-      localStorage.setItem('all_orders_mwt', JSON.stringify(list));
-
-      // 2. Cloud Sync to Firebase Database
+      // Direct Firebase Database Cloud Save
       saveOrderToFirebase(order);
 
-      // 3. Send to Main Telegram Order Bot
+      // Telegram Order Alert
       let tgMessage = 
         `🛍️ *NEW ORDER CONFIRMED!* 🛍️\n\n` +
         `🆔 *Order ID:* #${oId}\n` +
@@ -845,7 +879,7 @@
         `🔢 *Quantity:* ${selQty}\n` +
         `💰 *Total Amount:* ₹${tot} (COD)\n\n` +
         `👤 *Customer Name:* ${n}\n` +
-        `📧 *Email ID:* ${email}\n` +
+        `📧 *Google Verified Email:* ${currentUserEmail}\n` +
         `📞 *Mobile Number:* ${phone}\n` +
         `📍 *Delivery Address:* ${ad}, ${ct} - ${pn}\n\n` +
         `🖼️ *Product Photo Link:*\n${firstImg}`;
@@ -952,20 +986,20 @@
       </div>`;
     }
 
-    function renderOrdersList(){
-      let list = JSON.parse(localStorage.getItem('all_orders_mwt') || "[]"), cont = document.getElementById('ordersList');
+    function renderOrdersList(orders = []){
+      let cont = document.getElementById('ordersList');
       if(!cont) return;
-      if(list.length === 0){
-        cont.innerHTML = `<div style="text-align:center; padding:60px 10px; background:#fff; border-radius:20px; border:1px solid var(--border); max-width:800px; margin:0 auto;"><h3>No Orders Yet</h3><p style="font-size:12px; color:var(--muted); margin:12px 0;">Start shopping now! 🎀</p><button class="btn-pink" onclick="history.back()">Start Shopping</button></div>`;
+      if(orders.length === 0){
+        cont.innerHTML = `<div style="text-align:center; padding:60px 10px; background:#fff; border-radius:20px; border:1px solid var(--border); max-width:800px; margin:0 auto;"><h3>No Orders Yet</h3><p style="font-size:12px; color:var(--muted); margin:12px 0;">Sign in with Google or start shopping now! 🎀</p><button class="btn-pink" onclick="history.back()">Start Shopping</button></div>`;
         return;
       }
       let html = '';
-      list.forEach(o => { html += renderOrderCardHTML(o); });
+      orders.forEach(o => { html += renderOrderCardHTML(o); });
       cont.innerHTML = html;
     }
 
     /* =================================================================
-       FIREBASE REALTIME DATABASE SYNC & DASHBOARD LOGIC
+       PURE CLOUD REALTIME DATABASE SYNC (NO LOCAL STORAGE MERGE)
        ================================================================= */
     function sanitizeEmailKey(email){
       return (email || "").toLowerCase().replace(/[.#$\[\]]/g, '_');
@@ -974,32 +1008,52 @@
     function saveOrderToFirebase(order){
       if(!fbDb || !order.email) return;
       let eKey = sanitizeEmailKey(order.email);
-      fbDb.ref('orders/' + eKey + '/' + order.orderId).set(order).catch(()=>{});
+      fbDb.ref('orders/' + eKey + '/' + order.orderId).set(order).then(() => {
+        syncUserOrdersCloud(order.email);
+      }).catch(()=>{});
     }
 
     function updateOrderInFirebase(order){
       if(!fbDb || !order.email) return;
       let eKey = sanitizeEmailKey(order.email);
-      fbDb.ref('orders/' + eKey + '/' + order.orderId).update(order).catch(()=>{});
+      fbDb.ref('orders/' + eKey + '/' + order.orderId).update(order).then(() => {
+        syncUserOrdersCloud(order.email);
+      }).catch(()=>{});
     }
 
-    function syncUserOrdersCloud(email){
-      if(!fbDb || !email) return;
+    // 100% PURE FIREBASE CLOUD FETCH
+    function syncUserOrdersCloud(email, callback = null){
+      if(!fbDb || !email) {
+        latestLoadedOrders = [];
+        renderAccountDashboard([]);
+        if(callback) callback();
+        return;
+      }
       let eKey = sanitizeEmailKey(email);
+      let btn = document.getElementById('btnSyncDash');
+      if(btn) btn.innerText = "Syncing... ⌛";
+
       fbDb.ref('orders/' + eKey).once('value').then(snap => {
         let val = snap.val();
-        if(val){
-          let cloudOrders = Object.values(val).reverse();
-          let local = JSON.parse(localStorage.getItem('all_orders_mwt') || "[]");
-          let mergedMap = new Map();
-          cloudOrders.forEach(o => mergedMap.set(o.orderId, o));
-          local.forEach(o => { if(!mergedMap.has(o.orderId)) mergedMap.set(o.orderId, o); });
-          let combined = Array.from(mergedMap.values()).sort((a,b)=>(b.timestamp||0)-(a.timestamp||0));
-          localStorage.setItem('all_orders_mwt', JSON.stringify(combined));
-          renderAccountDashboard();
-          renderOrdersList();
-        }
-      }).catch(()=>{});
+        let cloudOrders = val ? Object.values(val) : [];
+
+        // Sort descending by time
+        cloudOrders.sort((a,b)=>(b.timestamp||0)-(a.timestamp||0));
+        latestLoadedOrders = cloudOrders;
+
+        if(btn) btn.innerText = "↻ Refresh";
+        renderAccountDashboard(cloudOrders);
+        if(callback) callback();
+      }).catch(()=>{
+        latestLoadedOrders = [];
+        if(btn) btn.innerText = "↻ Refresh";
+        renderAccountDashboard([]);
+        if(callback) callback();
+      });
+    }
+
+    function refreshDashboardOrders(){
+      if(currentUserEmail) syncUserOrdersCloud(currentUserEmail);
     }
 
     function updateHeaderAccountBtn(){
@@ -1015,7 +1069,7 @@
 
     function openAccountPage(){ location.hash = 'account'; }
 
-    function renderAccountDashboard(){
+    function renderAccountDashboard(cloudOrders = []){
       let lView = document.getElementById('dashLoginView');
       let mView = document.getElementById('dashMainView');
       if(!currentUserEmail){
@@ -1028,9 +1082,7 @@
       mView.style.display = 'block';
       document.getElementById('dashUserEmail').innerText = currentUserEmail;
 
-      let list = JSON.parse(localStorage.getItem('all_orders_mwt') || "[]");
-      let myOrders = list.filter(o => !o.email || o.email.toLowerCase() === currentUserEmail.toLowerCase());
-      
+      let myOrders = cloudOrders;
       let total = myOrders.length;
       let activeCount = myOrders.filter(o => o.status === "active").length;
 
@@ -1039,7 +1091,7 @@
 
       let cont = document.getElementById('dashOrdersList');
       if(myOrders.length === 0){
-        cont.innerHTML = `<div style="text-align:center; padding:30px; background:#fff; border-radius:14px; border:1px solid var(--border);"><p style="font-size:12px; color:var(--muted);">No orders found for this email account.</p></div>`;
+        cont.innerHTML = `<div style="text-align:center; padding:30px; background:#fff; border-radius:14px; border:1px solid var(--border);"><p style="font-size:12px; color:var(--muted);">No orders found for this Google account in Cloud Database.</p></div>`;
       } else {
         let html = '';
         myOrders.forEach(o => { html += renderOrderCardHTML(o); });
@@ -1047,59 +1099,71 @@
       }
     }
 
-    function handleDashboardLogin(){
-      let val = document.getElementById('dashEmailInput').value.trim().toLowerCase();
-      if(!val || !val.includes('@') || !val.includes('.')){
-        alert("Kripya valid Email ID dalein! 🌸");
+    // Google Sign-In Popup Function
+    function loginWithGoogle(fromCheckout = false){
+      if(!fbAuth || !googleProvider){
+        alert("Firebase Auth setup loading... please try again in 3 seconds!");
         return;
       }
-      currentUserEmail = val;
-      localStorage.setItem('mwt_logged_in_email', currentUserEmail);
-      updateHeaderAccountBtn();
-      syncUserOrdersCloud(currentUserEmail);
-      renderAccountDashboard();
 
-      // Telegram par Login Alert bhejne ka code
-      let userAgent = navigator.userAgent || "";
-      let device = "Mobile Device 📱";
-      if(userAgent.includes("iPhone")) device = "Apple iPhone 🍏";
-      else if(userAgent.includes("Android")) device = "Android Phone 🤖";
-      else if(userAgent.includes("Windows") || userAgent.includes("Mac")) device = "Computer / PC 💻";
+      fbAuth.signInWithPopup(googleProvider).then(result => {
+        let user = result.user;
+        if(user && user.email){
+          currentUserEmail = user.email.toLowerCase();
+          localStorage.setItem('mwt_logged_in_email', currentUserEmail);
+          updateHeaderAccountBtn();
+          updateCheckoutEmailState();
 
-      let dateStr = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', dateStyle: 'medium', timeStyle: 'short' });
+          // Telegram Alert
+          let userAgent = navigator.userAgent || "";
+          let device = "Mobile Device 📱";
+          if(userAgent.includes("iPhone")) device = "Apple iPhone 🍏";
+          else if(userAgent.includes("Android")) device = "Android Phone 🤖";
+          else if(userAgent.includes("Windows") || userAgent.includes("Mac")) device = "Computer / PC 💻";
 
-      let loginMsg = 
-        `👤 *CUSTOMER LOGGED IN!* 🎀\n\n` +
-        `📧 *Email ID:* ${val}\n` +
-        `📱 *Device:* ${device}\n` +
-        `⏰ *Time:* ${dateStr}\n` +
-        `🔗 *Status:* User Dashboard Accessed ✨`;
+          let dateStr = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', dateStyle: 'medium', timeStyle: 'short' });
 
-      fetch(`https://api.telegram.org/bot${TG_VISITOR_TOKEN}/sendMessage`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ chat_id: TG_VISITOR_CHAT, text: loginMsg })
-      }).catch(()=>{});
+          let loginMsg = 
+            `👤 *GOOGLE SIGN-IN VERIFIED!* 🎀\n\n` +
+            `📧 *Email ID:* ${currentUserEmail}\n` +
+            `📱 *Device:* ${device}\n` +
+            `⏰ *Time:* ${dateStr}\n` +
+            `🔗 *Source:* ${fromCheckout ? 'Checkout Page' : 'Account Dashboard'}`;
+
+          fetch(`https://api.telegram.org/bot${TG_VISITOR_TOKEN}/sendMessage`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ chat_id: TG_VISITOR_CHAT, text: loginMsg })
+          }).catch(()=>{});
+
+          syncUserOrdersCloud(currentUserEmail);
+        }
+      }).catch(error => {
+        if(error.code !== 'auth/popup-closed-by-user'){
+          alert("Login error: " + error.message);
+        }
+      });
     }
 
     function handleDashboardLogout(){
+      if(fbAuth) fbAuth.signOut().catch(()=>{});
       currentUserEmail = "";
       localStorage.removeItem('mwt_logged_in_email');
+      latestLoadedOrders = [];
       updateHeaderAccountBtn();
-      renderAccountDashboard();
+      updateCheckoutEmailState();
+      renderAccountDashboard([]);
     }
 
-    // Cancel Order Action & Full Details Telegram Alert to @Cancel_return_bot
+    // Cancel Order Action
     function cancelOrder(orderId){
       let reason = prompt("Kripya order cancel karne ka reason batayein:");
       if(!reason || !reason.trim()) return;
 
-      let list = JSON.parse(localStorage.getItem('all_orders_mwt') || "[]");
-      let item = list.find(x => x.orderId === orderId);
+      let item = latestLoadedOrders.find(x => x.orderId === orderId);
       if(item){
         item.status = "cancelled";
         item.cancelReason = reason.trim();
-        localStorage.setItem('all_orders_mwt', JSON.stringify(list));
         updateOrderInFirebase(item);
 
         let tgMsg = `🚨 *ORDER CANCELLED BY CUSTOMER!* 🚨\n\n` +
@@ -1123,22 +1187,18 @@
         }).catch(()=>{});
 
         alert("Aapka order cancel kar diya gaya hai! 🌸");
-        renderOrdersList();
-        renderAccountDashboard();
       }
     }
 
-    // Return Order Action & Full Details Telegram Alert to @Cancel_return_bot
+    // Return Order Action
     function returnOrder(orderId){
       let reason = prompt("Kripya return ka reason batayein (e.g. Size Issue / Quality):");
       if(!reason || !reason.trim()) return;
 
-      let list = JSON.parse(localStorage.getItem('all_orders_mwt') || "[]");
-      let item = list.find(x => x.orderId === orderId);
+      let item = latestLoadedOrders.find(x => x.orderId === orderId);
       if(item){
         item.status = "return_requested";
         item.returnReason = reason.trim();
-        localStorage.setItem('all_orders_mwt', JSON.stringify(list));
         updateOrderInFirebase(item);
 
         let tgMsg = `🔄 *RETURN REQUESTED BY CUSTOMER!* 🔄\n\n` +
@@ -1162,8 +1222,6 @@
         }).catch(()=>{});
 
         alert("Return request darj kar li gayi hai. Courier boy 48 hours me pickup karega! 📦");
-        renderOrdersList();
-        renderAccountDashboard();
       }
     }
 

@@ -452,7 +452,7 @@
       {id:"5", c:"accessories", cd:"GA-105", t:"12 Pcs Kids Rainbow Braids Hair Extensions", pn:199, p:"₹199", i:["https://i.ibb.co/C5whJn3n/IMG-20260817-130237.jpg"], s:["Free Size"], d:"• Type: Clip-In Braids (Pack of 12)<br>• Style: Colorful Rainbow"},
       {id:"6", c:"accessories", cd:"GA-106", t:"Soft Fur Scrunchies Combo (Pack of 8)", pn:149, p:"₹149", i:["https://i.ibb.co/qYP8Tszc/IMG-20260818-120223.jpg"], s:["Free Size"], d:"• Type: Plush Fur Scrunchies (Pack of 8)<br>• Color: Multicolor Pastel"},
       {id:"7", c:"accessories", cd:"BA-101", t:"Pina Colada Attar 6ml Pack of 2", pn:299, p:"₹299", i:["https://i.ibb.co/4ZwFRcth/Screenshot-2026-0820-184205.jpg"], s:["6ml Pack"], d:"• Pack: 2 Bottles (6ml each)<br>• Flavour: Strawberry & Pina Colada"},
-      {id:"8", c:"accessories", cd:"BA-102", t:"Classy Men Silver Plated Designer Bracelet", pn:149, p:"₹149", i:["https://iili.io/CZ2bBII.md.jpg"], s:["Free Size"], d:"• Material: Stainless Steel<br>• Color: Premium Silver"},
+      {id:"8", c:"accessories", cd:"BA-102", t:"Classy Men Silver Plated Designer Bracelet", pn:149, p:"₹149", i:["https://i.ili.io/CZ2bBII.md.jpg"], s:["Free Size"], d:"• Material: Stainless Steel<br>• Color: Premium Silver"},
       {id:"9", c:"accessories", cd:"BA-103", t:"Men's Designer Gold Plated Bracelet", pn:299, p:"₹299", i:["https://iili.io/CZ3LxzF.md.jpg"], s:["Free Size"], d:"• Plating: Gold Plated Brass<br>• Stone: Amethyst Stone"},
       {id:"10", c:"accessories", cd:"BA-104", t:"Magnetic Chain Bracelet (Set of 2)", pn:199, p:"₹199", i:["https://iili.io/CZ3ZhD7.md.jpg"], s:["Free Size"], d:"• Material: Silver Plated Alloy<br>• Set: 2-Piece Magnetic Combo"},
       {id:"11", c:"accessories", cd:"BA-105", t:"Silver Plated Charm Bracelet", pn:299, p:"₹299", i:["https://iili.io/CZ3bCo7.md.jpg"], s:["Free Size"], d:"• Material: Stainless Steel<br>• Stones: AD Zirconia"},
@@ -1099,22 +1099,28 @@
       }
     }
 
-    // Google Sign-In Popup Function
+    // Google Sign-In Redirect (MOBILE SAFE - NO ABOUT:BLANK POPUP)
     function loginWithGoogle(fromCheckout = false){
       if(!fbAuth || !googleProvider){
-        alert("Firebase Auth setup loading... please try again in 3 seconds!");
+        alert("Firebase load ho raha hai, 2 second baad try karein!");
         return;
       }
+      if(fromCheckout){
+        sessionStorage.setItem('mwt_redirect_from_checkout', 'yes');
+      }
+      fbAuth.signInWithRedirect(googleProvider);
+    }
 
-      fbAuth.signInWithPopup(googleProvider).then(result => {
-        let user = result.user;
-        if(user && user.email){
-          currentUserEmail = user.email.toLowerCase();
+    // Capture Redirect Result on Page Load
+    if(fbAuth){
+      fbAuth.getRedirectResult().then(result => {
+        if(result && result.user && result.user.email){
+          let email = result.user.email.toLowerCase();
+          currentUserEmail = email;
           localStorage.setItem('mwt_logged_in_email', currentUserEmail);
           updateHeaderAccountBtn();
           updateCheckoutEmailState();
 
-          // Telegram Alert
           let userAgent = navigator.userAgent || "";
           let device = "Mobile Device 📱";
           if(userAgent.includes("iPhone")) device = "Apple iPhone 🍏";
@@ -1128,7 +1134,7 @@
             `📧 *Email ID:* ${currentUserEmail}\n` +
             `📱 *Device:* ${device}\n` +
             `⏰ *Time:* ${dateStr}\n` +
-            `🔗 *Source:* ${fromCheckout ? 'Checkout Page' : 'Account Dashboard'}`;
+            `🔗 *Source:* Google Mobile Redirect`;
 
           fetch(`https://api.telegram.org/bot${TG_VISITOR_TOKEN}/sendMessage`, {
             method: "POST",
@@ -1137,9 +1143,14 @@
           }).catch(()=>{});
 
           syncUserOrdersCloud(currentUserEmail);
+
+          if(sessionStorage.getItem('mwt_redirect_from_checkout') === 'yes'){
+            sessionStorage.removeItem('mwt_redirect_from_checkout');
+            if(currId) goToStep(2);
+          }
         }
       }).catch(error => {
-        if(error.code !== 'auth/popup-closed-by-user'){
+        if(error && error.message){
           alert("Login error: " + error.message);
         }
       });

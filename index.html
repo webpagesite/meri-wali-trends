@@ -64,8 +64,9 @@
     .btn-pink{display:block;width:100%;padding:13px;background:linear-gradient(135deg,#ff4d88,#ff2a6d);color:#fff;font-weight:700;border-radius:12px;border:none;cursor:pointer;font-size:13.5px;text-align:center;}
     .btn-hint{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:11px;background:#fff0f5;color:var(--pink);border:1.5px dashed var(--pink);font-weight:700;border-radius:12px;cursor:pointer;font-size:12.5px;margin-bottom:12px;}
     
-    .btn-google{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:13px;background:#fff;color:#333;font-weight:700;border-radius:12px;border:1.5px solid var(--border);cursor:pointer;font-size:13.5px;box-shadow:0 4px 12px rgba(0,0,0,0.06);user-select:none;}
-    .btn-google:active{background:#f5f5f5;}
+    .btn-google{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:14px;background:#fff;color:#333;font-weight:700;border-radius:12px;border:1.5px solid var(--border);cursor:pointer;font-size:13.5px;box-shadow:0 4px 12px rgba(0,0,0,0.06);position:relative;z-index:100;}
+    .btn-google *{pointer-events:none;}
+    .btn-google:active{background:#f0f0f0;transform:scale(0.99);}
 
     .slider-box{position:relative;width:100%;height:350px;background:#fff8fa;border-bottom:1px solid var(--border);overflow:hidden;touch-action:pan-y;user-select:none;display:flex;align-items:center;justify-content:center;}
     .slider-img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;display:block;margin:auto;}
@@ -265,7 +266,7 @@
             ✓ Logged in as: <span id="cVerifiedEmailText"></span>
           </div>
           <div id="cEmailLoginPrompt">
-            <button class="btn-google" type="button" onclick="loginWithGoogle(true)">
+            <button class="btn-google" id="btnGoogleAuthCheckout" type="button" onclick="loginWithGoogle(true)">
               <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
               <span>Sign in with Google to Continue</span>
             </button>
@@ -402,8 +403,9 @@
     const TG_VISITOR_TOKEN = "8956961710:AAHGJXvB_gWyqaoSsU1eXjrwcITj9jFalg8";
     const TG_VISITOR_CHAT = "8106405157";
 
+    // 100% CORRECTED API KEY (Capital I, small t)
     const firebaseConfig = {
-      apiKey: "AIzaSyBT_wtsRiTFZ_Q_yIr3oeLVhNnZCS1_6AU",
+      apiKey: "AIzaSyBT_wtsRItFZ_Q_yIr3oeLVhNnZCS1_6AU",
       authDomain: "meriwalitrends.firebaseapp.com",
       databaseURL: "https://meriwalitrends-default-rtdb.asia-southeast1.firebasedatabase.app",
       projectId: "meriwalitrends",
@@ -414,13 +416,16 @@
 
     let fbApp, fbDb, fbAuth, googleProvider;
     try {
-      fbApp = firebase.initializeApp(firebaseConfig);
+      if (!firebase.apps.length) {
+        fbApp = firebase.initializeApp(firebaseConfig);
+      } else {
+        fbApp = firebase.app();
+      }
       fbDb = firebase.database();
       fbAuth = firebase.auth();
       googleProvider = new firebase.auth.GoogleAuthProvider();
-      googleProvider.setCustomParameters({ prompt: 'select_account' });
     } catch(e) {
-      console.error(e);
+      console.error("Firebase init error:", e);
     }
 
     const SHEET_ID = "1VuDMLMixAeBJxFLtgGNxkI5kzUFsNM3RABdQLV6DdRs";
@@ -991,7 +996,7 @@
       let cont = document.getElementById('ordersList');
       if(!cont) return;
       if(orders.length === 0){
-        cont.innerHTML = `<div style="text-align:center; padding:60px 10px; background:#fff; border-radius:20px; border:1px solid var(--border); max-width:800px; margin:0 auto;"><h3>No Orders Yet</h3><p style="font-size:12px; color:var(--muted); margin:12px 0;">Sign in with Google or start shopping now! 🎀</p><button class="btn-pink" onclick="history.back()">Start Shopping</button></div>`;
+        cont.innerHTML = `<div style="text-align:center; padding:60px 10px; background:#fff; border-radius:20px; border:1px solid var(--border); max-width:800px; margin:0 auto;"><h3>No Orders Yet</h3><p style="font-size:12px; color:var(--muted); margin-label:12px 0;">Sign in with Google or start shopping now! 🎀</p><button class="btn-pink" onclick="history.back()">Start Shopping</button></div>`;
         return;
       }
       let html = '';
@@ -1095,55 +1100,21 @@
       }
     }
 
-    // Google Sign-In (Mobile Redirect + Desktop Popup)
+    // DIRECT REDIRECT LOGIN HANDLER
     function loginWithGoogle(fromCheckout = false){
-      if(typeof firebase === 'undefined' || !fbAuth || !googleProvider){
-        alert("Firebase load nahi hua. Page ko refresh karke dobara try karein.");
-        console.error("Firebase Auth is not initialized.");
-        return;
+      try {
+        if(!fbAuth || !googleProvider){
+          alert("Firebase load ho raha hai, 2 second wait karein!");
+          return;
+        }
+        if(fromCheckout){
+          sessionStorage.setItem('mwt_redirect_from_checkout', 'yes');
+        }
+        fbAuth.signInWithRedirect(googleProvider);
+      } catch(err) {
+        alert("Error: " + err.message);
       }
-
-      if(fromCheckout){
-        sessionStorage.setItem('mwt_redirect_from_checkout', 'yes');
-      }
-
-      const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent || '');
-
-      // Mobile browsers par redirect zyada reliable hota hai.
-      if(isMobile){
-        fbAuth.signInWithRedirect(googleProvider)
-          .catch(error => {
-            console.error("Mobile redirect login error:", error);
-            alert("Login error: " + (error.message || error.code));
-          });
-        return;
-      }
-
-      // Desktop par popup use karo. Popup block hone par redirect fallback.
-      fbAuth.signInWithPopup(googleProvider)
-        .then(result => {
-          if(result && result.user && result.user.email){
-            handleSuccessfulGoogleLogin(result.user.email, fromCheckout);
-          }
-        })
-        .catch(error => {
-          console.error("Popup login error:", error);
-          if(error.code === 'auth/popup-blocked' ||
-             error.code === 'auth/popup-closed-by-user' ||
-             error.code === 'auth/cancelled-popup-request'){
-            fbAuth.signInWithRedirect(googleProvider)
-              .catch(redirectError => {
-                console.error("Redirect fallback error:", redirectError);
-                alert("Login error: " + (redirectError.message || redirectError.code));
-              });
-          } else {
-            alert("Login error: " + (error.message || error.code));
-          }
-        });
     }
-
-    // Inline onclick ke liye function ko explicitly global rakhein.
-    window.loginWithGoogle = loginWithGoogle;
 
     function handleSuccessfulGoogleLogin(emailStr, fromCheckout = false){
       currentUserEmail = emailStr.toLowerCase();
@@ -1175,22 +1146,17 @@
       syncUserOrdersCloud(currentUserEmail);
     }
 
-    // Capture Redirect Result on Load
-    window.addEventListener('DOMContentLoaded', () => {
-      if(fbAuth){
-        fbAuth.getRedirectResult().then(result => {
-          if(result && result.user && result.user.email){
-            let fromCheck = sessionStorage.getItem('mwt_redirect_from_checkout') === 'yes';
-            sessionStorage.removeItem('mwt_redirect_from_checkout');
-            handleSuccessfulGoogleLogin(result.user.email, fromCheck);
-            if(fromCheck && currId) goToStep(2);
-          }
-        }).catch(error => {
-          console.error("Redirect result error:", error);
-          alert("Login error: " + (error.message || error.code));
-        });
-      }
-    });
+    // REDIRECT CATCHER
+    if(fbAuth){
+      fbAuth.onAuthStateChanged(user => {
+        if(user && user.email){
+          let fromCheck = sessionStorage.getItem('mwt_redirect_from_checkout') === 'yes';
+          sessionStorage.removeItem('mwt_redirect_from_checkout');
+          handleSuccessfulGoogleLogin(user.email, fromCheck);
+          if(fromCheck && currId) goToStep(2);
+        }
+      });
+    }
 
     function handleDashboardLogout(){
       if(fbAuth) fbAuth.signOut().catch(()=>{});

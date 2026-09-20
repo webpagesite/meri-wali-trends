@@ -376,19 +376,19 @@
   </div>
 
   <script>
-    // Main Orders Bot[span_7](start_span)[span_7](end_span)
+    // Main Orders Bot
     const TG_TOKEN = "8845393046:AAHOOcZUlXl6DJuIzXJeyOltlCKWByATM94";
     const TG_CHAT = "8106405157";
 
-    // Cancel & Return Bot (@Cancel_return_bot)[span_8](start_span)[span_8](end_span)
+    // Cancel & Return Bot (@Cancel_return_bot)
     const TG_CANCEL_TOKEN = "8748466480:AAF8RsQ-5xkVIzXvQfKFZfLOou4oBZjUbfE";
     const TG_CANCEL_CHAT = "8106405157";
 
-    // New Live Visitor Tracker Bot (@Visitor_meriwalitrends_bot)
+    // Live Visitor Tracker Bot (@Visitor_meriwalitrends_bot)
     const TG_VISITOR_TOKEN = "8956961710:AAHGJXvB_gWyqaoSsU1eXjrwcITj9jFalg8";
     const TG_VISITOR_CHAT = "8106405157";
 
-    // Firebase Database Setup[span_9](start_span)[span_9](end_span)
+    // Firebase Database Setup
     const firebaseConfig = {
       apiKey: "AIzaSyBT_wtsRiTFZ_Q_yIr3oeLVhNnZCS1_6AU",
       authDomain: "meriwalitrends.firebaseapp.com",
@@ -832,10 +832,10 @@
       list.unshift(order);
       localStorage.setItem('all_orders_mwt', JSON.stringify(list));
 
-      // 2. Cloud Sync to Firebase Database[span_10](start_span)[span_10](end_span)
+      // 2. Cloud Sync to Firebase Database
       saveOrderToFirebase(order);
 
-      // 3. Send to Main Telegram Order Bot[span_11](start_span)[span_11](end_span)
+      // 3. Send to Main Telegram Order Bot
       let tgMessage = 
         `🛍️ *NEW ORDER CONFIRMED!* 🛍️\n\n` +
         `🆔 *Order ID:* #${oId}\n` +
@@ -1058,6 +1058,28 @@
       updateHeaderAccountBtn();
       syncUserOrdersCloud(currentUserEmail);
       renderAccountDashboard();
+
+      // Telegram par Login Alert bhejne ka code
+      let userAgent = navigator.userAgent || "";
+      let device = "Mobile Device 📱";
+      if(userAgent.includes("iPhone")) device = "Apple iPhone 🍏";
+      else if(userAgent.includes("Android")) device = "Android Phone 🤖";
+      else if(userAgent.includes("Windows") || userAgent.includes("Mac")) device = "Computer / PC 💻";
+
+      let dateStr = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', dateStyle: 'medium', timeStyle: 'short' });
+
+      let loginMsg = 
+        `👤 *CUSTOMER LOGGED IN!* 🎀\n\n` +
+        `📧 *Email ID:* ${val}\n` +
+        `📱 *Device:* ${device}\n` +
+        `⏰ *Time:* ${dateStr}\n` +
+        `🔗 *Status:* User Dashboard Accessed ✨`;
+
+      fetch(`https://api.telegram.org/bot${TG_VISITOR_TOKEN}/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ chat_id: TG_VISITOR_CHAT, text: loginMsg })
+      }).catch(()=>{});
     }
 
     function handleDashboardLogout(){
@@ -1067,7 +1089,7 @@
       renderAccountDashboard();
     }
 
-    // Cancel Order Action & Full Details Telegram Alert to @Cancel_return_bot[span_12](start_span)[span_12](end_span)
+    // Cancel Order Action & Full Details Telegram Alert to @Cancel_return_bot
     function cancelOrder(orderId){
       let reason = prompt("Kripya order cancel karne ka reason batayein:");
       if(!reason || !reason.trim()) return;
@@ -1106,7 +1128,7 @@
       }
     }
 
-    // Return Order Action & Full Details Telegram Alert to @Cancel_return_bot[span_13](start_span)[span_13](end_span)
+    // Return Order Action & Full Details Telegram Alert to @Cancel_return_bot
     function returnOrder(orderId){
       let reason = prompt("Kripya return ka reason batayein (e.g. Size Issue / Quality):");
       if(!reason || !reason.trim()) return;

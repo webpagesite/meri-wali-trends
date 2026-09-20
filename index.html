@@ -4,6 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>🎀 Meri Wali Trends 🐱✨</title>
+  
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Quicksand:wght@700&display=swap');
     *{margin:0;padding:0;box-sizing:border-box;font-family:'Plus Jakarta Sans',sans-serif;}
@@ -19,8 +24,9 @@
 
     .header{padding:14px;background:#fff;border-radius:20px;border:1px solid var(--border);box-shadow:0 8px 24px rgba(255,105,180,0.08);max-width:900px;margin:0 auto 14px;}
     .h-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
-    .brand-title{font-family:'Quicksand',sans-serif;font-size:21px;color:var(--pink);display:flex;align-items:center;gap:5px;}
-    .btn-orders{background:#fff0f5;color:var(--pink);border:1px solid var(--pink-accent);padding:6px 14px;border-radius:999px;font-size:11.5px;font-weight:700;cursor:pointer;}
+    .brand-title{font-family:'Quicksand',sans-serif;font-size:20px;color:var(--pink);display:flex;align-items:center;gap:5px;}
+    .h-actions{display:flex;gap:6px;align-items:center;}
+    .btn-header{background:#fff0f5;color:var(--pink);border:1px solid var(--pink-accent);padding:6px 12px;border-radius:999px;font-size:11.5px;font-weight:700;cursor:pointer;}
     
     .voice-btn{background:linear-gradient(135deg,#ff6584,#ff2e63);color:#fff;border:none;padding:11px 18px;border-radius:999px;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 6px 16px rgba(255,46,99,0.35);}
     .voice-popup{display:none;background:#fff;border:2px dashed var(--pink);border-radius:16px;padding:12px 16px;margin:10px auto;max-width:900px;font-size:13px;color:#b01a48;font-weight:600;}
@@ -57,7 +63,6 @@
     .btn-pink{display:block;width:100%;padding:13px;background:linear-gradient(135deg,#ff4d88,#ff2a6d);color:#fff;font-weight:700;border-radius:12px;border:none;cursor:pointer;font-size:13.5px;text-align:center;}
     .btn-hint{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:11px;background:#fff0f5;color:var(--pink);border:1.5px dashed var(--pink);font-weight:700;border-radius:12px;cursor:pointer;font-size:12.5px;margin-bottom:12px;}
     
-    /* Swipeable Big Preview Box */
     .slider-box{position:relative;width:100%;height:350px;background:#fff8fa;border-bottom:1px solid var(--border);overflow:hidden;touch-action:pan-y;user-select:none;display:flex;align-items:center;justify-content:center;}
     .slider-img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;display:block;margin:auto;}
     .slider-badge{position:absolute;top:12px;left:12px;background:rgba(0,0,0,0.55);color:#fff;font-size:11px;font-weight:700;padding:4px 10px;border-radius:12px;backdrop-filter:blur(4px);z-index:10;}
@@ -65,7 +70,6 @@
     .slider-arrow.left{left:10px;}
     .slider-arrow.right{right:10px;}
     
-    /* Bottom Thumbnails Container */
     .thumb-grid{display:flex;gap:8px;padding:10px 16px;background:#fff8fa;border-bottom:1px solid var(--border);overflow-x:auto;}
     .thumb-grid img{width:62px;height:62px;object-fit:cover;border-radius:10px;border:2px solid transparent;cursor:pointer;flex-shrink:0;background:#fff;}
     .thumb-grid img.active-thumb{border-color:var(--pink);transform:scale(1.04);}
@@ -88,9 +92,9 @@
     .bill-row{display:flex;justify-content:space-between;margin-bottom:8px;color:var(--muted);font-weight:600;}
     .bill-row.total{border-top:1px dashed var(--border);padding-top:8px;color:var(--text);font-weight:800;font-size:14.5px;}
 
-    /* Orders Page Styles */
-    #ordersPage{display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:var(--bg);z-index:4000;overflow-y:auto;text-align:left;padding:16px 14px 60px;}
-    .orders-top{display:flex;align-items:center;gap:12px;background:#fff;padding:12px 16px;border-radius:16px;border:1px solid var(--border);margin:0 auto 16px;max-width:800px;}
+    /* Orders & Dashboard Pages */
+    #ordersPage,#accountPage{display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:var(--bg);z-index:4000;overflow-y:auto;text-align:left;padding:16px 14px 60px;}
+    .page-top{display:flex;align-items:center;gap:12px;background:#fff;padding:12px 16px;border-radius:16px;border:1px solid var(--border);margin:0 auto 16px;max-width:800px;}
     .order-box{background:#fff;border-radius:18px;border:1px solid var(--border);padding:14px 16px;margin:0 auto 14px;max-width:800px;}
     
     .order-actions{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:12px;padding-top:10px;border-top:1px dashed var(--border);}
@@ -110,6 +114,11 @@
     .t-item.active::before{background:var(--pink);border-color:var(--pink);}
     .t-item.cancelled::before{background:var(--red);border-color:var(--red);}
     .t-item.returned::before{background:var(--blue);border-color:var(--blue);}
+
+    /* Dashboard UI Elements */
+    .profile-card{background:#fff;border-radius:18px;border:1px solid var(--border);padding:18px;margin:0 auto 16px;max-width:800px;}
+    .dash-stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:14px;}
+    .dash-stat-box{background:#fff9fb;border:1px solid var(--border);border-radius:14px;padding:12px;text-align:center;}
 
     .recent-popup{position:fixed;bottom:20px;left:14px;background:#fff;border:1.5px solid var(--border);border-radius:14px;padding:9px 12px;display:flex;align-items:center;gap:10px;box-shadow:0 8px 24px rgba(255,77,136,0.2);z-index:2500;max-width:320px;transform:translateY(120px);opacity:0;transition:all 0.5s ease;text-align:left;pointer-events:none;}
     .recent-popup.show{transform:translateY(0);opacity:1;}
@@ -165,7 +174,10 @@
   <header class="header">
     <div class="h-row">
       <h1 class="brand-title"><span>🎀</span> Meri Wali Trends <span>🐱</span>✨</h1>
-      <button class="btn-orders" onclick="openMyOrdersPage()">📦 My Orders</button>
+      <div class="h-actions">
+        <button class="btn-header" id="btnHeaderAccount" onclick="openAccountPage()">👤 Login</button>
+        <button class="btn-header" onclick="openMyOrdersPage()">📦 Orders</button>
+      </div>
     </div>
     <p style="font-size:12px; color:var(--muted); text-align:left; font-weight:600;">Babu ki har demand yahan poori hoti hai 🐾💖</p>
   </header>
@@ -204,7 +216,6 @@
         <div class="action-icon-btn close-btn" onclick="history.back()">&times;</div>
       </div>
 
-      <!-- Main Photo Slider -->
       <div class="slider-box" id="sliderBox">
         <div class="slider-badge" id="photoBadge">1 / 1</div>
         <div class="slider-arrow left" id="slideLeft" onclick="changeSlide(-1)">‹</div>
@@ -212,7 +223,6 @@
         <div class="slider-arrow right" id="slideRight" onclick="changeSlide(1)">›</div>
       </div>
 
-      <!-- Multiple Photos Thumbnails -->
       <div class="thumb-grid" id="thumbnailContainer"></div>
 
       <div class="modal-body">
@@ -221,7 +231,6 @@
         <div id="mSizesDisplay" style="margin-bottom:12px; background:#fff0f5; padding:8px 12px; border-radius:10px; border:1px solid var(--border); font-size:12px; font-weight:700; color:var(--pink);"></div>
         <div id="mDesc" style="font-size:12.5px; color:var(--muted); line-height:1.55; margin-bottom:16px; background:#fff9fb; padding:12px; border-radius:12px;"></div>
         
-        <!-- Send Hint Button -->
         <button class="btn-hint" onclick="sendHintToBabu()">💌 Send Hint to Babu 🥺👉👈</button>
         <button class="btn-pink" onclick="startCheckout()">Order Now 🛍️</button>
       </div>
@@ -246,7 +255,8 @@
       </div>
       <div class="step-body" id="cStep2">
         <h4 style="margin-bottom:12px; font-size:14px;">Delivery Address 📍</h4>
-        <div class="form-group"><label>Name *</label><input type="text" id="cName" placeholder="Full Name"></div>
+        <div class="form-group"><label>Email ID (To Sync & Track Orders) *</label><input type="email" id="cEmail" placeholder="e.g. name@gmail.com"></div>
+        <div class="form-group"><label>Full Name *</label><input type="text" id="cName" placeholder="Full Name"></div>
         <div class="form-group"><label>10-Digit Mobile Number *</label><input type="tel" id="cPhone" maxlength="10" placeholder="Enter 10-digit phone number"></div>
         <div class="form-group"><label>Address *</label><textarea id="cAddr" rows="2" placeholder="House no, Street, Colony"></textarea></div>
         <div class="form-group"><label>City & State *</label><input type="text" id="cCity" placeholder="City name"></div>
@@ -273,9 +283,48 @@
     </div>
   </div>
 
+  <!-- Official Account / Profile Page -->
+  <div id="accountPage">
+    <div class="page-top">
+      <button style="background:#fff0f5; border:1px solid var(--pink-accent); color:var(--pink); border-radius:50%; width:34px; height:34px; font-size:16px; font-weight:bold; cursor:pointer;" onclick="history.back()">←</button>
+      <div><h2 style="font-size:17px;">User Dashboard 👤</h2><p style="font-size:11px; color:var(--muted);">Manage your orders, profile & deliveries</p></div>
+    </div>
+
+    <!-- Login View (If not logged in) -->
+    <div id="dashLoginView" class="profile-card" style="display:none; text-align:center; padding:24px 18px;">
+      <div style="font-size:38px; margin-bottom:8px;">🎀</div>
+      <h3 style="font-size:17px; color:var(--text); margin-bottom:4px;">Official Customer Login</h3>
+      <p style="font-size:12px; color:var(--muted); margin-bottom:18px;">Enter your Email ID to instantly sync all your orders across any phone</p>
+      <div class="form-group" style="text-align:left;"><label>Registered Email ID</label><input type="email" id="dashEmailInput" placeholder="Enter your email (e.g. name@gmail.com)"></div>
+      <button class="btn-pink" onclick="handleDashboardLogin()">Continue to Dashboard ➔</button>
+    </div>
+
+    <!-- Main Dashboard View (If logged in) -->
+    <div id="dashMainView" style="display:none;">
+      <div class="profile-card">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <h3 style="font-size:16px; color:var(--text);" id="dashUserEmail">user@email.com</h3>
+            <span style="font-size:11px; color:var(--green); font-weight:700;">● Cloud Connected</span>
+          </div>
+          <button style="background:#ffebee; color:var(--red); border:1px solid #ffcdd2; padding:5px 12px; border-radius:8px; font-size:11.5px; font-weight:700; cursor:pointer;" onclick="handleDashboardLogout()">Logout</button>
+        </div>
+        <div class="dash-stat-grid">
+          <div class="dash-stat-box"><div style="font-size:18px; font-weight:800; color:var(--pink);" id="dashTotalOrders">0</div><div style="font-size:11px; color:var(--muted); font-weight:700; margin-top:2px;">Total Orders</div></div>
+          <div class="dash-stat-box"><div style="font-size:18px; font-weight:800; color:var(--green);" id="dashActiveOrders">0</div><div style="font-size:11px; color:var(--muted); font-weight:700; margin-top:2px;">Active Deliveries</div></div>
+        </div>
+      </div>
+      <div style="max-width:800px; margin:0 auto 12px; display:flex; justify-content:space-between; align-items:center;">
+        <h4 style="font-size:14.5px; color:var(--text);">Order History & Live Tracking</h4>
+        <button style="background:#fff; border:1px solid var(--border); color:var(--pink); padding:4px 10px; border-radius:6px; font-size:11px; font-weight:700; cursor:pointer;" onclick="syncUserOrdersCloud(currentUserEmail)">↻ Refresh</button>
+      </div>
+      <div id="dashOrdersList"></div>
+    </div>
+  </div>
+
   <!-- Orders Page -->
   <div id="ordersPage">
-    <div class="orders-top">
+    <div class="page-top">
       <button style="background:#fff0f5; border:1px solid var(--pink-accent); color:var(--pink); border-radius:50%; width:34px; height:34px; font-size:16px; font-weight:bold; cursor:pointer;" onclick="history.back()">←</button>
       <div><h2 style="font-size:17px;">My Orders 🛍️</h2><p style="font-size:11px; color:var(--muted);">Tap item to view product or track order</p></div>
     </div>
@@ -327,19 +376,41 @@
   </div>
 
   <script>
-    // Main Orders Bot (New Order Alert)
+    // Main Orders Bot[span_7](start_span)[span_7](end_span)
     const TG_TOKEN = "8845393046:AAHOOcZUlXl6DJuIzXJeyOltlCKWByATM94";
     const TG_CHAT = "8106405157";
 
-    // Cancel & Return Bot (@Cancel_return_bot)
+    // Cancel & Return Bot (@Cancel_return_bot)[span_8](start_span)[span_8](end_span)
     const TG_CANCEL_TOKEN = "8748466480:AAF8RsQ-5xkVIzXvQfKFZfLOou4oBZjUbfE";
     const TG_CANCEL_CHAT = "8106405157";
+
+    // New Live Visitor Tracker Bot (@Visitor_meriwalitrends_bot)
+    const TG_VISITOR_TOKEN = "8956961710:AAHGJXvB_gWyqaoSsU1eXjrwcITj9jFalg8";
+    const TG_VISITOR_CHAT = "8106405157";
+
+    // Firebase Database Setup[span_9](start_span)[span_9](end_span)
+    const firebaseConfig = {
+      apiKey: "AIzaSyBT_wtsRiTFZ_Q_yIr3oeLVhNnZCS1_6AU",
+      authDomain: "meriwalitrends.firebaseapp.com",
+      databaseURL: "https://meriwalitrends-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "meriwalitrends",
+      storageBucket: "meriwalitrends.firebasestorage.app",
+      messagingSenderId: "234797686035",
+      appId: "1:234797686035:web:ae3984d32872ec2a108ee6"
+    };
+
+    let fbApp, fbDb;
+    try {
+      fbApp = firebase.initializeApp(firebaseConfig);
+      fbDb = firebase.database();
+    } catch(e) {}
 
     const SHEET_ID = "1VuDMLMixAeBJxFLtgGNxkI5kzUFsNM3RABdQLV6DdRs";
 
     let currId = null, selQty = 1, selSize = "", currTab = 'all', activeStep = 1;
     let searchQuery = "";
     let currentSlideIdx = 0, currentImages = [];
+    let currentUserEmail = localStorage.getItem('mwt_logged_in_email') || "";
     const vAudio = new Audio("site.mp3");
 
     document.addEventListener('contextmenu', function(e) {
@@ -440,7 +511,6 @@
       return allProducts.find(p => String(p.id).trim() === String(id).trim());
     }
 
-    // Photo Slider & Multiple Thumbnails Logic
     function setupSlider(imgs){
       currentImages = Array.isArray(imgs) ? imgs : [imgs];
       currentSlideIdx = 0;
@@ -501,7 +571,6 @@
       updateSliderView();
     }
 
-    // Touch Swipe on Main Image Box
     let touchStartX = 0, touchEndX = 0;
     const sliderBox = document.getElementById('sliderBox');
     sliderBox.addEventListener('touchstart', (e) => {
@@ -516,66 +585,46 @@
     function handleSwipe() {
       if(currentImages.length <= 1) return;
       let diff = touchStartX - touchEndX;
-      if (diff > 45) {
-        changeSlide(1);
-      } else if (diff < -45) {
-        changeSlide(-1);
-      }
+      if (diff > 45) changeSlide(1);
+      else if (diff < -45) changeSlide(-1);
     }
 
-    /* =================================================================
-       PURE HASH ROUTING (EVERY ACTION HAS A UNIQUE STEP & BACK HISTORY)
-       ================================================================= */
-    function openModal(id){
-      location.hash = `product-${id}`;
-    }
+    function openModal(id){ location.hash = `product-${id}`; }
+    function startCheckout(){ if(!currId) return; location.hash = `checkout-${currId}-step1`; }
+    function openMyOrdersPage(){ location.hash = 'orders'; }
+    function openAccountPage(){ location.hash = 'account'; }
+    function openWheelModal(){ location.hash = 'wheel'; }
+    function goToStep(st){ if(!currId) return; location.hash = `checkout-${currId}-step${st}`; }
+    function jumpStep(st){ if(activeStep === 5) return; goToStep(st); }
 
-    function startCheckout(){
-      if(!currId) return;
-      location.hash = `checkout-${currId}-step1`;
-    }
-
-    function openMyOrdersPage(){
-      location.hash = 'orders';
-    }
-
-    function openWheelModal(){
-      location.hash = 'wheel';
-    }
-
-    function goToStep(st){
-      if(!currId) return;
-      location.hash = `checkout-${currId}-step${st}`;
-    }
-
-    function jumpStep(st){
-      if(activeStep === 5) return;
-      goToStep(st);
-    }
-
-    // Master Router: Watches Hash Changes to Show/Hide Popups
     function handleRoute(){
       let hash = window.location.hash.replace('#', '').trim();
 
-      // Elements
       let pModal = document.getElementById('productModal');
       let cModal = document.getElementById('checkoutModal');
       let oPage = document.getElementById('ordersPage');
+      let aPage = document.getElementById('accountPage');
       let wModal = document.getElementById('wheelModal');
 
-      // Hide all modals by default
       pModal.style.display = 'none';
       cModal.style.display = 'none';
       oPage.style.display = 'none';
+      aPage.style.display = 'none';
       wModal.style.display = 'none';
 
-      if(!hash) {
-        return;
-      }
+      updateHeaderAccountBtn();
+
+      if(!hash) return;
 
       if(hash === 'orders'){
         renderOrdersList();
         oPage.style.display = 'block';
+        return;
+      }
+
+      if(hash === 'account'){
+        renderAccountDashboard();
+        aPage.style.display = 'block';
         return;
       }
 
@@ -661,6 +710,10 @@
               sBox.style.display = 'none'; 
             }
             document.getElementById('cQtyVal').innerText = selQty;
+          } else if(step === 2){
+            if(currentUserEmail && !document.getElementById('cEmail').value){
+              document.getElementById('cEmail').value = currentUserEmail;
+            }
           } else if(step === 3){
             document.getElementById('bMrp').innerText = `₹${tot + 100}`;
             document.getElementById('bTot').innerText = `₹${tot}`;
@@ -670,7 +723,7 @@
             document.getElementById('cMiniTitle4').innerText = x.t;
             document.getElementById('cRevQty').innerText = `Qty: ${selQty}` + (selSize ? ` | Option: ${selSize}` : '');
             document.getElementById('cRevTot').innerText = `Total: ₹${tot} (COD)`;
-            document.getElementById('cRevAddr').innerText = `${document.getElementById('cName').value}, ${document.getElementById('cPhone').value}\n${document.getElementById('cAddr').value}, ${document.getElementById('cCity').value} - ${document.getElementById('cPin').value}`;
+            document.getElementById('cRevAddr').innerText = `${document.getElementById('cName').value}, ${document.getElementById('cPhone').value}\n${document.getElementById('cEmail').value}\n${document.getElementById('cAddr').value}, ${document.getElementById('cCity').value} - ${document.getElementById('cPin').value}`;
           }
         }
       }
@@ -691,11 +744,17 @@
     }
 
     function validateAddr(){
+      let email = document.getElementById('cEmail').value.trim();
       let name = document.getElementById('cName').value.trim();
       let phone = document.getElementById('cPhone').value.trim();
       let addr = document.getElementById('cAddr').value.trim();
       let pin = document.getElementById('cPin').value.trim();
 
+      if(!email || !email.includes('@') || !email.includes('.')){
+        alert("Kripya valid Email ID dalein taaki aapka order save ho sake! 🌸");
+        document.getElementById('cEmail').focus();
+        return;
+      }
       if(!name){ alert("Kripya apna Full Name dalein! 🌸"); return; }
       if(!phone || phone.length !== 10 || !/^[6-9]\d{9}$/.test(phone)){
         alert("Kripya valid 10-digit mobile number enter karein! 🌸"); 
@@ -704,10 +763,13 @@
       }
       if(!addr){ alert("Kripya complete Delivery Address dalein! 🌸"); return; }
       if(!pin || pin.length !== 6){ alert("Kripya 6-digit Pincode enter karein! 🌸"); return; }
+
+      currentUserEmail = email.toLowerCase();
+      localStorage.setItem('mwt_logged_in_email', currentUserEmail);
+      updateHeaderAccountBtn();
       goToStep(3);
     }
 
-    /* UNIVERSAL SHARE BUTTON */
     function universalShareProduct(){
       let x = getProdById(currId);
       if(!x) return;
@@ -727,7 +789,6 @@
       }
     }
 
-    /* SEND HINT TO BABU */
     function sendHintToBabu(){
       let x = getProdById(currId);
       if(!x) return;
@@ -755,20 +816,26 @@
     function placeOrder(){
       let btn = document.getElementById('btnPlace'); btn.innerText = "Placing Order..."; btn.disabled = true;
       let x = getProdById(currId), oId = "MWT-" + Math.floor(10000 + Math.random()*90000), tot = x.pn * selQty, now = Date.now();
+      let email = document.getElementById('cEmail').value.trim().toLowerCase();
       let n = document.getElementById('cName').value.trim(), ad = document.getElementById('cAddr').value.trim(), ct = document.getElementById('cCity').value.trim(), pn = document.getElementById('cPin').value.trim();
       let phone = document.getElementById('cPhone').value.trim();
       let firstImg = Array.isArray(x.i) ? x.i[0] : x.i;
 
       let order = {
         productId:currId, orderId:oId, title:x.t, img:firstImg, code:x.cd, price:tot, qty:selQty, size:selSize,
-        name:n, phone:phone, address:`${ad}, ${ct} - ${pn}`, date:new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}),
+        email:email, name:n, phone:phone, address:`${ad}, ${ct} - ${pn}`, date:new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}),
         timestamp:now, status:"active"
       };
 
+      // 1. Save locally
       let list = JSON.parse(localStorage.getItem('all_orders_mwt') || "[]");
       list.unshift(order);
       localStorage.setItem('all_orders_mwt', JSON.stringify(list));
 
+      // 2. Cloud Sync to Firebase Database[span_10](start_span)[span_10](end_span)
+      saveOrderToFirebase(order);
+
+      // 3. Send to Main Telegram Order Bot[span_11](start_span)[span_11](end_span)
       let tgMessage = 
         `🛍️ *NEW ORDER CONFIRMED!* 🛍️\n\n` +
         `🆔 *Order ID:* #${oId}\n` +
@@ -778,6 +845,7 @@
         `🔢 *Quantity:* ${selQty}\n` +
         `💰 *Total Amount:* ₹${tot} (COD)\n\n` +
         `👤 *Customer Name:* ${n}\n` +
+        `📧 *Email ID:* ${email}\n` +
         `📞 *Mobile Number:* ${phone}\n` +
         `📍 *Delivery Address:* ${ad}, ${ct} - ${pn}\n\n` +
         `🖼️ *Product Photo Link:*\n${firstImg}`;
@@ -797,7 +865,6 @@
 
     function getTrackingHTML(order){
       let timestamp = order.timestamp || Date.now();
-      let orderId = order.orderId;
       let status = order.status || "active";
 
       if(status === "cancelled"){
@@ -833,6 +900,58 @@
       }
     }
 
+    function renderOrderCardHTML(o){
+      let status = o.status || "active";
+      let diffHrs = (Date.now() - (o.timestamp || Date.now())) / (1000 * 60 * 60);
+
+      let statusPill = `<span style="color:var(--pink); font-weight:700; font-size:11px;">In Progress 🚚</span>`;
+      if(status === "cancelled"){
+        statusPill = `<span style="color:var(--red); font-weight:700; font-size:11px;">Cancelled ❌</span>`;
+      } else if(status === "return_requested"){
+        statusPill = `<span style="color:var(--blue); font-weight:700; font-size:11px;">Return Requested 🔄</span>`;
+      } else if(diffHrs >= 48){
+        statusPill = `<span style="color:var(--green); font-weight:700; font-size:11px;">Delivered 🎉</span>`;
+      }
+
+      let mainActionBtn = '';
+      if(status === "active"){
+        if(diffHrs < 48){
+          mainActionBtn = `<button class="btn-action btn-cancel" onclick="cancelOrder('${o.orderId}')">Cancel Order ❌</button>`;
+        } else if(diffHrs >= 48 && diffHrs <= (48 + 168)){
+          mainActionBtn = `<button class="btn-action btn-return" onclick="returnOrder('${o.orderId}')">Return Order 🔄</button>`;
+        }
+      }
+
+      return `<div class="order-box">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; font-size:12px;">
+          <strong>Order #${o.orderId}</strong>
+          <div>${statusPill} <span style="color:var(--muted); font-size:11px; margin-left:6px;">${o.date}</span></div>
+        </div>
+        
+        <div style="display:flex; gap:12px; align-items:center; cursor:pointer;" onclick="openModal('${o.productId || 21}')">
+          <img src="${o.img}" style="width:65px; height:65px; border-radius:10px; object-fit:contain; background:#fff8fa; border:1px solid var(--border);" alt="Product">
+          <div style="flex:1;">
+            <h4 style="font-size:13px; color:var(--text); line-height:1.3;">${o.title}</h4>
+            <div style="color:var(--pink); font-weight:800; font-size:13px; margin-top:3px;">₹${o.price} <span style="font-size:11px; color:var(--muted); font-weight:600;">(Qty: ${o.qty})</span></div>
+            <span style="font-size:10.5px; color:var(--pink); font-weight:700;">Tap to view details 🛍️</span>
+          </div>
+        </div>
+
+        <div>
+          <button class="btn-track-toggle" id="trackBtn_${o.orderId}" onclick="toggleTrackDrawer('${o.orderId}')">📍 Track Order Details ▾</button>
+        </div>
+
+        <div class="track-drawer" id="trackDrawer_${o.orderId}">
+          ${getTrackingHTML(o)}
+        </div>
+
+        <div class="order-actions">
+          <div>${mainActionBtn}</div>
+          <button class="btn-action btn-reorder" onclick="openModal('${o.productId || 21}')">Order Again ➔</button>
+        </div>
+      </div>`;
+    }
+
     function renderOrdersList(){
       let list = JSON.parse(localStorage.getItem('all_orders_mwt') || "[]"), cont = document.getElementById('ordersList');
       if(!cont) return;
@@ -841,63 +960,114 @@
         return;
       }
       let html = '';
-      list.forEach((o)=>{
-        let status = o.status || "active";
-        let diffHrs = (Date.now() - (o.timestamp || Date.now())) / (1000 * 60 * 60);
-
-        let statusPill = `<span style="color:var(--pink); font-weight:700; font-size:11px;">In Progress 🚚</span>`;
-        if(status === "cancelled"){
-          statusPill = `<span style="color:var(--red); font-weight:700; font-size:11px;">Cancelled ❌</span>`;
-        } else if(status === "return_requested"){
-          statusPill = `<span style="color:var(--blue); font-weight:700; font-size:11px;">Return Requested 🔄</span>`;
-        } else if(diffHrs >= 48){
-          statusPill = `<span style="color:var(--green); font-weight:700; font-size:11px;">Delivered 🎉</span>`;
-        }
-
-        // Action Button: Cancel (Jab tak Delivered na ho) vs Return (Delivered hone ke baad agle 7 din)
-        let mainActionBtn = '';
-        if(status === "active"){
-          if(diffHrs < 48){
-            mainActionBtn = `<button class="btn-action btn-cancel" onclick="cancelOrder('${o.orderId}')">Cancel Order ❌</button>`;
-          } else if(diffHrs >= 48 && diffHrs <= (48 + 168)){
-            mainActionBtn = `<button class="btn-action btn-return" onclick="returnOrder('${o.orderId}')">Return Order 🔄</button>`;
-          }
-        }
-
-        html += `<div class="order-box">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; font-size:12px;">
-            <strong>Order #${o.orderId}</strong>
-            <div>${statusPill} <span style="color:var(--muted); font-size:11px; margin-left:6px;">${o.date}</span></div>
-          </div>
-          
-          <!-- Tap Image or Title to Reopen Product in Modal for Ordering -->
-          <div style="display:flex; gap:12px; align-items:center; cursor:pointer;" onclick="openModal('${o.productId || 21}')">
-            <img src="${o.img}" style="width:65px; height:65px; border-radius:10px; object-fit:contain; background:#fff8fa; border:1px solid var(--border);" alt="Product">
-            <div style="flex:1;">
-              <h4 style="font-size:13px; color:var(--text); line-height:1.3;">${o.title}</h4>
-              <div style="color:var(--pink); font-weight:800; font-size:13px; margin-top:3px;">₹${o.price} <span style="font-size:11px; color:var(--muted); font-weight:600;">(Qty: ${o.qty})</span></div>
-              <span style="font-size:10.5px; color:var(--pink); font-weight:700;">Tap to view details 🛍️</span>
-            </div>
-          </div>
-
-          <div>
-            <button class="btn-track-toggle" id="trackBtn_${o.orderId}" onclick="toggleTrackDrawer('${o.orderId}')">📍 Track Order Details ▾</button>
-          </div>
-
-          <div class="track-drawer" id="trackDrawer_${o.orderId}">
-            ${getTrackingHTML(o)}
-          </div>
-
-          <div class="order-actions">
-            <div>${mainActionBtn}</div>
-            <button class="btn-action btn-reorder" onclick="openModal('${o.productId || 21}')">Order Again ➔</button>
-          </div>
-        </div>`;
-      });
+      list.forEach(o => { html += renderOrderCardHTML(o); });
       cont.innerHTML = html;
     }
 
-    // Cancel Order Action & Separate Bot Notification (@Cancel_return_bot)
+    /* =================================================================
+       FIREBASE REALTIME DATABASE SYNC & DASHBOARD LOGIC
+       ================================================================= */
+    function sanitizeEmailKey(email){
+      return (email || "").toLowerCase().replace(/[.#$\[\]]/g, '_');
+    }
+
+    function saveOrderToFirebase(order){
+      if(!fbDb || !order.email) return;
+      let eKey = sanitizeEmailKey(order.email);
+      fbDb.ref('orders/' + eKey + '/' + order.orderId).set(order).catch(()=>{});
+    }
+
+    function updateOrderInFirebase(order){
+      if(!fbDb || !order.email) return;
+      let eKey = sanitizeEmailKey(order.email);
+      fbDb.ref('orders/' + eKey + '/' + order.orderId).update(order).catch(()=>{});
+    }
+
+    function syncUserOrdersCloud(email){
+      if(!fbDb || !email) return;
+      let eKey = sanitizeEmailKey(email);
+      fbDb.ref('orders/' + eKey).once('value').then(snap => {
+        let val = snap.val();
+        if(val){
+          let cloudOrders = Object.values(val).reverse();
+          let local = JSON.parse(localStorage.getItem('all_orders_mwt') || "[]");
+          let mergedMap = new Map();
+          cloudOrders.forEach(o => mergedMap.set(o.orderId, o));
+          local.forEach(o => { if(!mergedMap.has(o.orderId)) mergedMap.set(o.orderId, o); });
+          let combined = Array.from(mergedMap.values()).sort((a,b)=>(b.timestamp||0)-(a.timestamp||0));
+          localStorage.setItem('all_orders_mwt', JSON.stringify(combined));
+          renderAccountDashboard();
+          renderOrdersList();
+        }
+      }).catch(()=>{});
+    }
+
+    function updateHeaderAccountBtn(){
+      let btn = document.getElementById('btnHeaderAccount');
+      if(!btn) return;
+      if(currentUserEmail){
+        let short = currentUserEmail.split('@')[0];
+        btn.innerText = `👤 ${short.slice(0, 9)}`;
+      } else {
+        btn.innerText = `👤 Login`;
+      }
+    }
+
+    function openAccountPage(){ location.hash = 'account'; }
+
+    function renderAccountDashboard(){
+      let lView = document.getElementById('dashLoginView');
+      let mView = document.getElementById('dashMainView');
+      if(!currentUserEmail){
+        lView.style.display = 'block';
+        mView.style.display = 'none';
+        return;
+      }
+
+      lView.style.display = 'none';
+      mView.style.display = 'block';
+      document.getElementById('dashUserEmail').innerText = currentUserEmail;
+
+      let list = JSON.parse(localStorage.getItem('all_orders_mwt') || "[]");
+      let myOrders = list.filter(o => !o.email || o.email.toLowerCase() === currentUserEmail.toLowerCase());
+      
+      let total = myOrders.length;
+      let activeCount = myOrders.filter(o => o.status === "active").length;
+
+      document.getElementById('dashTotalOrders').innerText = total;
+      document.getElementById('dashActiveOrders').innerText = activeCount;
+
+      let cont = document.getElementById('dashOrdersList');
+      if(myOrders.length === 0){
+        cont.innerHTML = `<div style="text-align:center; padding:30px; background:#fff; border-radius:14px; border:1px solid var(--border);"><p style="font-size:12px; color:var(--muted);">No orders found for this email account.</p></div>`;
+      } else {
+        let html = '';
+        myOrders.forEach(o => { html += renderOrderCardHTML(o); });
+        cont.innerHTML = html;
+      }
+    }
+
+    function handleDashboardLogin(){
+      let val = document.getElementById('dashEmailInput').value.trim().toLowerCase();
+      if(!val || !val.includes('@') || !val.includes('.')){
+        alert("Kripya valid Email ID dalein! 🌸");
+        return;
+      }
+      currentUserEmail = val;
+      localStorage.setItem('mwt_logged_in_email', currentUserEmail);
+      updateHeaderAccountBtn();
+      syncUserOrdersCloud(currentUserEmail);
+      renderAccountDashboard();
+    }
+
+    function handleDashboardLogout(){
+      currentUserEmail = "";
+      localStorage.removeItem('mwt_logged_in_email');
+      updateHeaderAccountBtn();
+      renderAccountDashboard();
+    }
+
+    // Cancel Order Action & Full Details Telegram Alert to @Cancel_return_bot[span_12](start_span)[span_12](end_span)
     function cancelOrder(orderId){
       let reason = prompt("Kripya order cancel karne ka reason batayein:");
       if(!reason || !reason.trim()) return;
@@ -908,6 +1078,7 @@
         item.status = "cancelled";
         item.cancelReason = reason.trim();
         localStorage.setItem('all_orders_mwt', JSON.stringify(list));
+        updateOrderInFirebase(item);
 
         let tgMsg = `🚨 *ORDER CANCELLED BY CUSTOMER!* 🚨\n\n` +
                     `🆔 *Order ID:* #${item.orderId}\n` +
@@ -917,6 +1088,7 @@
                     `🔢 *Quantity:* ${item.qty}\n` +
                     `💰 *Order Amount:* ₹${item.price}\n\n` +
                     `👤 *Customer Name:* ${item.name}\n` +
+                    `📧 *Email ID:* ${item.email || 'N/A'}\n` +
                     `📞 *Phone Number:* ${item.phone}\n` +
                     `📍 *Delivery Address:* ${item.address}\n\n` +
                     `💬 *Cancellation Reason:* ${reason.trim()}\n\n` +
@@ -930,10 +1102,11 @@
 
         alert("Aapka order cancel kar diya gaya hai! 🌸");
         renderOrdersList();
+        renderAccountDashboard();
       }
     }
 
-    // Return Order Action & Separate Bot Notification (@Cancel_return_bot)
+    // Return Order Action & Full Details Telegram Alert to @Cancel_return_bot[span_13](start_span)[span_13](end_span)
     function returnOrder(orderId){
       let reason = prompt("Kripya return ka reason batayein (e.g. Size Issue / Quality):");
       if(!reason || !reason.trim()) return;
@@ -944,6 +1117,7 @@
         item.status = "return_requested";
         item.returnReason = reason.trim();
         localStorage.setItem('all_orders_mwt', JSON.stringify(list));
+        updateOrderInFirebase(item);
 
         let tgMsg = `🔄 *RETURN REQUESTED BY CUSTOMER!* 🔄\n\n` +
                     `🆔 *Order ID:* #${item.orderId}\n` +
@@ -953,6 +1127,7 @@
                     `🔢 *Quantity:* ${item.qty}\n` +
                     `💰 *Refund Amount:* ₹${item.price}\n\n` +
                     `👤 *Customer Name:* ${item.name}\n` +
+                    `📧 *Email ID:* ${item.email || 'N/A'}\n` +
                     `📞 *Phone Number:* ${item.phone}\n` +
                     `📍 *Pickup Address:* ${item.address}\n\n` +
                     `💬 *Return Reason:* ${reason.trim()}\n\n` +
@@ -966,8 +1141,42 @@
 
         alert("Return request darj kar li gayi hai. Courier boy 48 hours me pickup karega! 📦");
         renderOrdersList();
+        renderAccountDashboard();
       }
     }
+
+    /* =================================================================
+       LIVE VISITOR TRACKING BOT ALERT (@Visitor_meriwalitrends_bot)
+       ================================================================= */
+    window.addEventListener('load', function() {
+      if(!sessionStorage.getItem('mwt_visit_tracked')) {
+        sessionStorage.setItem('mwt_visit_tracked', 'yes');
+
+        let totalVisits = parseInt(localStorage.getItem('mwt_total_visits_count') || "0") + 1;
+        localStorage.setItem('mwt_total_visits_count', totalVisits);
+
+        let userAgent = navigator.userAgent || "";
+        let device = "Mobile Device 📱";
+        if(userAgent.includes("iPhone")) device = "Apple iPhone 🍏";
+        else if(userAgent.includes("Android")) device = "Android Phone 🤖";
+        else if(userAgent.includes("Windows") || userAgent.includes("Mac")) device = "Computer / PC 💻";
+
+        let dateStr = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', dateStyle: 'medium', timeStyle: 'short' });
+
+        let visitMsg = 
+          `👀 *NEW VISITOR ALERT!* 🌐\n\n` +
+          `🔢 *Visit Count:* #${totalVisits}\n` +
+          `📱 *Device:* ${device}\n` +
+          `⏰ *Time:* ${dateStr}\n` +
+          `🔗 *Source:* Website Link Clicked 🎀`;
+
+        fetch(`https://api.telegram.org/bot${TG_VISITOR_TOKEN}/sendMessage`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ chat_id: TG_VISITOR_CHAT, text: visitMsg })
+        }).catch(()=>{});
+      }
+    });
 
     const wheelCompliments = [
       "Aapka Babu aapse bohot pyaar karta hai, bas bolne me sharmata hai! 🥺💖",

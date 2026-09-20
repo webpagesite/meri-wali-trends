@@ -900,6 +900,9 @@
       
       triggerConfettiBlast();
       goToStep(5);
+
+      // HISTORY CLEANING: BACK KARNE PAR CHECKOUT FORM DOBARA NAHI AAYEGA
+      history.replaceState(null, '', window.location.origin + window.location.pathname);
     }
 
     function getTrackingHTML(order){
@@ -1099,7 +1102,7 @@
       }
     }
 
-    // SAFE POPUP LOGIN HANDLER (BYPASSES SESSION STORAGE REDIRECT ERRORS)
+    // SAFE POPUP LOGIN HANDLER
     function loginWithGoogle(fromCheckout = false){
       try {
         if(!fbAuth || !googleProvider){
@@ -1111,7 +1114,6 @@
           sessionStorage.setItem('mwt_redirect_from_checkout', 'yes');
         }
 
-        // Mobile aur desktop dono ke liye 100% safe popup method
         fbAuth.signInWithPopup(googleProvider).then(result => {
           if(result && result.user && result.user.email){
             let fromCheck = sessionStorage.getItem('mwt_redirect_from_checkout') === 'yes';
@@ -1163,7 +1165,6 @@
       syncUserOrdersCloud(currentUserEmail);
     }
 
-    // PERSISTENCE LISTENER
     if(fbAuth){
       fbAuth.onAuthStateChanged(user => {
         if(user && user.email && !currentUserEmail){
@@ -1284,7 +1285,7 @@
       "Aapka Babu aapse bohot pyaar karta hai, bas bolne me sharmata hai! 🥺💖",
       "Universe Notice: Is poori duniya me aap sabse zyada cute ho, ek gift toh banta hai! 🎀",
       "Secret Luck: Aaj order karne se Babu ka mood agle 7 din tak 100x accha rahega! ✨",
-      "Astrology: Jaldi hi aapko Babu ki taraf se ek unexpectedly pyara surprise milne wala hai 🌸",
+      "Astrology: Jaldi hi apoo ko Babu ki taraf se ek unexpectedly pyara surprise milne wala hai 🌸",
       "Babu ke dil ka raaz: Jab aap muskurati ho toh uska poora din ban jata hai! 🥰",
       "Aapka aura itna aesthetic hai ki Babu aapko dekhte hi kho jaata hai! 💫",
       "Love Alert: Aap dono ki jodi duniya ki sabse pyari jodi hai, nazar na lage! 🧿",

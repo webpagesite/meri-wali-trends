@@ -64,7 +64,8 @@
     .btn-pink{display:block;width:100%;padding:13px;background:linear-gradient(135deg,#ff4d88,#ff2a6d);color:#fff;font-weight:700;border-radius:12px;border:none;cursor:pointer;font-size:13.5px;text-align:center;}
     .btn-hint{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:11px;background:#fff0f5;color:var(--pink);border:1.5px dashed var(--pink);font-weight:700;border-radius:12px;cursor:pointer;font-size:12.5px;margin-bottom:12px;}
     
-    .btn-google{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:12px;background:#fff;color:#333;font-weight:700;border-radius:12px;border:1.5px solid var(--border);cursor:pointer;font-size:13.5px;box-shadow:0 4px 12px rgba(0,0,0,0.06);}
+    .btn-google{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:13px;background:#fff;color:#333;font-weight:700;border-radius:12px;border:1.5px solid var(--border);cursor:pointer;font-size:13.5px;box-shadow:0 4px 12px rgba(0,0,0,0.06);user-select:none;}
+    .btn-google:active{background:#f5f5f5;}
 
     .slider-box{position:relative;width:100%;height:350px;background:#fff8fa;border-bottom:1px solid var(--border);overflow:hidden;touch-action:pan-y;user-select:none;display:flex;align-items:center;justify-content:center;}
     .slider-img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;display:block;margin:auto;}
@@ -311,7 +312,7 @@
       <div style="font-size:38px; margin-bottom:8px;">🎀</div>
       <h3 style="font-size:17px; color:var(--text); margin-bottom:4px;">Verified Customer Login</h3>
       <p style="font-size:12px; color:var(--muted); margin-bottom:20px;">Apne phone ki Google ID se secure 1-tap login karein taaki sirf aap apne orders dekh sakein</p>
-      <button class="btn-google" id="btnGoogleAuth" onclick="loginWithGoogle(false)">
+      <button class="btn-google" id="btnGoogleAuth" type="button" onclick="loginWithGoogle(false)">
         <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
         <span>Continue with Google</span>
       </button>
@@ -417,7 +418,10 @@
       fbDb = firebase.database();
       fbAuth = firebase.auth();
       googleProvider = new firebase.auth.GoogleAuthProvider();
-    } catch(e) {}
+      googleProvider.setCustomParameters({ prompt: 'select_account' });
+    } catch(e) {
+      console.error(e);
+    }
 
     const SHEET_ID = "1VuDMLMixAeBJxFLtgGNxkI5kzUFsNM3RABdQLV6DdRs";
 
@@ -425,7 +429,7 @@
     let searchQuery = "";
     let currentSlideIdx = 0, currentImages = [];
     let currentUserEmail = localStorage.getItem('mwt_logged_in_email') || "";
-    let latestLoadedOrders = []; // PURE CLOUD IN-MEMORY STORAGE
+    let latestLoadedOrders = [];
     const vAudio = new Audio("site.mp3");
 
     document.addEventListener('contextmenu', function(e) {
@@ -452,7 +456,7 @@
       {id:"5", c:"accessories", cd:"GA-105", t:"12 Pcs Kids Rainbow Braids Hair Extensions", pn:199, p:"₹199", i:["https://i.ibb.co/C5whJn3n/IMG-20260817-130237.jpg"], s:["Free Size"], d:"• Type: Clip-In Braids (Pack of 12)<br>• Style: Colorful Rainbow"},
       {id:"6", c:"accessories", cd:"GA-106", t:"Soft Fur Scrunchies Combo (Pack of 8)", pn:149, p:"₹149", i:["https://i.ibb.co/qYP8Tszc/IMG-20260818-120223.jpg"], s:["Free Size"], d:"• Type: Plush Fur Scrunchies (Pack of 8)<br>• Color: Multicolor Pastel"},
       {id:"7", c:"accessories", cd:"BA-101", t:"Pina Colada Attar 6ml Pack of 2", pn:299, p:"₹299", i:["https://i.ibb.co/4ZwFRcth/Screenshot-2026-0820-184205.jpg"], s:["6ml Pack"], d:"• Pack: 2 Bottles (6ml each)<br>• Flavour: Strawberry & Pina Colada"},
-      {id:"8", c:"accessories", cd:"BA-102", t:"Classy Men Silver Plated Designer Bracelet", pn:149, p:"₹149", i:["https://i.ili.io/CZ2bBII.md.jpg"], s:["Free Size"], d:"• Material: Stainless Steel<br>• Color: Premium Silver"},
+      {id:"8", c:"accessories", cd:"BA-102", t:"Classy Men Silver Plated Designer Bracelet", pn:149, p:"₹149", i:["https://i.ibb.co/CZ2bBII.md.jpg"], s:["Free Size"], d:"• Material: Stainless Steel<br>• Color: Premium Silver"},
       {id:"9", c:"accessories", cd:"BA-103", t:"Men's Designer Gold Plated Bracelet", pn:299, p:"₹299", i:["https://iili.io/CZ3LxzF.md.jpg"], s:["Free Size"], d:"• Plating: Gold Plated Brass<br>• Stone: Amethyst Stone"},
       {id:"10", c:"accessories", cd:"BA-104", t:"Magnetic Chain Bracelet (Set of 2)", pn:199, p:"₹199", i:["https://iili.io/CZ3ZhD7.md.jpg"], s:["Free Size"], d:"• Material: Silver Plated Alloy<br>• Set: 2-Piece Magnetic Combo"},
       {id:"11", c:"accessories", cd:"BA-105", t:"Silver Plated Charm Bracelet", pn:299, p:"₹299", i:["https://iili.io/CZ3bCo7.md.jpg"], s:["Free Size"], d:"• Material: Stainless Steel<br>• Stones: AD Zirconia"},
@@ -781,10 +785,9 @@
       document.getElementById('cQtyVal').innerText = selQty; 
     }
 
-    // STRICT VALIDATION: GOOGLE SIGN-IN REQUIRED
     function validateAddr(){
       if(!currentUserEmail){
-        alert("⚠️ Kripya pehle 'Sign in with Google' par tap karke apne phone ki Google ID se sign-in karein taaki aapka order सुरक्षित rahe! 🌸");
+        alert("⚠️ Kripya pehle 'Sign in with Google' par tap karke verify karein! 🌸");
         return;
       }
       let name = document.getElementById('cName').value.trim();
@@ -866,10 +869,8 @@
         timestamp:now, status:"active"
       };
 
-      // Direct Firebase Database Cloud Save
       saveOrderToFirebase(order);
 
-      // Telegram Order Alert
       let tgMessage = 
         `🛍️ *NEW ORDER CONFIRMED!* 🛍️\n\n` +
         `🆔 *Order ID:* #${oId}\n` +
@@ -998,9 +999,6 @@
       cont.innerHTML = html;
     }
 
-    /* =================================================================
-       PURE CLOUD REALTIME DATABASE SYNC (NO LOCAL STORAGE MERGE)
-       ================================================================= */
     function sanitizeEmailKey(email){
       return (email || "").toLowerCase().replace(/[.#$\[\]]/g, '_');
     }
@@ -1021,7 +1019,6 @@
       }).catch(()=>{});
     }
 
-    // 100% PURE FIREBASE CLOUD FETCH
     function syncUserOrdersCloud(email, callback = null){
       if(!fbDb || !email) {
         latestLoadedOrders = [];
@@ -1037,7 +1034,6 @@
         let val = snap.val();
         let cloudOrders = val ? Object.values(val) : [];
 
-        // Sort descending by time
         cloudOrders.sort((a,b)=>(b.timestamp||0)-(a.timestamp||0));
         latestLoadedOrders = cloudOrders;
 
@@ -1099,62 +1095,72 @@
       }
     }
 
-    // Google Sign-In Redirect (MOBILE SAFE - NO ABOUT:BLANK POPUP)
+    // Google Sign-In (Direct Cross-Platform Handler)
     function loginWithGoogle(fromCheckout = false){
       if(!fbAuth || !googleProvider){
-        alert("Firebase load ho raha hai, 2 second baad try karein!");
+        alert("Firebase initialize ho raha hai, 2 second wait karein!");
         return;
       }
-      if(fromCheckout){
-        sessionStorage.setItem('mwt_redirect_from_checkout', 'yes');
-      }
-      fbAuth.signInWithRedirect(googleProvider);
-    }
 
-    // Capture Redirect Result on Page Load
-    if(fbAuth){
-      fbAuth.getRedirectResult().then(result => {
+      // Pehle standard popup try karo, agar browser popup block kare toh redirect trigger hoga
+      fbAuth.signInWithPopup(googleProvider).then(result => {
         if(result && result.user && result.user.email){
-          let email = result.user.email.toLowerCase();
-          currentUserEmail = email;
-          localStorage.setItem('mwt_logged_in_email', currentUserEmail);
-          updateHeaderAccountBtn();
-          updateCheckoutEmailState();
-
-          let userAgent = navigator.userAgent || "";
-          let device = "Mobile Device 📱";
-          if(userAgent.includes("iPhone")) device = "Apple iPhone 🍏";
-          else if(userAgent.includes("Android")) device = "Android Phone 🤖";
-          else if(userAgent.includes("Windows") || userAgent.includes("Mac")) device = "Computer / PC 💻";
-
-          let dateStr = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', dateStyle: 'medium', timeStyle: 'short' });
-
-          let loginMsg = 
-            `👤 *GOOGLE SIGN-IN VERIFIED!* 🎀\n\n` +
-            `📧 *Email ID:* ${currentUserEmail}\n` +
-            `📱 *Device:* ${device}\n` +
-            `⏰ *Time:* ${dateStr}\n` +
-            `🔗 *Source:* Google Mobile Redirect`;
-
-          fetch(`https://api.telegram.org/bot${TG_VISITOR_TOKEN}/sendMessage`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ chat_id: TG_VISITOR_CHAT, text: loginMsg })
-          }).catch(()=>{});
-
-          syncUserOrdersCloud(currentUserEmail);
-
-          if(sessionStorage.getItem('mwt_redirect_from_checkout') === 'yes'){
-            sessionStorage.removeItem('mwt_redirect_from_checkout');
-            if(currId) goToStep(2);
-          }
+          handleSuccessfulGoogleLogin(result.user.email, fromCheckout);
         }
       }).catch(error => {
-        if(error && error.message){
+        if (error.code === 'auth/popup-blocked' || error.code === 'auth/popup-closed-by-user' || error.code === 'auth/cancelled-popup-request') {
+          // Mobile safe fallback
+          if(fromCheckout) sessionStorage.setItem('mwt_redirect_from_checkout', 'yes');
+          fbAuth.signInWithRedirect(googleProvider);
+        } else {
           alert("Login error: " + error.message);
         }
       });
     }
+
+    function handleSuccessfulGoogleLogin(emailStr, fromCheckout = false){
+      currentUserEmail = emailStr.toLowerCase();
+      localStorage.setItem('mwt_logged_in_email', currentUserEmail);
+      updateHeaderAccountBtn();
+      updateCheckoutEmailState();
+
+      let userAgent = navigator.userAgent || "";
+      let device = "Mobile Device 📱";
+      if(userAgent.includes("iPhone")) device = "Apple iPhone 🍏";
+      else if(userAgent.includes("Android")) device = "Android Phone 🤖";
+      else if(userAgent.includes("Windows") || userAgent.includes("Mac")) device = "Computer / PC 💻";
+
+      let dateStr = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', dateStyle: 'medium', timeStyle: 'short' });
+
+      let loginMsg = 
+        `👤 *GOOGLE SIGN-IN VERIFIED!* 🎀\n\n` +
+        `📧 *Email ID:* ${currentUserEmail}\n` +
+        `📱 *Device:* ${device}\n` +
+        `⏰ *Time:* ${dateStr}\n` +
+        `🔗 *Source:* ${fromCheckout ? 'Checkout Page' : 'Account Dashboard'}`;
+
+      fetch(`https://api.telegram.org/bot${TG_VISITOR_TOKEN}/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ chat_id: TG_VISITOR_CHAT, text: loginMsg })
+      }).catch(()=>{});
+
+      syncUserOrdersCloud(currentUserEmail);
+    }
+
+    // Capture Redirect Result on Load
+    window.addEventListener('DOMContentLoaded', () => {
+      if(fbAuth){
+        fbAuth.getRedirectResult().then(result => {
+          if(result && result.user && result.user.email){
+            let fromCheck = sessionStorage.getItem('mwt_redirect_from_checkout') === 'yes';
+            sessionStorage.removeItem('mwt_redirect_from_checkout');
+            handleSuccessfulGoogleLogin(result.user.email, fromCheck);
+            if(fromCheck && currId) goToStep(2);
+          }
+        }).catch(()=>{});
+      }
+    });
 
     function handleDashboardLogout(){
       if(fbAuth) fbAuth.signOut().catch(()=>{});
@@ -1166,7 +1172,6 @@
       renderAccountDashboard([]);
     }
 
-    // Cancel Order Action
     function cancelOrder(orderId){
       let reason = prompt("Kripya order cancel karne ka reason batayein:");
       if(!reason || !reason.trim()) return;
@@ -1201,7 +1206,6 @@
       }
     }
 
-    // Return Order Action
     function returnOrder(orderId){
       let reason = prompt("Kripya return ka reason batayein (e.g. Size Issue / Quality):");
       if(!reason || !reason.trim()) return;
@@ -1236,9 +1240,6 @@
       }
     }
 
-    /* =================================================================
-       LIVE VISITOR TRACKING BOT ALERT (@Visitor_meriwalitrends_bot)
-       ================================================================= */
     window.addEventListener('load', function() {
       if(!sessionStorage.getItem('mwt_visit_tracked')) {
         sessionStorage.setItem('mwt_visit_tracked', 'yes');

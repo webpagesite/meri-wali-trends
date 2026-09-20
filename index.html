@@ -109,7 +109,6 @@
     .btn-track-toggle{background:#fff;color:var(--muted);border:1px solid var(--border);padding:6px 12px;border-radius:20px;font-size:11px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:4px;margin-top:10px;}
 
     .track-drawer{display:none;margin-top:10px;padding:12px 14px;background:#fff9fb;border-radius:12px;border:1px solid var(--border);}
-    .track-drawer.open{display:block;}
     .timeline{margin:6px 0 0;position:relative;padding-left:24px;text-align:left;}
     .timeline::before{content:'';position:absolute;top:6px;bottom:8px;left:7px;width:2px;background:#e2d9df;}
     .t-item{position:relative;margin-bottom:12px;font-size:11.5px;}
@@ -900,6 +899,7 @@
       
       triggerConfettiBlast();
       goToStep(5);
+      history.replaceState(null, '', window.location.origin + window.location.pathname);
     }
 
     function getTrackingHTML(order){
@@ -928,18 +928,17 @@
       </div>`;
     }
 
-    // FIXED TRACKING TOGGLE (Ensures drawer opens properly on mobile tap)
+    // 100% WORKING TRACKING TOGGLE (Direct display toggle for mobile touch)
     function toggleTrackDrawer(orderId){
-      let drawer = document.getElementById(`trackDrawer_${orderId}`);
-      let btn = document.getElementById(`trackBtn_${orderId}`);
+      let drawer = document.getElementById('trackDrawer_' + orderId);
+      let btn = document.getElementById('trackBtn_' + orderId);
       if(drawer){
-        drawer.classList.toggle('open');
-        if(drawer.classList.contains('open')){
-          drawer.style.display = 'block';
-          if(btn) btn.innerHTML = "📍 Hide Tracking ▴";
-        } else {
+        if(drawer.style.display === 'block'){
           drawer.style.display = 'none';
           if(btn) btn.innerHTML = "📍 Track Order Details ▾";
+        } else {
+          drawer.style.display = 'block';
+          if(btn) btn.innerHTML = "📍 Hide Tracking ▴";
         }
       }
     }
@@ -985,7 +984,7 @@
           <button class="btn-track-toggle" id="trackBtn_${o.orderId}" onclick="toggleTrackDrawer('${o.orderId}')">📍 Track Order Details ▾</button>
         </div>
 
-        <div class="track-drawer" id="trackDrawer_${o.orderId}">
+        <div class="track-drawer" id="trackDrawer_${o.orderId}" style="display:none;">
           ${getTrackingHTML(o)}
         </div>
 
@@ -1104,7 +1103,6 @@
       }
     }
 
-    // SAFE POPUP LOGIN HANDLER
     function loginWithGoogle(fromCheckout = false){
       try {
         if(!fbAuth || !googleProvider){

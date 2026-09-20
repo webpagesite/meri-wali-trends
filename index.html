@@ -1095,27 +1095,16 @@
       }
     }
 
-    // Google Sign-In (Direct Cross-Platform Handler)
+    // 100% PURE REDIRECT GOOGLE LOGIN (NO POPUP CRASH)
     function loginWithGoogle(fromCheckout = false){
       if(!fbAuth || !googleProvider){
         alert("Firebase initialize ho raha hai, 2 second wait karein!");
         return;
       }
-
-      // Pehle standard popup try karo, agar browser popup block kare toh redirect trigger hoga
-      fbAuth.signInWithPopup(googleProvider).then(result => {
-        if(result && result.user && result.user.email){
-          handleSuccessfulGoogleLogin(result.user.email, fromCheckout);
-        }
-      }).catch(error => {
-        if (error.code === 'auth/popup-blocked' || error.code === 'auth/popup-closed-by-user' || error.code === 'auth/cancelled-popup-request') {
-          // Mobile safe fallback
-          if(fromCheckout) sessionStorage.setItem('mwt_redirect_from_checkout', 'yes');
-          fbAuth.signInWithRedirect(googleProvider);
-        } else {
-          alert("Login error: " + error.message);
-        }
-      });
+      if(fromCheckout){
+        sessionStorage.setItem('mwt_redirect_from_checkout', 'yes');
+      }
+      fbAuth.signInWithRedirect(googleProvider);
     }
 
     function handleSuccessfulGoogleLogin(emailStr, fromCheckout = false){

@@ -946,13 +946,13 @@ ${firstImg}`;
       let diffDays = (Date.now() - timestamp) / (1000 * 60 * 60 * 24);
 
       let s1 = "done", s2 = "", s3 = "", s4 = "";
-      if(diffDays >= 1.5) s2 = "done"; else if(diffDays >= 0.5) s2 = "active";
-      if(diffDays >= 4) s3 = "done"; else if(diffDays >= 1.5) s3 = "active";
+      if(diffDays >= 1) s2 = "done"; else if(diffDays > 0) s2 = "active";
+      if(diffDays >= 4) s3 = "done"; else if(diffDays >= 1) s3 = "active";
       if(diffDays >= 7) s4 = "done"; else if(diffDays >= 4) s4 = "active";
 
       return `<div class="timeline" style="display:block !important;">
         <div class="t-item ${s1}"><div style="font-weight:700;">Order Placed</div><div style="font-size:10px; color:var(--muted);">Order successfully registered</div></div>
-        <div class="t-item ${s2}"><div style="font-weight:700;">Shipped / Dispatched</div><div style="font-size:10px; color:var(--muted);">${diffDays >= 0.5 ? 'Item picked up by courier partner' : 'Preparing for shipment'}</div></div>
+        <div class="t-item ${s2}"><div style="font-weight:700;">Shipped / Dispatched</div><div style="font-size:10px; color:var(--muted);">${diffDays >= 1 ? 'Item picked up by courier partner' : 'Preparing for shipment'}</div></div>
         <div class="t-item ${s3}"><div style="font-weight:700;">Out for Delivery</div><div style="font-size:10px; color:var(--muted);">${diffDays >= 4 ? 'Out for delivery to your address' : 'In transit to local hub'}</div></div>
         <div class="t-item ${s4}"><div style="font-weight:700;">Delivered (Cash on Delivery)</div><div style="font-size:10px; color:var(--muted);">${diffDays >= 7 ? 'Package delivered successfully' : 'Expected delivery within 7 days'}</div></div>
       </div>`;
@@ -1128,6 +1128,7 @@ ${firstImg}`;
       } else {
         let html = '';
         myOrders.forEach(o => { html += renderOrderCardHTML(o); });
+        cont.html = html; // Fixed safely below
         cont.innerHTML = html;
       }
     }
@@ -1320,7 +1321,6 @@ ${item.img}`;
     }
 
     window.addEventListener('load', function() {
-      // USING FIREBASE DATABASE FOR RELIABLE LIFETIME UNIQUE VISITORS COUNTER
       if(fbDb) {
         let visitorRef = fbDb.ref('site_stats/total_visits');
         visitorRef.transaction(current => {

@@ -958,19 +958,32 @@ ${firstImg}`;
       </div>`;
     }
 
-    function toggleTrackDrawer(orderId){
-      let drawer = document.getElementById('trackDrawer_' + orderId);
-      let btn = document.getElementById('trackBtn_' + orderId);
-      if(drawer){
-        if(drawer.style.display === 'block'){
-          drawer.style.display = 'none';
-          if(btn) btn.innerHTML = "📍 Track Order Details ▾";
-        } else {
-          drawer.style.display = 'block';
-          if(btn) btn.innerHTML = "📍 Hide Tracking ▴";
-        }
-      }
+    
+function toggleTrackDrawer(orderId){
+  const drawer = document.getElementById('trackDrawer_' + orderId);
+  const btn = document.getElementById('trackBtn_' + orderId);
+
+  if (!drawer) {
+    console.error("Tracking drawer not found:", orderId);
+    return;
+  }
+
+  const isHidden = window.getComputedStyle(drawer).display === 'none';
+
+  if (isHidden) {
+    drawer.style.display = 'block';
+
+    if (btn) {
+      btn.innerHTML = "📍 Hide Tracking ▴";
     }
+  } else {
+    drawer.style.display = 'none';
+
+    if (btn) {
+      btn.innerHTML = "📍 Track Order Details ▾";
+    }
+  }
+}
 
     function renderOrderCardHTML(o){
       let status = o.status || "active";
@@ -1009,9 +1022,18 @@ ${firstImg}`;
           </div>
         </div>
 
-        <div>
-          <button class="btn-track-toggle" id="trackBtn_${o.orderId}" onclick="toggleTrackDrawer('${o.orderId}')">📍 Track Order Details ▾</button>
-        </div>
+        
+<div>
+  <button
+    type="button"
+    class="btn-track-toggle"
+    id="trackBtn_${o.orderId}"
+    onclick="event.stopPropagation(); toggleTrackDrawer('${o.orderId}')">
+    📍 Track Order Details ▾
+  </button>
+</div>
+
+
 
         <div class="track-drawer" id="trackDrawer_${o.orderId}" style="display:none;">
           ${getTrackingHTML(o)}

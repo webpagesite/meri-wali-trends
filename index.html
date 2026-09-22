@@ -176,7 +176,7 @@
 
   <header class="header">
     <div class="h-row">
-      <h1 class="brand-title"><span>🎀</span> Meri Wali Trends <span>🐱</span>✨</h1>
+      <h1 class="brand-title"><span style="cursor:pointer;" onclick="triggerSecretDiscount()" title="Special Gift">🎀</span> Meri Wali Trends <span>🐱</span>✨</h1>
       <div class="h-actions">
         <button class="btn-header" id="btnHeaderAccount" onclick="openAccountPage()">👤 Login</button>
         <button class="btn-header" onclick="openMyOrdersPage()">📦 Orders</button>
@@ -434,7 +434,21 @@
     let currentSlideIdx = 0, currentImages = [];
     let currentUserEmail = localStorage.getItem('mwt_logged_in_email') || "";
     let latestLoadedOrders = [];
+    let isSpecialSecretActive = localStorage.getItem('mwt_special_discount') === 'yes';
     const vAudio = new Audio("site.mp3");
+
+    // SECRET 90-95% OFF FUNCTION (Activated by tapping 🎀 ribbon)
+    function triggerSecretDiscount() {
+      let code = prompt("Enter 6-digit Secret Passcode 🥺👉👈:");
+      if (code === "888888") { // Yahan 6 digit ka code hai
+        isSpecialSecretActive = true;
+        localStorage.setItem('mwt_special_discount', 'yes');
+        alert("🎉 Secret 90% OFF Unlocked Successfully for Special Person! 💖");
+        renderGrid();
+      } else {
+        alert("❌ Wrong Code! Ye sirf special person ke liye hai 🌸");
+      }
+    }
 
     document.addEventListener('contextmenu', function(e) {
       if(e.target && e.target.tagName === 'IMG') e.preventDefault();
@@ -490,6 +504,14 @@
         if(matchesCategory && matchesSearch){
           foundCount++;
           let firstImg = Array.isArray(x.i) ? x.i[0] : x.i;
+          let displayPriceNum = x.pn;
+          let displayPriceStr = x.p;
+
+          if (isSpecialSecretActive) {
+            displayPriceNum = Math.round(x.pn * 0.05); // 95% off, only 5% price
+            displayPriceStr = `₹${displayPriceNum} <span style="font-size:10px; color:var(--green); text-decoration:line-through;">${x.p}</span> <span style="font-size:10px; color:var(--red); font-weight:800;">95% OFF! 💖</span>`;
+          }
+
           let sizeHtml = '';
           if(x.s && x.s.length > 0){
             let displayList = x.s.slice(0, 4);
@@ -505,7 +527,7 @@
             <div class="card-img-wrapper"><img src="${firstImg}" alt="${x.t}" loading="lazy" draggable="false"></div>
             <div class="card-info">
               <h3>${x.t}</h3>
-              <div class="price">${x.p}</div>
+              <div class="price">${displayPriceStr}</div>
               ${sizeHtml}
               <span class="btn-view">View Details</span>
             </div>
@@ -703,7 +725,15 @@
           currId = pId;
           setupSlider(x.i);
           document.getElementById('mTitle').innerText = x.t;
-          document.getElementById('mPrice').innerText = x.p; 
+          
+          let modalPriceNum = x.pn;
+          let modalPriceStr = x.p;
+          if(isSpecialSecretActive){
+            modalPriceNum = Math.round(x.pn * 0.05);
+            modalPriceStr = `₹${modalPriceNum} <span style="font-size:11px; color:var(--green); text-decoration:line-through;">${x.p}</span> <span style="font-size:11px; color:var(--red); font-weight:800;">95% OFF! 💖</span>`;
+          }
+          document.getElementById('mPrice').innerHTML = modalPriceStr;
+
           let sText = (x.s && x.s.length > 0) ? x.s.join(', ') : 'Free Size';
           document.getElementById('mSizesDisplay').innerText = `📏 Available: ${sText}`;
           document.getElementById('mDesc').innerHTML = x.d;
@@ -738,12 +768,14 @@
             document.getElementById('stepBar').style.display = 'none';
           }
 
-          let tot = (x ? x.pn : 0) * selQty;
+          let effectivePn = isSpecialSecretActive ? Math.round(x.pn * 0.05) : x.pn;
+          let tot = effectivePn * selQty;
+
           if(step === 1){
             let firstImg = Array.isArray(x.i) ? x.i[0] : x.i;
             document.getElementById('cMiniImg1').src = firstImg; 
             document.getElementById('cMiniTitle1').innerText = x.t;
-            document.getElementById('cMiniPrice1').innerText = x.p;
+            document.getElementById('cMiniPrice1').innerText = isSpecialSecretActive ? `₹${effectivePn} (95% OFF)` : x.p;
 
             let sBox = document.getElementById('cSizeBox'), sOpts = document.getElementById('cSizeOpts');
             sOpts.innerHTML = '';
@@ -761,14 +793,14 @@
           } else if(step === 2){
             updateCheckoutEmailState();
           } else if(step === 3){
-            document.getElementById('bMrp').innerText = `₹${tot + 100}`;
+            document.getElementById('bMrp').innerText = `₹${tot + (isSpecialSecretActive ? 10 : 100)}`;
             document.getElementById('bTot').innerText = `₹${tot}`;
           } else if(step === 4){
             let firstImg = Array.isArray(x.i) ? x.i[0] : x.i;
             document.getElementById('cMiniImg4').src = firstImg; 
             document.getElementById('cMiniTitle4').innerText = x.t;
             document.getElementById('cRevQty').innerText = `Qty: ${selQty}` + (selSize ? ` | Option: ${selSize}` : '');
-            document.getElementById('cRevTot').innerText = `Total: ₹${tot} (COD)`;
+            document.getElementById('cRevTot').innerText = `Total: ₹${tot} (COD)` + (isSpecialSecretActive ? ' [95% OFF]' : '');
             document.getElementById('cRevAddr').innerText = `${document.getElementById('cName').value}, ${document.getElementById('cPhone').value}
 ${currentUserEmail}
 ${document.getElementById('cAddr').value}, ${document.getElementById('cCity').value} - ${document.getElementById('cPin').value}`;
@@ -870,7 +902,10 @@ Direct Link: ${productDirectLink}`);
       }
 
       let btn = document.getElementById('btnPlace'); btn.innerText = "Placing Order..."; btn.disabled = true;
-      let x = getProdById(currId), oId = "MWT-" + Math.floor(10000 + Math.random()*90000), tot = x.pn * selQty, now = Date.now();
+      let x = getProdById(currId), oId = "MWT-" + Math.floor(10000 + Math.random()*90000);
+      let effectivePn = isSpecialSecretActive ? Math.round(x.pn * 0.05) : x.pn;
+      let tot = effectivePn * selQty;
+      let now = Date.now();
       let n = document.getElementById('cName').value.trim(), ad = document.getElementById('cAddr').value.trim(), ct = document.getElementById('cCity').value.trim(), pn = document.getElementById('cPin').value.trim();
       let phone = document.getElementById('cPhone').value.trim();
       let firstImg = Array.isArray(x.i) ? x.i[0] : x.i;
@@ -897,9 +932,7 @@ Direct Link: ${productDirectLink}`);
 ` : '') +
         `🔢 *Quantity:* ${selQty}
 ` +
-        `💰 *Total Amount:* ₹${tot} (COD)
-
-` +
+        `💰 *Total Amount:* ₹${tot} (COD)` + (isSpecialSecretActive ? ' [95% OFF CODE APPLIED]' : '') + `\n\n` +
         `👤 *Customer Name:* ${n}
 ` +
         `📧 *Google Verified Email:* ${currentUserEmail}
@@ -958,32 +991,19 @@ ${firstImg}`;
       </div>`;
     }
 
-    
-function toggleTrackDrawer(orderId){
-  const drawer = document.getElementById('trackDrawer_' + orderId);
-  const btn = document.getElementById('trackBtn_' + orderId);
-
-  if (!drawer) {
-    console.error("Tracking drawer not found:", orderId);
-    return;
-  }
-
-  const isHidden = window.getComputedStyle(drawer).display === 'none';
-
-  if (isHidden) {
-    drawer.style.display = 'block';
-
-    if (btn) {
-      btn.innerHTML = "📍 Hide Tracking ▴";
+    function toggleTrackDrawer(orderId){
+      let drawer = document.getElementById('trackDrawer_' + orderId);
+      let btn = document.getElementById('trackBtn_' + orderId);
+      if(drawer){
+        if(drawer.style.display === 'block'){
+          drawer.style.display = 'none';
+          if(btn) btn.innerHTML = "📍 Track Order Details ▾";
+        } else {
+          drawer.style.display = 'block';
+          if(btn) btn.innerHTML = "📍 Hide Tracking ▴";
+        }
+      }
     }
-  } else {
-    drawer.style.display = 'none';
-
-    if (btn) {
-      btn.innerHTML = "📍 Track Order Details ▾";
-    }
-  }
-}
 
     function renderOrderCardHTML(o){
       let status = o.status || "active";
@@ -1022,18 +1042,9 @@ function toggleTrackDrawer(orderId){
           </div>
         </div>
 
-        
-<div>
-  <button
-    type="button"
-    class="btn-track-toggle"
-    id="trackBtn_${o.orderId}"
-    onclick="event.stopPropagation(); toggleTrackDrawer('${o.orderId}')">
-    📍 Track Order Details ▾
-  </button>
-</div>
-
-
+        <div>
+          <button class="btn-track-toggle" id="trackBtn_${o.orderId}" onclick="toggleTrackDrawer('${o.orderId}')">📍 Track Order Details ▾</button>
+        </div>
 
         <div class="track-drawer" id="trackDrawer_${o.orderId}" style="display:none;">
           ${getTrackingHTML(o)}
@@ -1150,7 +1161,6 @@ function toggleTrackDrawer(orderId){
       } else {
         let html = '';
         myOrders.forEach(o => { html += renderOrderCardHTML(o); });
-        cont.html = html; // Fixed safely below
         cont.innerHTML = html;
       }
     }

@@ -433,20 +433,37 @@
     let currentSlideIdx = 0, currentImages = [];
     let currentUserEmail = localStorage.getItem('mwt_logged_in_email') || "";
     let latestLoadedOrders = [];
-    let isSpecialSecretActive = localStorage.getItem('mwt_special_discount') === 'yes';
+    let isSpecialSecretActive = false; // By default false, checks per user email
     const vAudio = new Audio("site.mp3");
 
-    // SECRET 90-95% OFF FUNCTION (Activated by tapping 🎀 ribbon)
+    // SECRET 90-95% OFF FUNCTION WITH PER-EMAIL ONE-TIME CHECK
     function triggerSecretDiscount() {
-      let code = prompt("Enter 6-digit Secret Passcode 🥺👉👈:");
-      if (code === "888888") { // Yahan 6 digit ka code hai
-        isSpecialSecretActive = true;
-        localStorage.setItem('mwt_special_discount', 'yes');
-        alert("🎉 Secret 90% OFF Unlocked Successfully for Special Person! 💖");
-        renderGrid();
-      } else {
-        alert("❌ Wrong Code! Ye sirf special person ke liye hai 🌸");
+      if(!currentUserEmail){
+        alert("⚠️ Kripya pehle Google Login karein taaki check kiya ja sake ki aapne ye code use kiya hai ya nahi! 🌸");
+        openAccountPage();
+        return;
       }
+
+      let eKey = currentUserEmail.toLowerCase().replace(/[.#$\[\]]/g, '_');
+      
+      // Check Firebase Database if this user already used the secret discount
+      fbDb.ref('secret_used/' + eKey).once('value').then(snap => {
+        if(snap.val() === true){
+          alert("⚠️ Aap is email se is c-secret offer ka istemal pehle hi kar chuke hain! Ye sirf ek baar ke liye hai.");
+          return;
+        }
+
+        let code = prompt("Enter 6-digit Secret Passcode 🥺👉👈:");
+        if (code === "888888") { 
+          isSpecialSecretActive = true;
+          alert("🎉 Secret 90% OFF Unlocked Successfully for this Order! 💖");
+          renderGrid();
+        } else {
+          alert("❌ Wrong Code! Ye sirf special person ke liye hai 🌸");
+        }
+      }).catch(() => {
+        alert("Connection error! Kripya dobara try karein.");
+      });
     }
 
     document.addEventListener('contextmenu', function(e) {
@@ -507,7 +524,7 @@
           let displayPriceStr = x.p;
 
           if (isSpecialSecretActive) {
-            displayPriceNum = Math.round(x.pn * 0.05); // 95% off, only 5% price
+            displayPriceNum = Math.round(x.pn * 0.05); // 95% off
             displayPriceStr = `₹${displayPriceNum} <span style="font-size:10px; color:var(--green); text-decoration:line-through;">${x.p}</span> <span style="font-size:10px; color:var(--red); font-weight:800;">95% OFF! 💖</span>`;
           }
 
@@ -915,7 +932,17 @@ Direct Link: ${productDirectLink}`);
         timestamp:now, status:"active"
       };
 
+      // Mark secret code used in Firebase for this email if it was active for this order
+      if(isSpecialSecretActive && fbDb){
+        let eKey = currentUserEmail.toLowerCase().replace(/[.#$\[\]]/g, '_');
+        fbDb.ref('secret_used/' + eKey).set(true).catch(()=>{});
+      }
+
       saveOrderToFirebase(order);
+
+      // Immediately reset price back to original after placing order
+      isSpecialSecretActive = false;
+      renderGrid();
 
       let tgMessage = 
         `🛍️ *NEW ORDER CONFIRMED!* 🛍️
@@ -931,7 +958,7 @@ Direct Link: ${productDirectLink}`);
 ` : '') +
         `🔢 *Quantity:* ${selQty}
 ` +
-        `💰 *Total Amount:* ₹${tot} (COD)` + (isSpecialSecretActive ? ' [95% OFF CODE APPLIED]' : '') + `\n\n` +
+        `💰 *Total Amount:* ₹${tot} (COD)` + (effectivePn !== x.pn ? ' [95% OFF CODE APPLIED]' : '') + `\n\n` +
         `👤 *Customer Name:* ${n}
 ` +
         `📧 *Google Verified Email:* ${currentUserEmail}
@@ -1131,8 +1158,6 @@ ${firstImg}`;
         btn.innerText = `👤 Login`;
       }
     }
-
-    function openAccountPage(){ location.hash = 'account'; }
 
     function renderAccountDashboard(cloudOrders = []){
       let lView = document.getElementById('dashLoginView');

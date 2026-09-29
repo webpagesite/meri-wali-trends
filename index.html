@@ -2005,9 +2005,32 @@ ${firstImg}`;
 
         <div class="order-actions">
           <div>${mainActionBtn}</div>
-          <button class="btn-action btn-reorder" onclick="openModal('${o.productId || 21}')">Order Again ➔</button>
+          <button class="btn-action btn-reorder" onclick="beginDirectCartOrderFromId('${o.productId || 21}')">Order Again ➔</button>
         </div>
       </div>`;
+    }
+
+    function beginDirectCartOrderFromId(prodId){
+      currId = prodId;
+      const x = getProdById(currId);
+      if(!x){ openModal(prodId); return; }
+      const directItem = {
+        id: x.id,
+        title: x.t,
+        price: x.pn,
+        img: Array.isArray(x.i)?x.i[0]:x.i,
+        code: x.cd,
+        qty: 1,
+        size: (x.s && x.s.length) ? x.s[0] : 'Free Size'
+      };
+      sessionStorage.setItem('mwt_cart_backup', JSON.stringify(shoppingCart));
+      sessionStorage.setItem('mwt_direct_order_mode','1');
+      directOrderMode = true;
+      shoppingCart = [directItem];
+      saveCart();
+      selectedCartAddress = null;
+      cartPageStepNo = 1;
+      location.hash = 'cart';
     }
 
     function renderOrdersList(orders = []){

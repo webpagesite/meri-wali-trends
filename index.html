@@ -215,6 +215,56 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
 .site-footer{max-width:1100px;margin:28px auto 0;padding:24px 18px;border-radius:24px;background:#2d1e2f;color:#fff;text-align:left;box-shadow:0 12px 30px rgba(45,30,47,.14);}
 .site-footer-top{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;}
 .site-footer h3{font-family:'Quicksand',sans-serif;font-size:19px;margin-bottom:5px}.site-footer p{font-size:10.5px;color:#d9cbd2;line-height:1.6;max-width:420px}.footer-links{display:flex;gap:7px;flex-wrap:wrap;margin-top:13px}.footer-links button{background:#fff1f5;color:#2d1e2f;border:0;border-radius:999px;padding:7px 10px;font-size:9.5px;font-weight:800;cursor:pointer}.footer-bottom{margin-top:18px;padding-top:12px;border-top:1px solid rgba(255,255,255,.12);font-size:9px;color:#bfaeb8;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;}
+
+/* Cart + Favorites polish */
+.cart-badge{position:absolute;top:-5px;right:-5px;min-width:16px;height:16px;padding:0 4px;border-radius:999px;background:#ff4d88;color:#fff;font-size:9px;font-weight:900;display:flex;align-items:center;justify-content:center;border:2px solid #fff;}
+.header-mini-action{position:relative;background:#fff;border:1.5px solid var(--border);padding:7px 9px;border-radius:14px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:54px;box-shadow:0 2px 8px rgba(255,105,180,.06);}
+.header-mini-action span:last-child{font-size:8.5px;font-weight:800;color:var(--pink);margin-top:2px;}
+.product-actions-row{display:flex;gap:8px;margin-top:10px;}
+.btn-cart-mini{flex:1;background:#fff0f5;color:var(--pink);border:1.5px solid var(--pink-accent);padding:12px 8px;border-radius:12px;font-size:12px;font-weight:800;cursor:pointer;}
+.btn-order-mini{flex:1.25;}
+.fav-heart{font-size:17px;line-height:1;}
+.cart-modal-list{display:flex;flex-direction:column;gap:10px;margin-bottom:14px;}
+.cart-item{display:flex;gap:10px;align-items:center;background:#fff9fb;border:1px solid var(--border);border-radius:14px;padding:9px;}
+.cart-item img{width:58px;height:58px;border-radius:10px;object-fit:contain;background:#fff;flex-shrink:0;}
+.cart-item-info{flex:1;min-width:0;}
+.cart-item-title{font-size:12px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.cart-item-meta{font-size:10px;color:var(--muted);margin-top:3px;}
+.cart-qty{display:flex;align-items:center;gap:6px;margin-top:5px;}
+.cart-qty button{width:24px;height:24px;border-radius:7px;border:1px solid var(--pink-accent);background:#fff;color:var(--pink);font-weight:900;cursor:pointer;}
+.cart-remove{border:0;background:transparent;color:#e63946;font-size:16px;cursor:pointer;padding:4px;}
+.cart-total-box{background:#fff0f5;border:1px solid var(--border);border-radius:14px;padding:12px;margin-bottom:12px;}
+.cart-form-title{font-size:13px;font-weight:800;margin:13px 0 8px;color:var(--text);}
+.saved-address-note{font-size:10px;color:var(--green);font-weight:700;margin-top:5px;}
+@media(max-width:560px){.top-search-row{gap:5px!important}.search-input{padding:10px 10px 10px 34px!important;font-size:11.5px!important}.search-icon{left:11px!important;font-size:13px!important}.header-waitlist-btn,.header-mini-action{min-width:48px!important;padding:6px 6px!important}.header-waitlist-btn span:last-child,.header-mini-action span:last-child{font-size:8px!important}.product-actions-row{gap:6px}.btn-cart-mini{font-size:11px;padding:11px 5px}.cart-item img{width:52px;height:52px}}
+
+/* ===== Wishlist / Cart / Account Enhancements ===== */
+.header-tools{display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:8px;}
+.header-tool-btn{border:1px solid var(--border);background:#fff7fa;color:var(--text);border-radius:999px;padding:7px 10px;font-size:10px;font-weight:800;cursor:pointer;white-space:nowrap;}
+.header-tool-btn.primary{background:var(--pink);color:#fff;border-color:var(--pink);}
+.heart-icon{font-size:17px;line-height:1;}
+.card-mini-actions{display:flex;gap:6px;margin-top:8px;}
+.card-mini-actions button{flex:1;border-radius:9px;padding:8px 5px;font-size:10.5px;font-weight:800;cursor:pointer;}
+.card-cart-btn{background:#fff0f5;color:var(--pink);border:1px solid var(--border);}
+.card-review-btn{background:#fff;color:var(--pink);border:1px solid var(--pink-accent);}
+.modal-order-row{display:flex;gap:8px;margin-top:10px;}
+.modal-order-row .btn-pink{flex:1;margin:0;}
+.btn-cart{flex:1;border:1.5px solid var(--pink);background:#fff0f5;color:var(--pink);border-radius:12px;font-weight:800;cursor:pointer;font-size:12.5px;}
+.cart-badge{display:inline-flex;min-width:17px;height:17px;align-items:center;justify-content:center;background:#fff;color:var(--pink);border-radius:999px;font-size:9px;margin-left:3px;}
+.cart-overlay{display:none;position:fixed;inset:0;background:rgba(45,30,47,.45);z-index:6000;align-items:flex-end;justify-content:center;}
+.cart-sheet{background:#fff;width:100%;max-width:520px;max-height:92vh;overflow-y:auto;border-radius:24px 24px 0 0;padding:16px;border:1px solid var(--border);box-shadow:0 -12px 40px rgba(45,30,47,.18);}
+.cart-item{display:flex;gap:10px;align-items:center;background:#fff9fb;border:1px solid var(--border);border-radius:14px;padding:9px;margin-bottom:8px;}
+.cart-item img{width:58px;height:58px;object-fit:contain;border-radius:10px;background:#fff;flex-shrink:0;}
+.cart-qty{display:flex;align-items:center;gap:7px;margin-top:5px;}
+.cart-qty button{width:25px;height:25px;border-radius:7px;border:1px solid var(--pink-accent);background:#fff;color:var(--pink);font-weight:800;}
+.cart-total{display:flex;justify-content:space-between;font-weight:800;padding:12px 2px;border-top:1px dashed var(--border);margin-top:8px;}
+.cart-form input,.cart-form textarea{width:100%;padding:10px 11px;border:1px solid var(--border);border-radius:10px;font-size:12px;margin-top:6px;outline:none;}
+.cart-form label{display:block;font-size:11px;font-weight:800;color:var(--muted);margin-top:9px;}
+.account-nav{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;max-width:800px;margin:0 auto 14px;}
+.account-nav button{border:1px solid var(--border);background:#fff;border-radius:12px;padding:10px 5px;color:var(--pink);font-size:10.5px;font-weight:800;cursor:pointer;}
+.account-nav button:hover{background:#fff0f5;}
+@media(max-width:560px){.header-tools{gap:5px}.header-tool-btn{padding:7px 8px;font-size:9.5px}.account-nav{grid-template-columns:repeat(3,1fr)}}
+
 @media(max-width:560px){.header{top:6px}.brand-title{font-size:18px}.hero-store{padding:23px 17px;border-radius:22px}.hero-store h2{font-size:23px}.store-trust{grid-template-columns:repeat(2,1fr)}.grid{gap:10px!important}.card-img-wrapper{height:175px!important}.card-info{padding:10px!important}.site-footer{border-radius:20px}.footer-bottom{display:block}.footer-bottom span{display:block;margin-top:4px}}
 
   </style>
@@ -255,12 +305,20 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
   <div class="top-search-row">
     <div class="search-wrapper">
       <span class="search-icon">🔍</span>
-      <input type="text" class="search-input" id="searchBox" oninput="handleSearch(this.value)" placeholder="Search dress, earrings, bracelet...">
+      <input type="text" class="search-input" id="searchBox" oninput="handleSearch(this.value)" placeholder="Search products...">
     </div>
-    <div class="header-waitlist-btn" onclick="openWaitlistPage()" title="View Waitlist">
-      <span style="font-size:15px; line-height:1;" id="headerStarIcon">⭐</span>
-      <span style="font-size:9.5px; font-weight:700; color:var(--pink); margin-top:2px;">Waitlist</span>
+    <div class="header-waitlist-btn" onclick="openWaitlistPage()" title="View Wishlist">
+      <span class="fav-heart" id="headerStarIcon">♡</span>
+      <span>Wishlist</span>
     </div>
+    <div class="header-waitlist-btn" onclick="openMyOrdersPage()" title="View Orders">
+      <span style="font-size:15px;line-height:1;">📦</span>
+      <span>Orders</span>
+    </div>
+    <button class="header-mini-action" onclick="openCartPage()" title="Shopping Cart">
+      <span style="font-size:15px;line-height:1;">🛒</span><span>Cart</span>
+      <b id="headerCartBadge" class="cart-badge" style="display:none;">0</b>
+    </button>
   </div>
 
   <div class="filter-bar">
@@ -286,7 +344,7 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
       <div class="modal-top-actions">
         <!-- Product Star / Waitlist Button -->
         <div class="action-icon-btn" id="modalStarBtn" onclick="toggleCurrentProductWaitlist()" title="Save to Waitlist">
-          <span id="modalStarSymbol" style="font-size:16px;">⭐</span>
+          <span id="modalStarSymbol" class="fav-heart">♡</span>
         </div>
         <div class="action-icon-btn" onclick="universalShareProduct()" title="Share Product">
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#ff4d88" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -319,7 +377,7 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
         <div class="hint-social-row">
           <button class="btn-hint-mini" onclick="sendHintToBabuWhatsApp()">💬 WA</button>
           <button class="btn-hint-mini" onclick="sendHintToBabuInstagram()">📸 Insta</button>
-          <button class="btn-review-mini" onclick="toggleReviewSection()">💬 Reviews</button>
+          <button class="btn-review-mini" onclick="toggleReviewSection()">⭐ Reviews</button>
         </div>
 
         <!-- Review / Comments Collapsible Box -->
@@ -332,7 +390,37 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
           </div>
         </div>
 
-        <button class="btn-pink" onclick="startCheckout()">Order Now 🛍️</button>
+        <div class="product-actions-row">
+          <button class="btn-cart-mini" onclick="addCurrentProductToCart()">🛒 Add to Cart</button>
+          <button class="btn-pink btn-order-mini" onclick="startCheckout()">Order Now 🛍️</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Cart Modal -->
+  <div class="modal" id="cartModal" onclick="if(event.target.id==='cartModal')history.back()">
+    <div class="modal-content" style="max-width:480px;">
+      <div style="padding:16px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+        <div><h2 style="font-size:17px;">My Cart 🛒</h2><p style="font-size:10.5px;color:var(--muted);">Review all items and place one COD order</p></div>
+        <div class="close-btn" style="position:static;width:34px;height:34px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;border:1px solid var(--border);" onclick="history.back()">&times;</div>
+      </div>
+      <div class="modal-body">
+        <div id="cartItemsList" class="cart-modal-list"></div>
+        <div id="cartEmptyBox" style="display:none;text-align:center;padding:35px 10px;background:#fff9fb;border:1px solid var(--border);border-radius:16px;">
+          <div style="font-size:34px;">🛒</div><h3 style="font-size:15px;margin-top:7px;">Your Cart is Empty</h3><p style="font-size:11px;color:var(--muted);margin-top:4px;">Products ko cart me add karke yahan se ek saath order karein.</p>
+        </div>
+        <div id="cartCheckoutArea" style="display:none;">
+          <div class="cart-total-box"><div style="display:flex;justify-content:space-between;font-size:12px;font-weight:700;"><span>Items Total</span><span id="cartItemsTotal">₹0</span></div><div style="display:flex;justify-content:space-between;font-size:14px;font-weight:900;margin-top:6px;color:var(--pink);"><span>COD Total</span><span id="cartGrandTotal">₹0</span></div></div>
+          <div class="cart-form-title">Delivery Details 📍</div>
+          <div class="form-group"><label>Full Name</label><input id="cartName" type="text" placeholder="Enter your full name"></div>
+          <div class="form-group"><label>Mobile Number</label><input id="cartPhone" type="tel" maxlength="10" placeholder="10-digit mobile number"></div>
+          <div class="form-group"><label>Address</label><textarea id="cartAddr" rows="2" placeholder="House no., street, area"></textarea></div>
+          <div style="display:flex;gap:8px;"><div class="form-group" style="flex:1;"><label>City</label><input id="cartCity" type="text" placeholder="City"></div><div class="form-group" style="width:105px;"><label>Pincode</label><input id="cartPin" type="tel" maxlength="6" placeholder="PIN"></div></div>
+          <div id="cartSavedAddressNote" class="saved-address-note"></div>
+          <button class="btn-pink" id="btnCartPlace" style="margin-top:5px;" onclick="placeCartOrder()">Place Cart Order (COD) 🛍️</button>
+        </div>
       </div>
     </div>
   </div>
@@ -430,6 +518,11 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
           <div class="dash-stat-box"><div style="font-size:18px; font-weight:800; color:var(--pink);" id="dashTotalOrders">0</div><div style="font-size:11px; color:var(--muted); font-weight:700; margin-top:2px;">Total Orders</div></div>
           <div class="dash-stat-box"><div style="font-size:18px; font-weight:800; color:var(--green);" id="dashActiveOrders">0</div><div style="font-size:11px; color:var(--muted); font-weight:700; margin-top:2px;">Active Deliveries</div></div>
         </div>
+      </div>
+      <div class="account-nav">
+        <button onclick="openMyOrdersPage()">📦 My Orders</button>
+        <button onclick="openWaitlistPage()">♡ Wishlist</button>
+        <button onclick="focusStoreSearch()">🔍 Search</button>
       </div>
       <div style="max-width:800px; margin:0 auto 12px; display:flex; justify-content:space-between; align-items:center;">
         <h4 style="font-size:14.5px; color:var(--text);">Order History & Live Tracking</h4>
@@ -544,6 +637,8 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
     let isSpecialSecretActive = false;
     const vAudio = new Audio("site.mp3");
 
+    updateCartBadge();
+
     function triggerSecretDiscount() {
       if(!currentUserEmail){
         alert("⚠️ Kripya pehle Google Login karein taaki check kiya ja sake ki aapne ye code use kiya hai ya nahi! 🌸");
@@ -652,6 +747,10 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
               <div class="price">${displayPriceStr}</div>
               ${sizeHtml}
               <span class="btn-view">View Details</span>
+              <div class="card-mini-actions">
+                <button class="card-cart-btn" onclick="event.stopPropagation();addProductToCart('${x.id}')">🛒 Add to Cart</button>
+                <button class="card-review-btn" onclick="event.stopPropagation();openProductReviews('${x.id}')">💬 Reviews</button>
+              </div>
             </div>
           </div>`;
         }
@@ -660,6 +759,14 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
       if(foundCount === 0){
         g.innerHTML = `<div style="grid-column:1/-1; padding:40px 10px; background:#fff; border-radius:18px; border:1px solid var(--border);"><div style="font-size:36px; margin-bottom:6px;">🥺</div><h4 style="color:var(--text);">Koi item nahi mila!</h4><p style="font-size:12px; color:var(--muted); margin-top:4px;">Kuch aur search karke dekhein</p></div>`;
       }
+    }
+
+    function addProductToCart(id){
+      let old=currId; currId=id; addCurrentProductToCart(); currId=old;
+    }
+    function openProductReviews(id){
+      openModal(id);
+      setTimeout(()=>{let b=document.getElementById('reviewSectionBox'); if(b && b.style.display!=='block') toggleReviewSection();},180);
     }
 
     function handleSearch(val){
@@ -772,6 +879,76 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
     function goToStep(st){ if(!currId) return; location.hash = `checkout-${currId}-step${st}`; }
     function jumpStep(st){ if(activeStep === 5) return; goToStep(st); }
 
+
+    let shoppingCart = JSON.parse(localStorage.getItem('mwt_cart') || '[]');
+
+    function saveCart(){
+      localStorage.setItem('mwt_cart', JSON.stringify(shoppingCart));
+      updateCartBadge();
+    }
+    function updateCartBadge(){
+      const badge=document.getElementById('headerCartBadge');
+      const count=shoppingCart.reduce((n,i)=>n+(i.qty||1),0);
+      if(badge){ badge.innerText=count; badge.style.display=count?'flex':'none'; }
+    }
+    function openCartPage(){ location.hash='cart'; }
+    function addCurrentProductToCart(){
+      if(!currId) return;
+      const x=getProdById(currId); if(!x) return;
+      const existing=shoppingCart.find(i=>String(i.id)===String(currId));
+      if(existing){ existing.qty=Math.min(20,(existing.qty||1)+1); }
+      else {
+        shoppingCart.push({id:x.id,title:x.t,price:x.pn,img:Array.isArray(x.i)?x.i[0]:x.i,code:x.cd,qty:1,size:(x.s&&x.s.length)?x.s[0]:'Free Size'});
+      }
+      saveCart();
+      alert('Product cart me add ho gaya! 🛒✨');
+    }
+    function changeCartQty(id,delta){
+      const item=shoppingCart.find(i=>String(i.id)===String(id)); if(!item) return;
+      item.qty=Math.max(1,Math.min(20,(item.qty||1)+delta)); saveCart(); renderCart();
+    }
+    function removeFromCart(id){ shoppingCart=shoppingCart.filter(i=>String(i.id)!==String(id)); saveCart(); renderCart(); }
+    function getSavedAddressKey(){ return currentUserEmail ? 'mwt_saved_address_'+sanitizeEmailKey(currentUserEmail) : 'mwt_saved_address_guest'; }
+    function loadSavedCartAddress(){
+      const a=JSON.parse(localStorage.getItem(getSavedAddressKey())||'null');
+      if(!a) return;
+      ['Name','Phone','Addr','City','Pin'].forEach(k=>{const el=document.getElementById('cart'+k); if(el && a[k.toLowerCase()]) el.value=a[k.toLowerCase()];});
+      const note=document.getElementById('cartSavedAddressNote'); if(note) note.innerText='✓ Aapka saved address automatically fill ho gaya hai.';
+    }
+    function renderCart(){
+      const list=document.getElementById('cartItemsList'), empty=document.getElementById('cartEmptyBox'), area=document.getElementById('cartCheckoutArea'); if(!list) return;
+      updateCartBadge();
+      if(!shoppingCart.length){ list.innerHTML=''; empty.style.display='block'; area.style.display='none'; return; }
+      empty.style.display='none'; area.style.display='block';
+      let total=0;
+      list.innerHTML=shoppingCart.map(i=>{const line=i.price*(i.qty||1); total+=line; return `<div class="cart-item"><img src="${i.img}" alt="${i.title}"><div class="cart-item-info"><div class="cart-item-title">${i.title}</div><div class="cart-item-meta">₹${i.price} • ${i.size||'Free Size'} • Code: ${i.code||''}</div><div class="cart-qty"><button onclick="changeCartQty('${i.id}',-1)">−</button><b style="font-size:11px;min-width:15px;text-align:center;">${i.qty||1}</b><button onclick="changeCartQty('${i.id}',1)">+</button></div></div><div style="text-align:right;"><b style="font-size:12px;color:var(--pink);">₹${line}</b><br><button class="cart-remove" onclick="removeFromCart('${i.id}')" title="Remove">×</button></div></div>`;}).join('');
+      document.getElementById('cartItemsTotal').innerText='₹'+total;
+      document.getElementById('cartGrandTotal').innerText='₹'+total+' (COD)';
+      loadSavedCartAddress();
+    }
+    function validateCartAddress(){
+      if(!currentUserEmail){ alert('⚠️ Cart order ke liye pehle Google Login karein! 🌸'); openAccountPage(); return null; }
+      const name=document.getElementById('cartName').value.trim(), phone=document.getElementById('cartPhone').value.trim(), addr=document.getElementById('cartAddr').value.trim(), city=document.getElementById('cartCity').value.trim(), pin=document.getElementById('cartPin').value.trim();
+      if(!name){alert('Kripya Full Name dalein! 🌸');return null;} if(!/^[6-9]\d{9}$/.test(phone)){alert('Kripya valid 10-digit mobile number enter karein! 🌸');return null;} if(!addr){alert('Kripya complete Address dalein! 🌸');return null;} if(!city){alert('Kripya City dalein! 🌸');return null;} if(!/^\d{6}$/.test(pin)){alert('Kripya 6-digit Pincode dalein! 🌸');return null;}
+      localStorage.setItem(getSavedAddressKey(),JSON.stringify({name,phone,addr,city,pin}));
+      return {name,phone,addr,city,pin};
+    }
+    function placeCartOrder(){
+      if(!shoppingCart.length) return;
+      const address=validateCartAddress(); if(!address) return;
+      const btn=document.getElementById('btnCartPlace'); btn.disabled=true; btn.innerText='Placing Cart Order...';
+      const batchId='MWT-B'+Math.floor(10000+Math.random()*90000), now=Date.now(), addressText=`${address.addr}, ${address.city} - ${address.pin}`;
+      let total=0;
+      const orders=shoppingCart.map((i,idx)=>{const line=i.price*(i.qty||1);total+=line;return {productId:i.id,orderId:batchId+'-'+(idx+1),batchOrderId:batchId,title:i.title,img:i.img,code:i.code,price:line,unitPrice:i.price,qty:i.qty||1,size:i.size,email:currentUserEmail,name:address.name,phone:address.phone,address:addressText,date:new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}),timestamp:now+idx,status:'active'};});
+      orders.forEach(o=>saveOrderToFirebase(o));
+      const lines=orders.map(o=>`• ${o.title} | Code: ${o.code||'-'} | Qty: ${o.qty} | ₹${o.price}\n  🖼️ ${o.img}`).join('\n');
+      const tg=`🛒 *NEW CART ORDER!* 🛒\n\n🆔 *Cart Order:* #${batchId}\n📦 *Items:* ${orders.length}\n💰 *TOTAL:* ₹${total} (COD)\n\n${lines}\n\n👤 *Customer:* ${address.name}\n📧 *Google Email:* ${currentUserEmail}\n📞 *Mobile:* ${address.phone}\n📍 *Address:* ${addressText}`;
+      fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:TG_CHAT,text:tg})}).catch(()=>{});
+      shoppingCart=[]; saveCart(); btn.disabled=false; btn.innerText='Place Cart Order (COD) 🛍️';
+      alert(`Order successfully placed! 🎉\nCart Order #${batchId}\nTotal: ₹${total}`);
+      location.hash='orders';
+    }
+
     function updateCheckoutEmailState(){
       let prompt = document.getElementById('cEmailLoginPrompt');
       let box = document.getElementById('cEmailLoggedInBox');
@@ -807,27 +984,24 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
     }
 
     function updateHeaderWaitlistUI(){
-      let starEl = document.getElementById('headerStarIcon');
-      if(!starEl) return;
+      let heartEl = document.getElementById('headerStarIcon');
+      if(!heartEl) return;
       let count = Object.keys(userWaitlist).length;
-      if(count > 0){
-        starEl.innerText = "⭐";
-        starEl.style.filter = "drop-shadow(0 0 4px #ff4d88)";
-      } else {
-        starEl.innerText = "⭐";
-        starEl.style.filter = "none";
-      }
+      heartEl.innerText = count > 0 ? "♥" : "♡";
+      heartEl.style.color = count > 0 ? "var(--pink)" : "var(--muted)";
+      heartEl.style.filter = count > 0 ? "drop-shadow(0 0 4px #ff4d88)" : "none";
+      updateCartBadge();
     }
 
     function updateModalStarUI(){
       let sym = document.getElementById('modalStarSymbol');
       if(!sym || !currId) return;
       if(userWaitlist[currId]){
-        sym.innerText = "🌟";
+        sym.innerText = "♥";
         sym.style.color = "var(--pink)";
       } else {
-        sym.innerText = "⭐";
-        sym.style.color = "inherit";
+        sym.innerText = "♡";
+        sym.style.color = "var(--muted)";
       }
     }
 
@@ -857,7 +1031,7 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
         };
         userWaitlist[currId] = itemData;
         fbDb.ref('waitlist/' + eKey + '/' + currId).set(itemData).catch(()=>{});
-        alert("Product aapki Waitlist me save ho gaya hai! ⭐✨");
+        alert("Product aapki Wishlist me save ho gaya hai! ❤️✨");
       }
       updateModalStarUI();
       updateHeaderWaitlistUI();
@@ -868,7 +1042,7 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
       if(!grid) return;
       let keys = Object.keys(userWaitlist);
       if(keys.length === 0){
-        grid.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:50px 10px; background:#fff; border-radius:18px; border:1px solid var(--border);"><h3>Your Waitlist is Empty ⭐</h3><p style="font-size:12px; color:var(--muted); margin-top:6px;">Products ko star karke yahan save karein!</p></div>`;
+        grid.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:50px 10px; background:#fff; border-radius:18px; border:1px solid var(--border);"><h3>Your Wishlist is Empty ♡</h3><p style="font-size:12px; color:var(--muted); margin-top:6px;">Products ko heart karke yahan save karein!</p></div>`;
         return;
       }
       let html = '';
@@ -892,6 +1066,7 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
 
       let pModal = document.getElementById('productModal');
       let cModal = document.getElementById('checkoutModal');
+      let cartModal = document.getElementById('cartModal');
       let oPage = document.getElementById('ordersPage');
       let aPage = document.getElementById('accountPage');
       let wPage = document.getElementById('waitlistPage');
@@ -899,6 +1074,7 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
 
       pModal.style.display = 'none';
       cModal.style.display = 'none';
+      if(cartModal) cartModal.style.display = 'none';
       oPage.style.display = 'none';
       aPage.style.display = 'none';
       wPage.style.display = 'none';
@@ -911,6 +1087,12 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
       if(revBox) revBox.style.display = 'none';
 
       if(!hash) return;
+
+      if(hash === 'cart'){
+        renderCart();
+        if(cartModal) cartModal.style.display = 'flex';
+        return;
+      }
 
       if(hash === 'waitlist'){
         if(currentUserEmail){
@@ -1043,6 +1225,14 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
             document.getElementById('cQtyVal').innerText = selQty;
           } else if(step === 2){
             updateCheckoutEmailState();
+            const saved=JSON.parse(localStorage.getItem(getSavedAddressKey())||'null');
+            if(saved){
+              if(saved.name) document.getElementById('cName').value=saved.name;
+              if(saved.phone) document.getElementById('cPhone').value=saved.phone;
+              if(saved.addr) document.getElementById('cAddr').value=saved.addr;
+              if(saved.city) document.getElementById('cCity').value=saved.city;
+              if(saved.pin) document.getElementById('cPin').value=saved.pin;
+            }
           } else if(step === 3){
             document.getElementById('bMrp').innerText = `₹${tot + (isSpecialSecretActive ? 10 : 100)}`;
             document.getElementById('bTot').innerText = `₹${tot}`;
@@ -1092,7 +1282,6 @@ ${document.getElementById('cAddr').value}, ${document.getElementById('cCity').va
       }
       if(!addr){ alert("Kripya complete Delivery Address dalein! 🌸"); return; }
       if(!pin || pin.length !== 6){ alert("Kripya 6-digit Pincode enter karein! 🌸"); return; }
-
       goToStep(3);
     }
 
@@ -1249,6 +1438,7 @@ Direct Link: ${productDirectLink}`);
       let now = Date.now();
       let n = document.getElementById('cName').value.trim(), ad = document.getElementById('cAddr').value.trim(), ct = document.getElementById('cCity').value.trim(), pn = document.getElementById('cPin').value.trim();
       let phone = document.getElementById('cPhone').value.trim();
+      localStorage.setItem(getSavedAddressKey(), JSON.stringify({name:n,phone:phone,addr:ad,city:ct,pin:pn}));
       let firstImg = Array.isArray(x.i) ? x.i[0] : x.i;
 
       let order = {
@@ -1884,6 +2074,7 @@ ${item.img}`;
       }catch(e){}
     }
     loadProductsFromSheet();
+    updateCartBadge();
   </script>
 </body>
 </html>

@@ -202,6 +202,35 @@
     .wheel-center-pin{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:40px;height:40px;background:#fff;border-radius:50%;border:3px solid var(--pink);display:flex;align-items:center;justify-content:center;font-size:16px;z-index:5;}
     .fortune-result-box{display:none;background:#fff0f5;border:2px dashed var(--pink);border-radius:16px;padding:14px;margin-top:14px;font-size:12.5px;font-weight:700;color:var(--text);line-height:1.5;}
 
+    /* ===== ORDER SUCCESS / CLEAN BACK NAVIGATION ===== */
+    #mwtOrderSuccessOverlay{
+      position:fixed;inset:0;z-index:12000;display:flex;align-items:center;justify-content:center;
+      background:rgba(45,30,47,.58);backdrop-filter:blur(7px);animation:mwtFadeIn .18s ease-out;
+      pointer-events:none;
+    }
+    .mwt-success-card{
+      width:min(88vw,360px);padding:28px 22px;border-radius:26px;background:#fff;text-align:center;
+      border:1px solid #ffd1dc;box-shadow:0 20px 55px rgba(45,30,47,.22);
+      animation:mwtSuccessPop .45s cubic-bezier(.2,.9,.2,1);
+    }
+    .mwt-success-check{
+      width:66px;height:66px;margin:0 auto 12px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+      background:#ff4d88;color:#fff;font-size:38px;font-weight:900;box-shadow:0 10px 25px rgba(255,77,136,.28);
+    }
+    .mwt-success-title{font-size:22px;font-weight:800;color:#2d1e2f;}
+    .mwt-success-sub{font-size:12px;color:#7a6a7c;line-height:1.5;margin:7px 0 10px;}
+    .mwt-success-order{font-size:12px;font-weight:800;color:#ff4d88;background:#fff0f5;border-radius:999px;padding:9px 12px;display:inline-block;}
+    .mwt-order-confetti{
+      position:fixed;top:-30px;z-index:12001;pointer-events:none;
+      animation:mwtConfettiFall 2.2s linear forwards;
+    }
+    @keyframes mwtFadeIn{from{opacity:0}to{opacity:1}}
+    @keyframes mwtSuccessPop{0%{transform:scale(.78);opacity:0}70%{transform:scale(1.04)}100%{transform:scale(1);opacity:1}}
+    @keyframes mwtConfettiFall{
+      0%{transform:translateY(0) rotate(0deg);opacity:1}
+      100%{transform:translateY(110vh) rotate(720deg);opacity:0}
+    }
+
     .confetti-piece {
       position: fixed;
       top: -20px;
@@ -701,8 +730,6 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
     let isSpecialSecretActive = false;
     const vAudio = new Audio("site.mp3");
 
-    // Cart state is declared below; the badge is updated after initialization at the end of the script.
-
     function triggerSecretDiscount() {
       if(!currentUserEmail){
         alert("⚠️ Kripya pehle Google Login karein taaki check kiya ja sake ki aapne ye code use kiya hai ya nahi! 🌸");
@@ -929,9 +956,6 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
 
     function openModal(id){ location.hash = `product-${id}`; }
 
-    // Order Now from a product uses the exact same full-page Cart checkout flow.
-    // The customer's existing cart is temporarily preserved and restored if they leave
-    // the direct-order flow without placing the order.
     let directOrderMode = false;
     function beginDirectCartOrder(){
       if(!currId) return;
@@ -985,6 +1009,8 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
       if(badge){ badge.innerText=count; badge.style.display=count?'flex':'none'; }
     }
     function openCartPage(){
+      sessionStorage.removeItem('mwt_order_completed');
+      sessionStorage.removeItem('mwt_order_completed_at');
       directOrderMode = false;
       sessionStorage.removeItem('mwt_direct_order_mode');
       sessionStorage.removeItem('mwt_cart_backup');
@@ -1003,11 +1029,44 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
       saveCart();
     }
 
-    function finishCartOrderAndGoOrders(){
-      // Replace the current cart history entry instead of pushing a new one.
-      // This prevents Back from reopening the just-completed checkout flow.
-      history.replaceState(null, '', window.location.pathname + '#orders');
+    function finishCartOrderAndGoHome(){
+      sessionStorage.setItem('mwt_order_completed','1');
+      sessionStorage.setItem('mwt_order_completed_at', String(Date.now()));
+      history.replaceState(null, '', window.location.pathname);
       handleRoute();
+    }
+
+    function showOrderSuccessAnimation(batchId, total){
+      let old = document.getElementById('mwtOrderSuccessOverlay');
+      if(old) old.remove();
+
+      const overlay = document.createElement('div');
+      overlay.id = 'mwtOrderSuccessOverlay';
+      overlay.innerHTML = `
+        <div class="mwt-success-card">
+          <div class="mwt-success-check">✓</div>
+          <div class="mwt-success-title">Order Placed! 🎉</div>
+          <div class="mwt-success-sub">Thank you for shopping with Meri Wali Trends 💗</div>
+          <div class="mwt-success-order">#${batchId} · ₹${total} (COD)</div>
+        </div>`;
+      document.body.appendChild(overlay);
+
+      const symbols = ['💗','🎀','✨','🛍️','💖','🌸','🎉','💕'];
+      for(let i=0;i<28;i++){
+        const piece=document.createElement('div');
+        piece.className='mwt-order-confetti';
+        piece.textContent=symbols[Math.floor(Math.random()*symbols.length)];
+        piece.style.left=(Math.random()*100)+'vw';
+        piece.style.animationDelay=(Math.random()*0.45)+'s';
+        piece.style.fontSize=(14+Math.random()*12)+'px';
+        document.body.appendChild(piece);
+        setTimeout(()=>piece.remove(),2600);
+      }
+
+      setTimeout(()=>{
+        overlay.remove();
+        finishCartOrderAndGoHome();
+      },1300);
     }
     function addCurrentProductToCart(){
       if(!currId) return;
@@ -1062,12 +1121,6 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
       empty.style.display='none'; cont.style.display='block';
       list.innerHTML=shoppingCart.map(i=>`<div class="cart-product-card"><img src="${i.img}" alt="${i.title}"><div class="cart-product-main"><div class="cart-product-name">${i.title}</div><div class="cart-product-qty"><button onclick="changeCartQty('${i.id}',-1)">−</button><b>${i.qty||1}</b><button onclick="changeCartQty('${i.id}',1)">+</button><span style="font-size:10.5px;color:var(--muted);">Quantity</span></div></div><button class="cart-remove-new" onclick="removeFromCart('${i.id}')">×</button></div>`).join('');
     }
-    function changeCartQty(id,delta){
-      const item=shoppingCart.find(i=>String(i.id)===String(id)); if(!item) return;
-      item.qty=Math.max(1,Math.min(20,(item.qty||1)+delta)); saveCart(); renderCart();
-    }
-    function removeFromCart(id){ shoppingCart=shoppingCart.filter(i=>String(i.id)!==String(id)); saveCart(); renderCart(); }
-    function getSavedAddressKey(){ return currentUserEmail ? 'mwt_saved_address_'+sanitizeEmailKey(currentUserEmail) : 'mwt_saved_address_guest'; }
     function getSavedCartAddresses(){
       const raw=localStorage.getItem(getSavedAddressKey());
       if(!raw) return [];
@@ -1084,7 +1137,6 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
     }
     function selectSavedCartAddress(idx){ const arr=getSavedCartAddresses(); selectedCartAddress=arr[idx]||null; renderSavedAddresses(); }
     function showNewCartAddress(){
-      const b=document.getElementById('newAddressBox');
       const box=document.getElementById('newCartAddressBox'); if(box) box.style.display='block';
       if(box) box.scrollIntoView({behavior:'smooth',block:'start'});
     }
@@ -1125,12 +1177,10 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
       fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:TG_CHAT,text:tg})}).catch(()=>{});
       shoppingCart=[]; saveCart();
       if(directOrderMode || sessionStorage.getItem('mwt_direct_order_mode') === '1'){
-        // Direct Order was a temporary one-item cart: restore the customer's real cart.
         restoreOriginalCartAfterDirectOrder();
       }
       btn.disabled=false; btn.innerText='Place Order (COD) 🛍️';
-      alert(`Order successfully placed! 🎉\nCart Order #${batchId}\nTotal: ₹${total}`);
-      finishCartOrderAndGoOrders();
+      showOrderSuccessAnimation(batchId,total);
     }
 
     function updateCheckoutEmailState(){
@@ -1268,18 +1318,21 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
 
       updateHeaderAccountBtn();
 
-      // Hide review box when route changes
       let revBox = document.getElementById('reviewSectionBox');
       if(revBox) revBox.style.display = 'none';
 
       if(!hash) return;
 
-      // Leaving a direct-order cart without completing it restores the customer's real cart.
       if(hash !== 'cart' && (directOrderMode || sessionStorage.getItem('mwt_direct_order_mode') === '1')){
         restoreOriginalCartAfterDirectOrder();
       }
 
       if(hash === 'cart'){
+        if(sessionStorage.getItem('mwt_order_completed') === '1'){
+          history.replaceState(null, '', window.location.pathname);
+          handleRoute();
+          return;
+        }
         if(!shoppingCart.length){ renderCart(); }
         else { cartPageStepNo=1; selectedCartAddress=null; renderCart(); }
         if(cartPage) cartPage.style.display = 'block';
@@ -1368,14 +1421,12 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
       }
 
       if(hash.startsWith('checkout-')){
-        // Legacy checkout URLs now redirect into the same full-page Cart flow.
         let parts = hash.split('-step');
         let pId = parts[0].replace('checkout-', '').trim();
         let step = parts[1] ? parseInt(parts[1]) : 1;
 
         let x = getProdById(pId);
         if(x){
-          // Any old checkout link/history entry should use the new Cart checkout UI.
           if(sessionStorage.getItem('mwt_direct_order_mode') !== '1'){
             const oldQty = Math.max(1, selQty || 1);
             const oldSize = selSize || ((x.s&&x.s.length)?x.s[0]:'Free Size');
@@ -1666,29 +1717,17 @@ Direct Link: ${productDirectLink}`);
       renderGrid();
 
       let tgMessage = 
-        `🛍️ *NEW ORDER CONFIRMED!* 🛍️
-
-` +
-        `🆔 *Order ID:* #${oId}
-` +
-        `📦 *Item:* ${x.t}
-` +
-        `🔢 *Code:* ${x.cd}
-` +
-        (selSize ? `📏 *Option/Size:* ${selSize}
-` : '') +
-        `🔢 *Quantity:* ${selQty}
-` +
+        `🛍️ *NEW ORDER CONFIRMED!* 🛍️\n\n` +
+        `🆔 *Order ID:* #${oId}\n` +
+        `📦 *Item:* ${x.t}\n` +
+        `🔢 *Code:* ${x.cd}\n` +
+        (selSize ? `📏 *Option/Size:* ${selSize}\n` : '') +
+        `🔢 *Quantity:* ${selQty}\n` +
         `💰 *Total Amount:* ₹${tot} (COD)` + (effectivePn !== x.pn ? ' [95% OFF CODE APPLIED]' : '') + `\n\n` +
-        `👤 *Customer Name:* ${n}
-` +
-        `📧 *Google Verified Email:* ${currentUserEmail}
-` +
-        `📞 *Mobile Number:* ${phone}
-` +
-        `📍 *Delivery Address:* ${ad}, ${ct} - ${pn}
-
-` +
+        `👤 *Customer Name:* ${n}\n` +
+        `📧 *Google Verified Email:* ${currentUserEmail}\n` +
+        `📞 *Mobile Number:* ${phone}\n` +
+        `📍 *Delivery Address:* ${ad}, ${ct} - ${pn}\n\n` +
         `🖼️ *Product Photo Link:*
 ${firstImg}`;
 
@@ -1946,15 +1985,10 @@ ${firstImg}`;
       let dateStr = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', dateStyle: 'medium', timeStyle: 'short' });
 
       let loginMsg = 
-        `👤 *GOOGLE SIGN-IN VERIFIED!* 🎀
-
-` +
-        `📧 *Email ID:* ${currentUserEmail}
-` +
-        `📱 *Device:* ${device}
-` +
-        `⏰ *Time:* ${dateStr}
-` +
+        `👤 *GOOGLE SIGN-IN VERIFIED!* 🎀\n\n` +
+        `📧 *Email ID:* ${currentUserEmail}\n` +
+        `📱 *Device:* ${device}\n` +
+        `⏰ *Time:* ${dateStr}\n` +
         `🔗 *Source:* ${fromCheckout ? 'Checkout Page' : 'Account Dashboard'}`;
 
       fetch(`https://api.telegram.org/bot${TG_VISITOR_TOKEN}/sendMessage`, {
@@ -1998,34 +2032,18 @@ ${firstImg}`;
         item.cancelReason = reason.trim();
         updateOrderInFirebase(item);
 
-        let tgMsg = `🚨 *ORDER CANCELLED BY CUSTOMER!* 🚨
-
-` +
-                    `🆔 *Order ID:* #${item.orderId}
-` +
-                    `📦 *Item:* ${item.title}
-` +
-                    `🔢 *Code:* ${item.code || 'N/A'}
-` +
-                    (item.size ? `📏 *Size:* ${item.size}
-` : '') +
-                    `🔢 *Quantity:* ${item.qty}
-` +
-                    `💰 *Order Amount:* ₹${item.price}
-
-` +
-                    `👤 *Customer Name:* ${item.name}
-` +
-                    `📧 *Email ID:* ${item.email || 'N/A'}
-` +
-                    `📞 *Phone Number:* ${item.phone}
-` +
-                    `📍 *Delivery Address:* ${item.address}
-
-` +
-                    `💬 *Cancellation Reason:* ${reason.trim()}
-
-` +
+        let tgMsg = `🚨 *ORDER CANCELLED BY CUSTOMER!* 🚨\n\n` +
+                    `🆔 *Order ID:* #${item.orderId}\n` +
+                    `📦 *Item:* ${item.title}\n` +
+                    `🔢 *Code:* ${item.code || 'N/A'}\n` +
+                    (item.size ? `📏 *Size:* ${item.size}\n` : '') +
+                    `🔢 *Quantity:* ${item.qty}\n` +
+                    `💰 *Order Amount:* ₹${item.price}\n\n` +
+                    `👤 *Customer Name:* ${item.name}\n` +
+                    `📧 *Email ID:* ${item.email || 'N/A'}\n` +
+                    `📞 *Phone Number:* ${item.phone}\n` +
+                    `📍 *Delivery Address:* ${item.address}\n\n` +
+                    `💬 *Cancellation Reason:* ${reason.trim()}\n\n` +
                     `🖼️ *Product Photo Link:*
 ${item.img}`;
 
@@ -2049,34 +2067,18 @@ ${item.img}`;
         item.returnReason = reason.trim();
         updateOrderInFirebase(item);
 
-        let tgMsg = `🔄 *RETURN REQUESTED BY CUSTOMER!* 🔄
-
-` +
-                    `🆔 *Order ID:* #${item.orderId}
-` +
-                    `📦 *Item:* ${item.title}
-` +
-                    `🔢 *Code:* ${item.code || 'N/A'}
-` +
-                    (item.size ? `📏 *Size:* ${item.size}
-` : '') +
-                    `🔢 *Quantity:* ${item.qty}
-` +
-                    `💰 *Refund Amount:* ₹${item.price}
-
-` +
-                    `👤 *Customer Name:* ${item.name}
-` +
-                    `📧 *Email ID:* ${item.email || 'N/A'}
-` +
-                    `📞 *Phone Number:* ${item.phone}
-` +
-                    `📍 *Pickup Address:* ${item.address}
-
-` +
-                    `💬 *Return Reason:* ${reason.trim()}
-
-` +
+        let tgMsg = `🔄 *RETURN REQUESTED BY CUSTOMER!* 🔄\n\n` +
+                    `🆔 *Order ID:* #${item.orderId}\n` +
+                    `📦 *Item:* ${item.title}\n` +
+                    `🔢 *Code:* ${item.code || 'N/A'}\n` +
+                    (item.size ? `📏 *Size:* ${item.size}\n` : '') +
+                    `🔢 *Quantity:* ${item.qty}\n` +
+                    `💰 *Refund Amount:* ₹${item.price}\n\n` +
+                    `👤 *Customer Name:* ${item.name}\n` +
+                    `📧 *Email ID:* ${item.email || 'N/A'}\n` +
+                    `📞 *Phone Number:* ${item.phone}\n` +
+                    `📍 *Pickup Address:* ${item.address}\n\n` +
+                    `💬 *Return Reason:* ${reason.trim()}\n\n` +
                     `🖼️ *Product Photo Link:*
 ${item.img}`;
 
@@ -2111,15 +2113,10 @@ ${item.img}`;
             let dateStr = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', dateStyle: 'medium', timeStyle: 'short' });
 
             let visitMsg = 
-              `👀 *TOTAL UNIQUE VISITOR ALERT!* 🌐
-
-` +
-              `🔢 *Total Lifetime Count:* #${totalVisits}
-` +
-              `📱 *Device:* ${device}
-` +
-              `⏰ *Time:* ${dateStr}
-` +
+              `👀 *TOTAL UNIQUE VISITOR ALERT!* 🌐\n\n` +
+              `🔢 *Total Lifetime Count:* #${totalVisits}\n` +
+              `📱 *Device:* ${device}\n` +
+              `⏰ *Time:* ${dateStr}\n` +
               `🔗 *Source:* Website Link Clicked 🎀`;
 
             fetch(`https://api.telegram.org/bot${TG_VISITOR_TOKEN}/sendMessage`, {

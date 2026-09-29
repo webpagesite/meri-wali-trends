@@ -70,8 +70,8 @@
     
     /* Updated Hint & Social Sharing Row */
     .hint-social-row{display:flex;gap:5px;margin-bottom:12px;}
-    .btn-wa-hint{flex:1;display:flex;align-items:center;justify-content:center;gap:4px;padding:10px 4px;background:#e8f8f2;color:#0b6623;border:1.5px solid #25D366;font-weight:700;border-radius:10px;cursor:pointer;font-size:10.5px;text-align:center;}
-    .btn-insta-hint{flex:1;display:flex;align-items:center;justify-content:center;gap:4px;padding:10px 4px;background:linear-gradient(45deg, #fdf0ed, #fce4ec);color:#bc1888;border:1.5px solid #fd1d1d;font-weight:700;border-radius:10px;cursor:pointer;font-size:10.5px;text-align:center;}
+    .btn-wa-hint{flex:1;display:flex;align-items:center;justify-content:center;gap:4px;padding:10px 4px;background:#e8f8f2;color:#0b6623;border:1.5px solid #25D366;font-weight:700;border-radius:10px;cursor:pointer;font-size:10px;text-align:center;}
+    .btn-insta-hint{flex:1;display:flex;align-items:center;justify-content:center;gap:4px;padding:10px 4px;background:linear-gradient(45deg, #fdf0ed, #fce4ec);color:#bc1888;border:1.5px solid #fd1d1d;font-weight:700;border-radius:10px;cursor:pointer;font-size:10px;text-align:center;}
     .btn-review-mini{background:#fff0f5;color:var(--pink);border:1.5px solid var(--pink-accent);font-weight:700;border-radius:10px;padding:10px 8px;cursor:pointer;font-size:11px;display:flex;align-items:center;gap:3px;}
 
     /* Review / Comments Collapsible Box */
@@ -425,7 +425,7 @@
   </div>
 
   <!-- FLOATING INSTAGRAM BUTTON -->
-  <a href="https://instagram.com/meriwalitrends_" target="_blank" rel="noopener noreferrer" class="float-insta-btn" title="Follow us on Instagram">
+  <a href="https://instagram.com/meriwalitrends" target="_blank" rel="noopener noreferrer" class="float-insta-btn" title="Follow us on Instagram">
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
       <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
       <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
@@ -1083,9 +1083,10 @@ Direct Link: ${productDirectLink}`);
       let hintText = `सुनो ना! Meri Wali Trends pe ye dekho kitna pyara hai 🥺🎀\nItem: ${x.t}\nPrice: ${x.p}\nLink: ${productDirectLink}`;
       
       navigator.clipboard.writeText(hintText).then(()=>{
-        alert("Hint copied to clipboard! 📋✨ Ab Instagram DM me paste karke bhej do!");
+        alert("✨ Message copied! Ab Instagram open karke Babu ke DM me paste kar do! 📸");
+        window.open('https://instagram.com', '_blank');
       }).catch(()=>{
-        alert("Share link copied!");
+        alert("Hint copied!");
       });
     }
 

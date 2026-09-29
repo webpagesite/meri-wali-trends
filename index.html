@@ -1425,14 +1425,14 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
           let firstImg = Array.isArray(r.product.i) ? r.product.i[0] : r.product.i;
           
           html += `<div style="background:#fff; border:1px solid var(--border); border-radius:16px; padding:12px; display:flex; align-items:center; gap:12px; box-shadow:0 4px 12px rgba(255,105,180,0.04);">
-            <img src="${firstImg}" style="width:65px; height:65px; object-fit:contain; background:#fff8fa; border:1px solid var(--border); border-radius:10px; cursor:pointer; flex-shrink:0;" onclick="openModal('${r.product.id}')" alt="Product">
+            <img src="${firstImg}" style="width:65px; height:65px; object-fit:contain; background:#fff8fa; border:1px solid var(--border); border-radius:10px; cursor:pointer; flex-shrink:0;" onclick="beginDirectCartOrderFromId('${r.product.id}')" alt="Product">
             
             <div style="flex:1; text-align:left; overflow:hidden;">
               <div style="font-size:12.5px; font-weight:800; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">@${authorName}</div>
               <div style="font-size:12px; color:var(--muted); margin-top:2px; display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">"${r.text}"</div>
             </div>
 
-            <button style="background:#fff0f5; color:var(--pink); border:1.5px solid var(--pink-accent); font-weight:700; border-radius:10px; padding:10px 14px; font-size:11.5px; cursor:pointer; white-space:nowrap; flex-shrink:0;" onclick="openModal('${r.product.id}')">View Product</button>
+            <button style="background:#fff0f5; color:var(--pink); border:1.5px solid var(--pink-accent); font-weight:700; border-radius:10px; padding:10px 14px; font-size:11.5px; cursor:pointer; white-space:nowrap; flex-shrink:0;" onclick="beginDirectCartOrderFromId('${r.product.id}')">View Product</button>
           </div>`;
         });
         grid.innerHTML = html;

@@ -928,7 +928,36 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
     }
 
     function openModal(id){ location.hash = `product-${id}`; }
-    function startCheckout(){ if(!currId) return; location.hash = `checkout-${currId}-step1`; }
+
+    // Order Now from a product uses the exact same full-page Cart checkout flow.
+    // The customer's existing cart is temporarily preserved and restored if they leave
+    // the direct-order flow without placing the order.
+    let directOrderMode = false;
+    function beginDirectCartOrder(){
+      if(!currId) return;
+      const x = getProdById(currId);
+      if(!x) return;
+
+      const directItem = {
+        id:x.id,
+        title:x.t,
+        price:x.pn,
+        img:Array.isArray(x.i)?x.i[0]:x.i,
+        code:x.cd,
+        qty:selQty || 1,
+        size:selSize || ((x.s&&x.s.length)?x.s[0]:'Free Size')
+      };
+
+      sessionStorage.setItem('mwt_cart_backup', JSON.stringify(shoppingCart));
+      sessionStorage.setItem('mwt_direct_order_mode','1');
+      directOrderMode = true;
+      shoppingCart = [directItem];
+      saveCart();
+      selectedCartAddress = null;
+      cartPageStepNo = 1;
+      location.hash = 'cart';
+    }
+    function startCheckout(){ beginDirectCartOrder(); }
     function openMyOrdersPage(){ location.hash = 'orders'; }
     function openAccountPage(){ location.hash = 'account'; }
     function openWaitlistPage(){
@@ -955,7 +984,31 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
       const count=shoppingCart.reduce((n,i)=>n+(i.qty||1),0);
       if(badge){ badge.innerText=count; badge.style.display=count?'flex':'none'; }
     }
-    function openCartPage(){ location.hash='cart'; }
+    function openCartPage(){
+      directOrderMode = false;
+      sessionStorage.removeItem('mwt_direct_order_mode');
+      sessionStorage.removeItem('mwt_cart_backup');
+      location.hash='cart';
+    }
+
+    function restoreOriginalCartAfterDirectOrder(){
+      if(!directOrderMode && sessionStorage.getItem('mwt_direct_order_mode') !== '1') return;
+      try{
+        const backup = JSON.parse(sessionStorage.getItem('mwt_cart_backup') || '[]');
+        shoppingCart = Array.isArray(backup) ? backup : [];
+      }catch(e){ shoppingCart = []; }
+      directOrderMode = false;
+      sessionStorage.removeItem('mwt_direct_order_mode');
+      sessionStorage.removeItem('mwt_cart_backup');
+      saveCart();
+    }
+
+    function finishCartOrderAndGoOrders(){
+      // Replace the current cart history entry instead of pushing a new one.
+      // This prevents Back from reopening the just-completed checkout flow.
+      history.replaceState(null, '', window.location.pathname + '#orders');
+      handleRoute();
+    }
     function addCurrentProductToCart(){
       if(!currId) return;
       const x=getProdById(currId); if(!x) return;
@@ -984,6 +1037,9 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
 
     function cartPageBack(){
       if(cartPageStepNo > 1){ cartGoStep(cartPageStepNo-1); return; }
+      if(directOrderMode || sessionStorage.getItem('mwt_direct_order_mode') === '1'){
+        restoreOriginalCartAfterDirectOrder();
+      }
       history.back();
     }
     function cartGoStep(step){
@@ -1068,9 +1124,13 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
       const tg=`🛒 *NEW CART ORDER!* 🛒\n\n🆔 *Cart Order:* #${batchId}\n📦 *Items:* ${orders.length}\n💰 *TOTAL:* ₹${total} (COD)\n\n${lines}\n\n👤 *Customer:* ${address.name}\n📧 *Google Email:* ${currentUserEmail}\n📞 *Mobile:* ${address.phone}\n📍 *Address:* ${addressStr}`;
       fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:TG_CHAT,text:tg})}).catch(()=>{});
       shoppingCart=[]; saveCart();
+      if(directOrderMode || sessionStorage.getItem('mwt_direct_order_mode') === '1'){
+        // Direct Order was a temporary one-item cart: restore the customer's real cart.
+        restoreOriginalCartAfterDirectOrder();
+      }
       btn.disabled=false; btn.innerText='Place Order (COD) 🛍️';
       alert(`Order successfully placed! 🎉\nCart Order #${batchId}\nTotal: ₹${total}`);
-      location.hash='orders';
+      finishCartOrderAndGoOrders();
     }
 
     function updateCheckoutEmailState(){
@@ -1214,6 +1274,11 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
 
       if(!hash) return;
 
+      // Leaving a direct-order cart without completing it restores the customer's real cart.
+      if(hash !== 'cart' && (directOrderMode || sessionStorage.getItem('mwt_direct_order_mode') === '1')){
+        restoreOriginalCartAfterDirectOrder();
+      }
+
       if(hash === 'cart'){
         if(!shoppingCart.length){ renderCart(); }
         else { cartPageStepNo=1; selectedCartAddress=null; renderCart(); }
@@ -1303,12 +1368,28 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
       }
 
       if(hash.startsWith('checkout-')){
+        // Legacy checkout URLs now redirect into the same full-page Cart flow.
         let parts = hash.split('-step');
         let pId = parts[0].replace('checkout-', '').trim();
         let step = parts[1] ? parseInt(parts[1]) : 1;
 
         let x = getProdById(pId);
         if(x){
+          // Any old checkout link/history entry should use the new Cart checkout UI.
+          if(sessionStorage.getItem('mwt_direct_order_mode') !== '1'){
+            const oldQty = Math.max(1, selQty || 1);
+            const oldSize = selSize || ((x.s&&x.s.length)?x.s[0]:'Free Size');
+            sessionStorage.setItem('mwt_cart_backup', JSON.stringify(shoppingCart));
+            sessionStorage.setItem('mwt_direct_order_mode','1');
+            directOrderMode = true;
+            shoppingCart = [{id:x.id,title:x.t,price:x.pn,img:Array.isArray(x.i)?x.i[0]:x.i,code:x.cd,qty:oldQty,size:oldSize}];
+            saveCart();
+            selectedCartAddress = null;
+            cartPageStepNo = 1;
+            history.replaceState(null, '', window.location.pathname + '#cart');
+            handleRoute();
+            return;
+          }
           currId = pId;
           cModal.style.display = 'flex';
           activeStep = step;

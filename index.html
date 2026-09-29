@@ -587,7 +587,7 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
     <div id="dashLoginView" class="profile-card" style="display:none; text-align:center; padding:28px 18px;">
       <div style="font-size:38px; margin-bottom:8px;">🎀</div>
       <h3 style="font-size:17px; color:var(--text); margin-bottom:4px;">Verified Customer Login</h3>
-      <p style="font-size:12px; color:var(--muted); margin-bottom:20px;">Apne phone ki Google ID se secure 1-tap login karein taaki sirf aap apne orders aur waitlist dekh sakein</p>
+      <p style="font-size:12px; color:var(--muted); margin-bottom:20px;">Apne phone ki Google ID se secure 1-tap login karein taaki sirf apne orders aur waitlist dekh sakein</p>
       <button class="btn-google" id="btnGoogleAuth" type="button" onclick="loginWithGoogle(false)">
         <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
         <span>Continue with Google</span>
@@ -1042,13 +1042,23 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
       if(badge){ badge.innerText=count; badge.style.display=count?'flex':'none'; }
     }
     function openCartPage(){
-      // User explicitly opened Cart: allow a fresh cart checkout again.
+      // Open Cart as a fresh page without deleting the customer's real cart.
+      // The ordered items are cleared by placeCartOrderNew() itself.
       sessionStorage.removeItem('mwt_order_completed');
       sessionStorage.removeItem('mwt_order_completed_at');
-      directOrderMode = false;
-      sessionStorage.removeItem('mwt_direct_order_mode');
-      sessionStorage.removeItem('mwt_cart_backup');
-      location.hash='cart';
+      selectedCartAddress = null;
+      cartPageStepNo = 1;
+      // A direct-order backup is only cleared after that temporary order has been
+      // completed/cancelled; never wipe the customer's normal cart here.
+      if(!(directOrderMode || sessionStorage.getItem('mwt_direct_order_mode') === '1')){
+        directOrderMode = false;
+      }
+      history.replaceState(null, '', window.location.pathname + '#cart');
+      handleRoute();
+      // Force the Cart DOM to start at step 1 immediately, even when the URL hash
+      // was already #cart and the browser does not emit a hashchange event.
+      if(typeof renderCart === 'function') renderCart();
+      if(typeof cartGoStep === 'function') cartGoStep(1);
     }
 
     function restoreOriginalCartAfterDirectOrder(){
@@ -1064,10 +1074,20 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
     }
 
     function finishCartOrderAndGoHome(){
-      // Reset checkout completely after a successful order.
-      // The completed-order flag also blocks an older #cart history entry.
+      // Hard-reset the checkout UI/state before returning Home. This prevents the
+      // confirmation/billing screen from surviving in the DOM or browser history.
+      shoppingCart = [];
+      selectedCartAddress = null;
+      cartPageStepNo = 1;
+      directOrderMode = false;
+      sessionStorage.removeItem('mwt_direct_order_mode');
+      sessionStorage.removeItem('mwt_cart_backup');
+      saveCart();
       sessionStorage.setItem('mwt_order_completed','1');
       sessionStorage.setItem('mwt_order_completed_at', String(Date.now()));
+      const cartPage = document.getElementById('cartPage');
+      if(cartPage) cartPage.style.display = 'none';
+      if(typeof renderCart === 'function') renderCart();
       history.replaceState(null, '', window.location.pathname);
       handleRoute();
     }
@@ -1089,7 +1109,7 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
 
       const symbols = ['💗','🎀','✨','🛍️','💖','🌸','🎉','💕'];
       for(let i=0;i<28;i++){
-        let piece=document.createElement('div');
+        const piece=document.createElement('div');
         piece.className='mwt-order-confetti';
         piece.textContent=symbols[Math.floor(Math.random()*symbols.length)];
         piece.style.left=(Math.random()*100)+'vw';
@@ -1245,11 +1265,15 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
       const tg=`🛒 *NEW CART ORDER!* 🛒\n\n🆔 *Cart Order:* #${batchId}\n📦 *Items:* ${orders.length}\n💰 *TOTAL:* ₹${total} (COD)${offerWasActive?' [95% OFF CODE APPLIED]':''}\n\n${lines}\n\n👤 *Customer:* ${address.name}\n📧 *Google Email:* ${currentUserEmail}\n📞 *Mobile:* ${address.phone}\n📍 *Address:* ${addressStr}`;
       fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:TG_CHAT,text:tg})}).catch(()=>{});
 
-      shoppingCart=[]; saveCart();
-      if(directOrderMode || sessionStorage.getItem('mwt_direct_order_mode') === '1'){
-        // Direct Order was a temporary one-item cart: restore the customer's real cart.
-        restoreOriginalCartAfterDirectOrder();
-      }
+      // The order is complete: do not leave the ordered item in the cart.
+      // This prevents an old product/price from reappearing when Cart is opened again.
+      shoppingCart=[];
+      directOrderMode=false;
+      sessionStorage.removeItem('mwt_direct_order_mode');
+      sessionStorage.removeItem('mwt_cart_backup');
+      selectedCartAddress=null;
+      cartPageStepNo=1;
+      saveCart();
 
       // Offer is reset immediately after the successful order, so the next visit shows real prices.
       isSpecialSecretActive=false;
@@ -2370,8 +2394,13 @@ ${item.img}`;
         const res = await fetch(url);
         if(!res.ok) return;
         const text = await res.text();
-        const json = JSON.parse(text.substring(47).slice(0, -2));
-        const rows = json.table ? json.table.rows : [];
+        // Google may change the length of the JSONP wrapper. Parse the actual JSON
+        // object instead of relying on a fixed substring offset.
+        const jsonStart = text.indexOf('{');
+        const jsonEnd = text.lastIndexOf('}');
+        if(jsonStart < 0 || jsonEnd <= jsonStart) return;
+        const json = JSON.parse(text.slice(jsonStart, jsonEnd + 1));
+        const rows = json.table && Array.isArray(json.table.rows) ? json.table.rows : [];
         if(rows && rows.length > 0){
           let sheetItems = [];
           rows.forEach((r, idx)=>{

@@ -205,7 +205,7 @@
     <div id="voicePopup" class="voice-popup">"Haan haan pata hai bohot pyaar karte ho mujhse... par thoda sa pyaar yahan order button pe click karke bhi dikha do na! 🥺🛍️"</div>
   </div>
 
-  <!-- Compact Search & Header Waitlist / Reviews Layout -->
+  <!-- Compact Search & Waitlist / Reviews Header Button -->
   <div class="top-search-row">
     <div class="search-wrapper">
       <span class="search-icon">🔍</span>
@@ -286,7 +286,7 @@
     </div>
   </div>
 
-  <!-- All Community Reviews Full Page -->
+  <!-- All Community Reviews Full Page (Notebook Design Layout) -->
   <div id="allReviewsPage">
     <div class="page-top">
       <button style="background:#fff0f5; border:1px solid var(--pink-accent); color:var(--pink); border-radius:50%; width:34px; height:34px; font-size:16px; font-weight:bold; cursor:pointer;" onclick="history.back()">←</button>
@@ -890,14 +890,17 @@
         combinedReviews.forEach(r => {
           let authorName = r.email ? r.email.split('@')[0] : "Customer";
           let firstImg = Array.isArray(r.product.i) ? r.product.i[0] : r.product.i;
-          html += `<div style="background:#fff; border:1px solid var(--border); border-radius:16px; padding:12px 16px; display:flex; gap:12px; align-items:center;">
-            <img src="${firstImg}" style="width:60px; height:60px; object-fit:contain; background:#fff8fa; border:1px solid var(--border); border-radius:10px; cursor:pointer;" onclick="openModal('${r.product.id}')" alt="Product">
-            <div style="flex:1; text-align:left;">
-              <div style="font-size:12px; font-weight:800; color:var(--pink); cursor:pointer;" onclick="openModal('${r.product.id}')">${r.product.t}</div>
-              <div style="font-size:12.5px; color:var(--text); margin:3px 0;">"${r.text}"</div>
-              <div style="font-size:11px; color:var(--muted); font-weight:700;">— By ${authorName} ✨</div>
+          
+          // Exactly matching the notebook sketch: [Product Image] | [Username + Comment] | [View Product Button]
+          html += `<div style="background:#fff; border:1px solid var(--border); border-radius:16px; padding:12px; display:flex; align-items:center; gap:12px; box-shadow:0 4px 12px rgba(255,105,180,0.04);">
+            <img src="${firstImg}" style="width:65px; height:65px; object-fit:contain; background:#fff8fa; border:1px solid var(--border); border-radius:10px; cursor:pointer; flex-shrink:0;" onclick="openModal('${r.product.id}')" alt="Product">
+            
+            <div style="flex:1; text-align:left; overflow:hidden;">
+              <div style="font-size:12.5px; font-weight:800; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">@${authorName}</div>
+              <div style="font-size:12px; color:var(--muted); margin-top:2px; display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">"${r.text}"</div>
             </div>
-            <button class="btn-pink" style="padding:8px 12px; font-size:11.5px; border-radius:8px;" onclick="openModal('${r.product.id}')">View & Order ➔</button>
+
+            <button style="background:#fff0f5; color:var(--pink); border:1.5px solid var(--pink-accent); font-weight:700; border-radius:10px; padding:10px 14px; font-size:11.5px; cursor:pointer; white-space:nowrap; flex-shrink:0;" onclick="openModal('${r.product.id}')">View Product</button>
           </div>`;
         });
         grid.innerHTML = html;
@@ -927,7 +930,6 @@
 
       updateHeaderAccountBtn();
 
-      // Hide review box when route changes
       let revBox = document.getElementById('reviewSectionBox');
       if(revBox) revBox.style.display = 'none';
 
@@ -1778,7 +1780,7 @@ ${item.img}`;
       "Aapka Babu aapse bohot pyaar karta hai, bas bolne me sharmata hai! 🥺💖",
       "Universe Notice: Is poori duniya me aap sabse zyada cute ho, ek gift toh banta hai! 🎀",
       "Secret Luck: Aaj order karne se Babu ka mood agle 7 din tak 100x accha rahega! ✨",
-      "Astrology: Jaldi hi aapko Babu ki taraf se ek unexpectedly pyara surprise milne wala hai 🌸",
+      "Astrology: Jaldi hi akkho Babu ki taraf se ek unexpectedly pyara surprise milne wala hai 🌸",
       "Babu ke dil ka raaz: Jab aap muskurati ho toh uska poora din ban jata hai! 🥰",
       "Aapka aura itna aesthetic hai ki Babu aapko dekhte hi kho jaata hai! 💫",
       "Love Alert: Aap dono ki jodi duniya ki sabse pyari jodi hai, nazar na lage! 🧿",

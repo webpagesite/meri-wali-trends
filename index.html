@@ -637,7 +637,7 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
     let isSpecialSecretActive = false;
     const vAudio = new Audio("site.mp3");
 
-    updateCartBadge();
+    // Cart state is declared below; the badge is updated after initialization at the end of the script.
 
     function triggerSecretDiscount() {
       if(!currentUserEmail){

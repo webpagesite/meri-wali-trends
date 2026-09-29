@@ -293,7 +293,6 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
     <div class="trust-item"><span>🚚</span><b>Easy Ordering</b><small>Simple checkout</small></div>
     <div class="trust-item"><span>🔒</span><b>Secure Login</b><small>Google verified</small></div>
     <div class="trust-item"><span>💵</span><b>COD Available</b><small>Pay on delivery</small></div>
-    <div class="trust-item"><span>💬</span><b>Support</b><small>We're here to help</small></div>
   </section>
 
   <div style="margin-bottom:14px;">
@@ -490,7 +489,7 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
   <div id="accountPage">
     <div class="page-top">
       <button style="background:#fff0f5; border:1px solid var(--pink-accent); color:var(--pink); border-radius:50%; width:34px; height:34px; font-size:16px; font-weight:bold; cursor:pointer;" onclick="history.back()">←</button>
-      <div><h2 style="font-size:17px;">User Dashboard 👤</h2><p style="font-size:11px; color:var(--muted);">Manage your orders, profile & deliveries</p></div>
+      <div><h2 style="font-size:17px;">User Dashboard 👤</h2><p style="font-size:11px; color:var(--muted);">Manage your account, wishlist & shopping</p></div>
     </div>
 
     <!-- Login View (Verified Phone Google ID) -->
@@ -516,7 +515,7 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
         </div>
         <div class="dash-stat-grid">
           <div class="dash-stat-box"><div style="font-size:18px; font-weight:800; color:var(--pink);" id="dashTotalOrders">0</div><div style="font-size:11px; color:var(--muted); font-weight:700; margin-top:2px;">Total Orders</div></div>
-          <div class="dash-stat-box"><div style="font-size:18px; font-weight:800; color:var(--green);" id="dashActiveOrders">0</div><div style="font-size:11px; color:var(--muted); font-weight:700; margin-top:2px;">Active Deliveries</div></div>
+          <div class="dash-stat-box"><div style="font-size:18px; font-weight:800; color:var(--green);">🛍️</div><div style="font-size:11px; color:var(--muted); font-weight:700; margin-top:2px;">Happy Shopping</div></div>
         </div>
       </div>
       <div class="account-nav">
@@ -524,11 +523,15 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
         <button onclick="openWaitlistPage()">♡ Wishlist</button>
         <button onclick="focusStoreSearch()">🔍 Search</button>
       </div>
-      <div style="max-width:800px; margin:0 auto 12px; display:flex; justify-content:space-between; align-items:center;">
-        <h4 style="font-size:14.5px; color:var(--text);">Order History & Live Tracking</h4>
-        <button style="background:#fff; border:1px solid var(--border); color:var(--pink); padding:4px 10px; border-radius:6px; font-size:11px; font-weight:700; cursor:pointer;" id="btnSyncDash" onclick="refreshDashboardOrders()">↻ Refresh</button>
+
+      <div class="customer-support-poster">
+        <div class="support-poster-icon">💬</div>
+        <div class="support-poster-copy">
+          <div class="support-poster-title">Customer Support 💗</div>
+          <div class="support-poster-text">Order, delivery, return ya kisi bhi help ke liye Babu ko message karo. Hum yahin hain! 🥺🎀</div>
+        </div>
+        <a class="support-poster-btn" href="https://instagram.com/meriwalitrends" target="_blank" rel="noopener noreferrer">Message Us ↗</a>
       </div>
-      <div id="dashOrdersList"></div>
     </div>
   </div>
 
@@ -1544,7 +1547,7 @@ ${firstImg}`;
       }
     }
 
-    function renderOrderCardHTML(o){
+    function renderOrderCardHTML(o, showTracking = false){
       let status = o.status || "active";
       let diffDays = (Date.now() - (o.timestamp || Date.now())) / (1000 * 60 * 60 * 24);
 
@@ -1582,10 +1585,10 @@ ${firstImg}`;
         </div>
 
         <div>
-          <button class="btn-track-toggle" id="trackBtn_${o.orderId}" onclick="toggleTrackDrawer('${o.orderId}')">📍 Track Order Details ▾</button>
+          <button class="btn-track-toggle" id="trackBtn_${o.orderId}" onclick="toggleTrackDrawer('${o.orderId}')">📍 ${showTracking ? 'Hide Tracking ▴' : 'Track Order Details ▾'}</button>
         </div>
 
-        <div class="track-drawer" id="trackDrawer_${o.orderId}" style="display:none;">
+        <div class="track-drawer" id="trackDrawer_${o.orderId}" style="display:${showTracking ? 'block' : 'none'};">
           ${getTrackingHTML(o)}
         </div>
 
@@ -1604,7 +1607,7 @@ ${firstImg}`;
         return;
       }
       let html = '';
-      orders.forEach(o => { html += renderOrderCardHTML(o); });
+      orders.forEach(o => { html += renderOrderCardHTML(o, true); });
       cont.innerHTML = html;
     }
 
@@ -1687,19 +1690,7 @@ ${firstImg}`;
 
       let myOrders = cloudOrders;
       let total = myOrders.length;
-      let activeCount = myOrders.filter(o => o.status === "active").length;
-
       document.getElementById('dashTotalOrders').innerText = total;
-      document.getElementById('dashActiveOrders').innerText = activeCount;
-
-      let cont = document.getElementById('dashOrdersList');
-      if(myOrders.length === 0){
-        cont.innerHTML = `<div style="text-align:center; padding:30px; background:#fff; border-radius:14px; border:1px solid var(--border);"><p style="font-size:12px; color:var(--muted);">No orders found for this Google account in Cloud Database.</p></div>`;
-      } else {
-        let html = '';
-        myOrders.forEach(o => { html += renderOrderCardHTML(o); });
-        cont.innerHTML = html;
-      }
     }
 
     function loginWithGoogle(fromCheckout = false){

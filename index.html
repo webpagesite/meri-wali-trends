@@ -1042,20 +1042,13 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
       if(badge){ badge.innerText=count; badge.style.display=count?'flex':'none'; }
     }
     function openCartPage(){
-      // User explicitly opened Cart: always start a clean checkout state.
-      // A completed order must never leak its old checkout screen back into Cart.
+      // User explicitly opened Cart: allow a fresh cart checkout again.
       sessionStorage.removeItem('mwt_order_completed');
       sessionStorage.removeItem('mwt_order_completed_at');
       directOrderMode = false;
       sessionStorage.removeItem('mwt_direct_order_mode');
       sessionStorage.removeItem('mwt_cart_backup');
-      selectedCartAddress = null;
-      cartPageStepNo = 1;
-      shoppingCart = [];
-      saveCart();
-      // Remove any stale checkout hash before opening a fresh Cart page.
-      history.replaceState(null, '', window.location.pathname + '#cart');
-      handleRoute();
+      location.hash='cart';
     }
 
     function restoreOriginalCartAfterDirectOrder(){
@@ -1164,6 +1157,12 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
       empty.style.display='none'; cont.style.display='block';
       list.innerHTML=shoppingCart.map(i=>`<div class="cart-product-card"><img src="${i.img}" alt="${i.title}"><div class="cart-product-main"><div class="cart-product-name">${i.title}</div><div class="cart-product-qty"><button onclick="changeCartQty('${i.id}',-1)">−</button><b>${i.qty||1}</b><button onclick="changeCartQty('${i.id}',1)">+</button><span style="font-size:10.5px;color:var(--muted);">Quantity</span></div></div><button class="cart-remove-new" onclick="removeFromCart('${i.id}')">×</button></div>`).join('');
     }
+    function changeCartQty(id,delta){
+      const item=shoppingCart.find(i=>String(i.id)===String(id)); if(!item) return;
+      item.qty=Math.max(1,Math.min(20,(item.qty||1)+delta)); saveCart(); renderCart();
+    }
+    function removeFromCart(id){ shoppingCart=shoppingCart.filter(i=>String(i.id)!==String(id)); saveCart(); renderCart(); }
+    function getSavedAddressKey(){ return currentUserEmail ? 'mwt_saved_address_'+sanitizeEmailKey(currentUserEmail) : 'mwt_saved_address_guest'; }
     function getSavedCartAddresses(){
       const raw=localStorage.getItem(getSavedAddressKey());
       if(!raw) return [];
@@ -1180,6 +1179,7 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
     }
     function selectSavedCartAddress(idx){ const arr=getSavedCartAddresses(); selectedCartAddress=arr[idx]||null; renderSavedAddresses(); }
     function showNewCartAddress(){
+      const b=document.getElementById('newAddressBox');
       const box=document.getElementById('newCartAddressBox'); if(box) box.style.display='block';
       if(box) box.scrollIntoView({behavior:'smooth',block:'start'});
     }
@@ -1245,15 +1245,11 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
       const tg=`🛒 *NEW CART ORDER!* 🛒\n\n🆔 *Cart Order:* #${batchId}\n📦 *Items:* ${orders.length}\n💰 *TOTAL:* ₹${total} (COD)${offerWasActive?' [95% OFF CODE APPLIED]':''}\n\n${lines}\n\n👤 *Customer:* ${address.name}\n📧 *Google Email:* ${currentUserEmail}\n📞 *Mobile:* ${address.phone}\n📍 *Address:* ${addressStr}`;
       fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:TG_CHAT,text:tg})}).catch(()=>{});
 
-      // The order is complete: do not leave the ordered item in the cart.
-      // This prevents an old product/price from reappearing when Cart is opened again.
-      shoppingCart=[];
-      directOrderMode=false;
-      sessionStorage.removeItem('mwt_direct_order_mode');
-      sessionStorage.removeItem('mwt_cart_backup');
-      selectedCartAddress=null;
-      cartPageStepNo=1;
-      saveCart();
+      shoppingCart=[]; saveCart();
+      if(directOrderMode || sessionStorage.getItem('mwt_direct_order_mode') === '1'){
+        // Direct Order was a temporary one-item cart: restore the customer's real cart.
+        restoreOriginalCartAfterDirectOrder();
+      }
 
       // Offer is reset immediately after the successful order, so the next visit shows real prices.
       isSpecialSecretActive=false;
@@ -2378,7 +2374,7 @@ ${item.img}`;
         const rows = json.table ? json.table.rows : [];
         if(rows && rows.length > 0){
           let sheetItems = [];
-          rows.rows.forEach((r, idx)=>{
+          rows.forEach((r, idx)=>{
             if(!r || !r.c || !r.c[3] || !r.c[3].v) return;
             const c = r.c;
             sheetItems.push({

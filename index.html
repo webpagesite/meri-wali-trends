@@ -112,7 +112,7 @@
     .bill-row{display:flex;justify-content:space-between;margin-bottom:8px;color:var(--muted);font-weight:600;}
     .bill-row.total{border-top:1px dashed var(--border);padding-top:8px;color:var(--text);font-weight:800;font-size:14.5px;}
 
-    #ordersPage,#accountPage,#waitlistPage{display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:var(--bg);z-index:4000;overflow-y:auto;text-align:left;padding:16px 14px 60px;}
+    #ordersPage,#accountPage,#waitlistPage,#allReviewsPage{display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:var(--bg);z-index:4000;overflow-y:auto;text-align:left;padding:16px 14px 60px;}
     .page-top{display:flex;align-items:center;gap:12px;background:#fff;padding:12px 16px;border-radius:16px;border:1px solid var(--border);margin:0 auto 16px;max-width:800px;}
     .order-box{background:#fff;border-radius:18px;border:1px solid var(--border);padding:14px 16px;margin:0 auto 14px;max-width:800px;}
     
@@ -259,7 +259,7 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
 .store-trust{max-width:1100px;margin:0 auto 15px;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
 .trust-item{background:#fff;border:1px solid #f3d8e0;border-radius:16px;padding:11px 8px;text-align:center;box-shadow:0 4px 14px rgba(45,30,47,.045);}
 .trust-item b{display:block;font-size:11px;margin-top:4px}.trust-item span{font-size:18px}.trust-item small{display:block;color:#8a7a85;font-size:9px;margin-top:2px;font-weight:600;}
-.voice-btn{border-radius:999px!important;box-shadow:0 6px 16px rgba(255,77,136,.16);}
+.voice-btn{border-radius:999px!important;box-shadow:0 6px 16px rgba(255,46,99,.16);}
 .top-search-row{max-width:700px!important;}
 .search-input{box-shadow:0 5px 18px rgba(45,30,47,.05);}
 .filter-bar{max-width:620px!important;box-shadow:0 5px 18px rgba(45,30,47,.05);}
@@ -367,6 +367,10 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
       <span class="fav-heart" id="headerStarIcon">♡</span>
       <span>Wishlist</span>
     </div>
+    <div class="header-waitlist-btn" onclick="openAllReviewsPage()" title="Community Reviews">
+      <span style="font-size:15px;line-height:1;">💬</span>
+      <span>Reviews</span>
+    </div>
     <div class="header-waitlist-btn" onclick="openMyOrdersPage()" title="View Orders">
       <span style="font-size:15px;line-height:1;">📦</span>
       <span>Orders</span>
@@ -451,6 +455,17 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
           <button class="btn-pink btn-order-mini" onclick="startCheckout()">Order Now 🛍️</button>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- All Community Reviews Full Page -->
+  <div id="allReviewsPage" style="display:none; position:fixed; inset:0; width:100vw; height:100vh; background:var(--bg); z-index:5000; overflow-y:auto; text-align:left; padding:16px 14px 60px;">
+    <div style="max-width:800px; margin:0 auto;">
+      <div class="page-top" style="margin-bottom:12px;">
+        <button style="background:#fff0f5; border:1px solid var(--pink-accent); color:var(--pink); border-radius:50%; width:34px; height:34px; font-size:16px; font-weight:bold; cursor:pointer;" onclick="history.back()">←</button>
+        <div><h2 style="font-size:17px;">Community Reviews 💬</h2><p style="font-size:11px; color:var(--muted);">See what others are saying & order directly</p></div>
+      </div>
+      <div id="allReviewsGrid" style="display:flex; flex-direction:column; gap:10px;"></div>
     </div>
   </div>
 
@@ -587,7 +602,7 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
     <div id="dashLoginView" class="profile-card" style="display:none; text-align:center; padding:28px 18px;">
       <div style="font-size:38px; margin-bottom:8px;">🎀</div>
       <h3 style="font-size:17px; color:var(--text); margin-bottom:4px;">Verified Customer Login</h3>
-      <p style="font-size:12px; color:var(--muted); margin-bottom:20px;">Apne phone ki Google ID se secure 1-tap login karein taaki sirf apne orders aur waitlist dekh sakein</p>
+      <p style="font-size:12px; color:var(--muted); margin-bottom:20px;">Apne phone ki Google ID se secure 1-tap login karein taaki sirf aap apne orders aur waitlist dekh sakein</p>
       <button class="btn-google" id="btnGoogleAuth" type="button" onclick="loginWithGoogle(false)">
         <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
         <span>Continue with Google</span>
@@ -730,8 +745,6 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
     let isSpecialSecretActive = false;
     const vAudio = new Audio("site.mp3");
 
-    // Cart state is declared below; the badge is updated after initialization at the end of the script.
-
     function triggerSecretDiscount() {
       if(!currentUserEmail){
         alert("⚠️ Kripya pehle Google Login karein taaki check kiya ja sake ki aapne ye code use kiya hai ya nahi! 🌸");
@@ -760,9 +773,6 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
       });
     }
 
-
-    // Secret offer is consumed only when an order is actually placed.
-    // It is locked per Google email so the same email cannot reuse it.
     async function consumeSecretOfferOnce(){
       if(!isSpecialSecretActive) return true;
       if(!currentUserEmail || !fbDb){
@@ -986,9 +996,6 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
 
     function openModal(id){ location.hash = `product-${id}`; }
 
-    // Order Now from a product uses the exact same full-page Cart checkout flow.
-    // The customer's existing cart is temporarily preserved and restored if they leave
-    // the direct-order flow without placing the order.
     let directOrderMode = false;
     function beginDirectCartOrder(){
       if(!currId) return;
@@ -1025,6 +1032,9 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
       }
       location.hash = 'waitlist';
     }
+    function openAllReviewsPage(){
+      location.hash = 'all-reviews';
+    }
     function openWheelModal(){ location.hash = 'wheel'; }
     function goToStep(st){ if(!currId) return; location.hash = `checkout-${currId}-step${st}`; }
     function jumpStep(st){ if(activeStep === 5) return; goToStep(st); }
@@ -1042,21 +1052,15 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
       if(badge){ badge.innerText=count; badge.style.display=count?'flex':'none'; }
     }
     function openCartPage(){
-      // Open Cart as a fresh page without deleting the customer's real cart.
-      // The ordered items are cleared by placeCartOrderNew() itself.
       sessionStorage.removeItem('mwt_order_completed');
       sessionStorage.removeItem('mwt_order_completed_at');
       selectedCartAddress = null;
       cartPageStepNo = 1;
-      // A direct-order backup is only cleared after that temporary order has been
-      // completed/cancelled; never wipe the customer's normal cart here.
       if(!(directOrderMode || sessionStorage.getItem('mwt_direct_order_mode') === '1')){
         directOrderMode = false;
       }
-      history.replaceState(null, '', window.location.pathname + '#cart');
+      history.pushState({cartOpen: true}, '', window.location.pathname + '#cart');
       handleRoute();
-      // Force the Cart DOM to start at step 1 immediately, even when the URL hash
-      // was already #cart and the browser does not emit a hashchange event.
       if(typeof renderCart === 'function') renderCart();
       if(typeof cartGoStep === 'function') cartGoStep(1);
     }
@@ -1074,8 +1078,6 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
     }
 
     function finishCartOrderAndGoHome(){
-      // Hard-reset the checkout UI/state before returning Home. This prevents the
-      // confirmation/billing screen from surviving in the DOM or browser history.
       shoppingCart = [];
       selectedCartAddress = null;
       cartPageStepNo = 1;
@@ -1135,18 +1137,6 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
       saveCart();
       alert('Product cart me add ho gaya! 🛒✨');
     }
-    function changeCartQty(id,delta){
-      const item=shoppingCart.find(i=>String(i.id)===String(id)); if(!item) return;
-      item.qty=Math.max(1,Math.min(20,(item.qty||1)+delta)); saveCart(); renderCart();
-    }
-    function removeFromCart(id){ shoppingCart=shoppingCart.filter(i=>String(i.id)!==String(id)); saveCart(); renderCart(); }
-    function getSavedAddressKey(){ return currentUserEmail ? 'mwt_saved_address_'+sanitizeEmailKey(currentUserEmail) : 'mwt_saved_address_guest'; }
-    function loadSavedCartAddress(){
-      const a=JSON.parse(localStorage.getItem(getSavedAddressKey())||'null');
-      if(!a) return;
-      ['Name','Phone','Addr','City','Pin'].forEach(k=>{const el=document.getElementById('cart'+k); if(el && a[k.toLowerCase()]) el.value=a[k.toLowerCase()];});
-      const note=document.getElementById('cartSavedAddressNote'); if(note) note.innerText='✓ Aapka saved address automatically fill ho gaya hai.';
-    }
     let selectedCartAddress = null;
     let cartPageStepNo = 1;
 
@@ -1155,7 +1145,8 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
       if(directOrderMode || sessionStorage.getItem('mwt_direct_order_mode') === '1'){
         restoreOriginalCartAfterDirectOrder();
       }
-      history.back();
+      history.pushState(null, '', window.location.pathname);
+      handleRoute();
     }
     function cartGoStep(step){
       if(step===2 && !shoppingCart.length) return;
@@ -1199,7 +1190,6 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
     }
     function selectSavedCartAddress(idx){ const arr=getSavedCartAddresses(); selectedCartAddress=arr[idx]||null; renderSavedAddresses(); }
     function showNewCartAddress(){
-      const b=document.getElementById('newAddressBox');
       const box=document.getElementById('newCartAddressBox'); if(box) box.style.display='block';
       if(box) box.scrollIntoView({behavior:'smooth',block:'start'});
     }
@@ -1243,7 +1233,6 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
       const btn=document.getElementById('btnCartPlaceNew');
       btn.disabled=true; btn.innerText='Placing Order...';
 
-      // The secret discount is valid only for the order that consumes it.
       if(isSpecialSecretActive){
         const consumed=await consumeSecretOfferOnce();
         if(!consumed){
@@ -1265,8 +1254,6 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
       const tg=`🛒 *NEW CART ORDER!* 🛒\n\n🆔 *Cart Order:* #${batchId}\n📦 *Items:* ${orders.length}\n💰 *TOTAL:* ₹${total} (COD)${offerWasActive?' [95% OFF CODE APPLIED]':''}\n\n${lines}\n\n👤 *Customer:* ${address.name}\n📧 *Google Email:* ${currentUserEmail}\n📞 *Mobile:* ${address.phone}\n📍 *Address:* ${addressStr}`;
       fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:TG_CHAT,text:tg})}).catch(()=>{});
 
-      // The order is complete: do not leave the ordered item in the cart.
-      // This prevents an old product/price from reappearing when Cart is opened again.
       shoppingCart=[];
       directOrderMode=false;
       sessionStorage.removeItem('mwt_direct_order_mode');
@@ -1275,7 +1262,6 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
       cartPageStepNo=1;
       saveCart();
 
-      // Offer is reset immediately after the successful order, so the next visit shows real prices.
       isSpecialSecretActive=false;
       renderGrid();
 
@@ -1395,42 +1381,105 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
       grid.innerHTML = html;
     }
 
+    function renderAllReviewsPage(){
+      let grid = document.getElementById('allReviewsGrid');
+      if(!grid) return;
+      grid.innerHTML = `<div style="text-align:center; padding:30px; font-size:12px; color:var(--muted);">Loading community reviews... ⌛</div>`;
+
+      if(!fbDb){
+        grid.innerHTML = `<div style="text-align:center; padding:30px; font-size:12px; color:var(--muted);">No reviews found.</div>`;
+        return;
+      }
+
+      fbDb.ref('product_comments').once('value').then(snap => {
+        let allProdsComments = snap.val();
+        if(!allProdsComments){
+          grid.innerHTML = `<div style="text-align:center; padding:40px; background:#fff; border-radius:16px; border:1px solid var(--border);"><h3 style="color:var(--text);">No Reviews Yet 💬</h3><p style="font-size:12px; color:var(--muted); margin-top:4px;">Be the first to review any product!</p></div>`;
+          return;
+        }
+
+        let combinedReviews = [];
+        Object.keys(allProdsComments).forEach(pId => {
+          let prodObj = getProdById(pId);
+          let comms = allProdsComments[pId];
+          if(comms && prodObj){
+            Object.values(comms).forEach(c => {
+              combinedReviews.push({
+                ...c,
+                product: prodObj
+              });
+            });
+          }
+        });
+
+        combinedReviews.sort((a,b)=>(b.timestamp||0)-(a.timestamp||0));
+
+        if(combinedReviews.length === 0){
+          grid.innerHTML = `<div style="text-align:center; padding:40px; background:#fff; border-radius:16px; border:1px solid var(--border);"><h3 style="color:var(--text);">No Reviews Yet 💬</h3><p style="font-size:12px; color:var(--muted); margin-top:4px;">Be the first to review any product!</p></div>`;
+          return;
+        }
+
+        let html = '';
+        combinedReviews.forEach(r => {
+          let authorName = r.email ? r.email.split('@')[0] : "Customer";
+          let firstImg = Array.isArray(r.product.i) ? r.product.i[0] : r.product.i;
+          
+          html += `<div style="background:#fff; border:1px solid var(--border); border-radius:16px; padding:12px; display:flex; align-items:center; gap:12px; box-shadow:0 4px 12px rgba(255,105,180,0.04);">
+            <img src="${firstImg}" style="width:65px; height:65px; object-fit:contain; background:#fff8fa; border:1px solid var(--border); border-radius:10px; cursor:pointer; flex-shrink:0;" onclick="openModal('${r.product.id}')" alt="Product">
+            
+            <div style="flex:1; text-align:left; overflow:hidden;">
+              <div style="font-size:12.5px; font-weight:800; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">@${authorName}</div>
+              <div style="font-size:12px; color:var(--muted); margin-top:2px; display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">"${r.text}"</div>
+            </div>
+
+            <button style="background:#fff0f5; color:var(--pink); border:1.5px solid var(--pink-accent); font-weight:700; border-radius:10px; padding:10px 14px; font-size:11.5px; cursor:pointer; white-space:nowrap; flex-shrink:0;" onclick="openModal('${r.product.id}')">View Product</button>
+          </div>`;
+        });
+        grid.innerHTML = html;
+      }).catch(()=>{
+        grid.innerHTML = `<div style="text-align:center; padding:30px; font-size:12px; color:var(--muted);">Error loading reviews.</div>`;
+      });
+    }
+
     function handleRoute(){
       let hash = window.location.hash.replace('#', '').trim();
 
       let pModal = document.getElementById('productModal');
       let cModal = document.getElementById('checkoutModal');
-      let cartModal = document.getElementById('cartModal');
       let cartPage = document.getElementById('cartPage');
       let oPage = document.getElementById('ordersPage');
       let aPage = document.getElementById('accountPage');
       let wPage = document.getElementById('waitlistPage');
+      let rPage = document.getElementById('allReviewsPage');
       let wheelModal = document.getElementById('wheelModal');
 
       pModal.style.display = 'none';
       cModal.style.display = 'none';
-      if(cartModal) cartModal.style.display = 'none';
       if(cartPage) cartPage.style.display = 'none';
       oPage.style.display = 'none';
       aPage.style.display = 'none';
       wPage.style.display = 'none';
+      if(rPage) rPage.style.display = 'none';
       wheelModal.style.display = 'none';
 
       updateHeaderAccountBtn();
 
-      // Hide review box when route changes
       let revBox = document.getElementById('reviewSectionBox');
       if(revBox) revBox.style.display = 'none';
 
       if(!hash) return;
 
-      // Leaving a direct-order cart without completing it restores the customer's real cart.
       if(hash !== 'cart' && (directOrderMode || sessionStorage.getItem('mwt_direct_order_mode') === '1')){
         restoreOriginalCartAfterDirectOrder();
       }
 
+      if(hash === 'all-reviews'){
+        renderAllReviewsPage();
+        if(rPage) rPage.style.display = 'block';
+        return;
+      }
+
       if(hash === 'cart'){
-        // Never reopen a completed checkout from an old browser-history entry.
         if(sessionStorage.getItem('mwt_order_completed') === '1'){
           history.replaceState(null, '', window.location.pathname);
           handleRoute();
@@ -1524,14 +1573,12 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
       }
 
       if(hash.startsWith('checkout-')){
-        // Legacy checkout URLs now redirect into the same full-page Cart flow.
         let parts = hash.split('-step');
         let pId = parts[0].replace('checkout-', '').trim();
         let step = parts[1] ? parseInt(parts[1]) : 1;
 
         let x = getProdById(pId);
         if(x){
-          // Any old checkout link/history entry should use the new Cart checkout UI.
           if(sessionStorage.getItem('mwt_direct_order_mode') !== '1'){
             const oldQty = Math.max(1, selQty || 1);
             const oldSize = selSize || ((x.s&&x.s.length)?x.s[0]:'Free Size');
@@ -1821,7 +1868,6 @@ Direct Link: ${productDirectLink}`);
 
       saveOrderToFirebase(order);
 
-      // Reset the offer after the order is actually placed.
       isSpecialSecretActive = false;
       renderGrid();
 
@@ -2394,8 +2440,6 @@ ${item.img}`;
         const res = await fetch(url);
         if(!res.ok) return;
         const text = await res.text();
-        // Google may change the length of the JSONP wrapper. Parse the actual JSON
-        // object instead of relying on a fixed substring offset.
         const jsonStart = text.indexOf('{');
         const jsonEnd = text.lastIndexOf('}');
         if(jsonStart < 0 || jsonEnd <= jsonStart) return;

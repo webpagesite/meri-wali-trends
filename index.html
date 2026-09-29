@@ -730,6 +730,8 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
     let isSpecialSecretActive = false;
     const vAudio = new Audio("site.mp3");
 
+    // Cart state is declared below; the badge is updated after initialization at the end of the script.
+
     function triggerSecretDiscount() {
       if(!currentUserEmail){
         alert("⚠️ Kripya pehle Google Login karein taaki check kiya ja sake ki aapne ye code use kiya hai ya nahi! 🌸");
@@ -756,6 +758,34 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
       }).catch(() => {
         alert("Connection error! Kripya dobara try karein.");
       });
+    }
+
+
+    // Secret offer is consumed only when an order is actually placed.
+    // It is locked per Google email so the same email cannot reuse it.
+    async function consumeSecretOfferOnce(){
+      if(!isSpecialSecretActive) return true;
+      if(!currentUserEmail || !fbDb){
+        isSpecialSecretActive = false;
+        alert("⚠️ Secret offer verify nahi ho paaya. Please login karke dobara try karein.");
+        return false;
+      }
+      const eKey = sanitizeEmailKey(currentUserEmail);
+      try{
+        const result = await fbDb.ref('secret_used/' + eKey).transaction(current => {
+          return current === true ? undefined : true;
+        });
+        if(!result.committed){
+          isSpecialSecretActive = false;
+          renderGrid();
+          alert("⚠️ Ye secret offer is email se pehle hi use ho chuka hai. Ab real price lagegi.");
+          return false;
+        }
+        return true;
+      }catch(e){
+        alert("⚠️ Offer verification failed. Order place nahi hua. Please dobara try karein.");
+        return false;
+      }
     }
 
     document.addEventListener('contextmenu', function(e) {
@@ -956,6 +986,9 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
 
     function openModal(id){ location.hash = `product-${id}`; }
 
+    // Order Now from a product uses the exact same full-page Cart checkout flow.
+    // The customer's existing cart is temporarily preserved and restored if they leave
+    // the direct-order flow without placing the order.
     let directOrderMode = false;
     function beginDirectCartOrder(){
       if(!currId) return;
@@ -1009,12 +1042,20 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
       if(badge){ badge.innerText=count; badge.style.display=count?'flex':'none'; }
     }
     function openCartPage(){
+      // User explicitly opened Cart: always start a clean checkout state.
+      // A completed order must never leak its old checkout screen back into Cart.
       sessionStorage.removeItem('mwt_order_completed');
       sessionStorage.removeItem('mwt_order_completed_at');
       directOrderMode = false;
       sessionStorage.removeItem('mwt_direct_order_mode');
       sessionStorage.removeItem('mwt_cart_backup');
-      location.hash='cart';
+      selectedCartAddress = null;
+      cartPageStepNo = 1;
+      shoppingCart = [];
+      saveCart();
+      // Remove any stale checkout hash before opening a fresh Cart page.
+      history.replaceState(null, '', window.location.pathname + '#cart');
+      handleRoute();
     }
 
     function restoreOriginalCartAfterDirectOrder(){
@@ -1030,6 +1071,8 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
     }
 
     function finishCartOrderAndGoHome(){
+      // Reset checkout completely after a successful order.
+      // The completed-order flag also blocks an older #cart history entry.
       sessionStorage.setItem('mwt_order_completed','1');
       sessionStorage.setItem('mwt_order_completed_at', String(Date.now()));
       history.replaceState(null, '', window.location.pathname);
@@ -1053,7 +1096,7 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
 
       const symbols = ['💗','🎀','✨','🛍️','💖','🌸','🎉','💕'];
       for(let i=0;i<28;i++){
-        const piece=document.createElement('div');
+        let piece=document.createElement('div');
         piece.className='mwt-order-confetti';
         piece.textContent=symbols[Math.floor(Math.random()*symbols.length)];
         piece.style.left=(Math.random()*100)+'vw';
@@ -1155,30 +1198,67 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
     }
     function renderCartBilling(){
       let total=0; const items=document.getElementById('cartBillingItems');
-      if(items) items.innerHTML=shoppingCart.map(i=>{const line=i.price*(i.qty||1);total+=line;return `<div style="display:flex;justify-content:space-between;gap:8px;font-size:12px;margin-bottom:8px;"><span>${i.title} × ${i.qty||1}</span><b>₹${line}</b></div>`;}).join('');
+      if(items) items.innerHTML=shoppingCart.map(i=>{
+        const unit=isSpecialSecretActive ? Math.round(i.price*0.05) : i.price;
+        const line=unit*(i.qty||1); total+=line;
+        const off=isSpecialSecretActive ? ` <span style="color:var(--red);font-size:10px;font-weight:800;">95% OFF 💖</span>` : '';
+        return `<div style="display:flex;justify-content:space-between;gap:8px;font-size:12px;margin-bottom:8px;"><span>${i.title} × ${i.qty||1}${off}</span><b>₹${line}</b></div>`;
+      }).join('');
       document.getElementById('newCartItemsTotal').innerText='₹'+total;
       document.getElementById('newCartGrandTotal').innerText='₹'+total;
       const a=document.getElementById('selectedCartAddressBox'); if(a&&selectedCartAddress) a.innerHTML=`<div class="address-label">Delivering To · ${addressLabel(selectedCartAddress)}</div><div class="address-text">${addressText(selectedCartAddress)}</div>`;
     }
     function renderCartFinal(){
       let total=0; const items=document.getElementById('cartFinalItems');
-      if(items) items.innerHTML=shoppingCart.map(i=>{const line=i.price*(i.qty||1);total+=line;return `<div style="display:flex;justify-content:space-between;gap:8px;font-size:12px;margin-bottom:8px;"><span>${i.title} × ${i.qty||1}</span><b>₹${line}</b></div>`;}).join('');
-      document.getElementById('cartFinalTotal').innerText='₹'+total+' (COD)';
+      if(items) items.innerHTML=shoppingCart.map(i=>{
+        const unit=isSpecialSecretActive ? Math.round(i.price*0.05) : i.price;
+        const line=unit*(i.qty||1); total+=line;
+        return `<div style="display:flex;justify-content:space-between;gap:8px;font-size:12px;margin-bottom:8px;"><span>${i.title} × ${i.qty||1}</span><b>₹${line}</b></div>`;
+      }).join('');
+      document.getElementById('cartFinalTotal').innerText='₹'+total+' (COD)'+(isSpecialSecretActive?' · 95% OFF 💖':'');
       const a=document.getElementById('cartFinalAddress'); if(a&&selectedCartAddress) a.innerHTML=`<div class="address-label">Delivery Address · ${addressLabel(selectedCartAddress)}</div><div class="address-text">${addressText(selectedCartAddress)}</div>`;
     }
-    function placeCartOrderNew(){
+    async function placeCartOrderNew(){
       if(!shoppingCart.length || !selectedCartAddress) return;
-      const btn=document.getElementById('btnCartPlaceNew'); btn.disabled=true; btn.innerText='Placing Order...';
-      const address=selectedCartAddress, batchId='MWT-B'+Math.floor(10000+Math.random()*90000), now=Date.now(), addressStr=addressText(address); let total=0;
-      const orders=shoppingCart.map((i,idx)=>{const line=i.price*(i.qty||1);total+=line;return {productId:i.id,orderId:batchId+'-'+(idx+1),batchOrderId:batchId,title:i.title,img:i.img,code:i.code,price:line,unitPrice:i.price,qty:i.qty||1,size:i.size,email:currentUserEmail,name:address.name,phone:address.phone,address:addressStr,date:new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}),timestamp:now+idx,status:'active'};});
-      orders.forEach(o=>saveOrderToFirebase(o));
-      const lines=orders.map(o=>`• ${o.title} | Code: ${o.code||'-'} | Qty: ${o.qty} | ₹${o.price}\n  🖼️ ${o.img}`).join('\n');
-      const tg=`🛒 *NEW CART ORDER!* 🛒\n\n🆔 *Cart Order:* #${batchId}\n📦 *Items:* ${orders.length}\n💰 *TOTAL:* ₹${total} (COD)\n\n${lines}\n\n👤 *Customer:* ${address.name}\n📧 *Google Email:* ${currentUserEmail}\n📞 *Mobile:* ${address.phone}\n📍 *Address:* ${addressStr}`;
-      fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:TG_CHAT,text:tg})}).catch(()=>{});
-      shoppingCart=[]; saveCart();
-      if(directOrderMode || sessionStorage.getItem('mwt_direct_order_mode') === '1'){
-        restoreOriginalCartAfterDirectOrder();
+      const btn=document.getElementById('btnCartPlaceNew');
+      btn.disabled=true; btn.innerText='Placing Order...';
+
+      // The secret discount is valid only for the order that consumes it.
+      if(isSpecialSecretActive){
+        const consumed=await consumeSecretOfferOnce();
+        if(!consumed){
+          btn.disabled=false; btn.innerText='Place Order (COD) 🛍️';
+          return;
+        }
       }
+
+      const offerWasActive=isSpecialSecretActive;
+      const address=selectedCartAddress, batchId='MWT-B'+Math.floor(10000+Math.random()*90000), now=Date.now(), addressStr=addressText(address); let total=0;
+      const orders=shoppingCart.map((i,idx)=>{
+        const unitPrice=offerWasActive ? Math.round(i.price*0.05) : i.price;
+        const line=unitPrice*(i.qty||1); total+=line;
+        return {productId:i.id,orderId:batchId+'-'+(idx+1),batchOrderId:batchId,title:i.title,img:i.img,code:i.code,price:line,unitPrice:unitPrice,originalPrice:i.price,discountApplied:offerWasActive?'95% OFF':null,qty:i.qty||1,size:i.size,email:currentUserEmail,name:address.name,phone:address.phone,address:addressStr,date:new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}),timestamp:now+idx,status:'active'};
+      });
+
+      orders.forEach(o=>saveOrderToFirebase(o));
+      const lines=orders.map(o=>`• ${o.title} | Code: ${o.code||'-'} | Qty: ${o.qty} | ₹${o.price}${o.discountApplied?' [95% OFF CODE APPLIED]':''}\n  🖼️ ${o.img}`).join('\n');
+      const tg=`🛒 *NEW CART ORDER!* 🛒\n\n🆔 *Cart Order:* #${batchId}\n📦 *Items:* ${orders.length}\n💰 *TOTAL:* ₹${total} (COD)${offerWasActive?' [95% OFF CODE APPLIED]':''}\n\n${lines}\n\n👤 *Customer:* ${address.name}\n📧 *Google Email:* ${currentUserEmail}\n📞 *Mobile:* ${address.phone}\n📍 *Address:* ${addressStr}`;
+      fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:TG_CHAT,text:tg})}).catch(()=>{});
+
+      // The order is complete: do not leave the ordered item in the cart.
+      // This prevents an old product/price from reappearing when Cart is opened again.
+      shoppingCart=[];
+      directOrderMode=false;
+      sessionStorage.removeItem('mwt_direct_order_mode');
+      sessionStorage.removeItem('mwt_cart_backup');
+      selectedCartAddress=null;
+      cartPageStepNo=1;
+      saveCart();
+
+      // Offer is reset immediately after the successful order, so the next visit shows real prices.
+      isSpecialSecretActive=false;
+      renderGrid();
+
       btn.disabled=false; btn.innerText='Place Order (COD) 🛍️';
       showOrderSuccessAnimation(batchId,total);
     }
@@ -1318,16 +1398,19 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
 
       updateHeaderAccountBtn();
 
+      // Hide review box when route changes
       let revBox = document.getElementById('reviewSectionBox');
       if(revBox) revBox.style.display = 'none';
 
       if(!hash) return;
 
+      // Leaving a direct-order cart without completing it restores the customer's real cart.
       if(hash !== 'cart' && (directOrderMode || sessionStorage.getItem('mwt_direct_order_mode') === '1')){
         restoreOriginalCartAfterDirectOrder();
       }
 
       if(hash === 'cart'){
+        // Never reopen a completed checkout from an old browser-history entry.
         if(sessionStorage.getItem('mwt_order_completed') === '1'){
           history.replaceState(null, '', window.location.pathname);
           handleRoute();
@@ -1421,12 +1504,14 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
       }
 
       if(hash.startsWith('checkout-')){
+        // Legacy checkout URLs now redirect into the same full-page Cart flow.
         let parts = hash.split('-step');
         let pId = parts[0].replace('checkout-', '').trim();
         let step = parts[1] ? parseInt(parts[1]) : 1;
 
         let x = getProdById(pId);
         if(x){
+          // Any old checkout link/history entry should use the new Cart checkout UI.
           if(sessionStorage.getItem('mwt_direct_order_mode') !== '1'){
             const oldQty = Math.max(1, selQty || 1);
             const oldSize = selSize || ((x.s&&x.s.length)?x.s[0]:'Free Size');
@@ -1683,7 +1768,7 @@ Direct Link: ${productDirectLink}`);
       }
     }
 
-    function placeOrder(){
+    async function placeOrder(){
       if(!currentUserEmail){
         alert("⚠️ Order place karne ke liye verified Google ID zaroori hai! 🌸");
         goToStep(2);
@@ -1706,28 +1791,44 @@ Direct Link: ${productDirectLink}`);
         timestamp:now, status:"active"
       };
 
-      if(isSpecialSecretActive && fbDb){
-        let eKey = sanitizeEmailKey(currentUserEmail);
-        fbDb.ref('secret_used/' + eKey).set(true).catch(()=>{});
+      if(isSpecialSecretActive){
+        const consumed=await consumeSecretOfferOnce();
+        if(!consumed){
+          btn.disabled=false; btn.innerText='Place Order 🛍️';
+          return;
+        }
       }
 
       saveOrderToFirebase(order);
 
+      // Reset the offer after the order is actually placed.
       isSpecialSecretActive = false;
       renderGrid();
 
       let tgMessage = 
-        `🛍️ *NEW ORDER CONFIRMED!* 🛍️\n\n` +
-        `🆔 *Order ID:* #${oId}\n` +
-        `📦 *Item:* ${x.t}\n` +
-        `🔢 *Code:* ${x.cd}\n` +
-        (selSize ? `📏 *Option/Size:* ${selSize}\n` : '') +
-        `🔢 *Quantity:* ${selQty}\n` +
+        `🛍️ *NEW ORDER CONFIRMED!* 🛍️
+
+` +
+        `🆔 *Order ID:* #${oId}
+` +
+        `📦 *Item:* ${x.t}
+` +
+        `🔢 *Code:* ${x.cd}
+` +
+        (selSize ? `📏 *Option/Size:* ${selSize}
+` : '') +
+        `🔢 *Quantity:* ${selQty}
+` +
         `💰 *Total Amount:* ₹${tot} (COD)` + (effectivePn !== x.pn ? ' [95% OFF CODE APPLIED]' : '') + `\n\n` +
-        `👤 *Customer Name:* ${n}\n` +
-        `📧 *Google Verified Email:* ${currentUserEmail}\n` +
-        `📞 *Mobile Number:* ${phone}\n` +
-        `📍 *Delivery Address:* ${ad}, ${ct} - ${pn}\n\n` +
+        `👤 *Customer Name:* ${n}
+` +
+        `📧 *Google Verified Email:* ${currentUserEmail}
+` +
+        `📞 *Mobile Number:* ${phone}
+` +
+        `📍 *Delivery Address:* ${ad}, ${ct} - ${pn}
+
+` +
         `🖼️ *Product Photo Link:*
 ${firstImg}`;
 
@@ -1985,10 +2086,15 @@ ${firstImg}`;
       let dateStr = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', dateStyle: 'medium', timeStyle: 'short' });
 
       let loginMsg = 
-        `👤 *GOOGLE SIGN-IN VERIFIED!* 🎀\n\n` +
-        `📧 *Email ID:* ${currentUserEmail}\n` +
-        `📱 *Device:* ${device}\n` +
-        `⏰ *Time:* ${dateStr}\n` +
+        `👤 *GOOGLE SIGN-IN VERIFIED!* 🎀
+
+` +
+        `📧 *Email ID:* ${currentUserEmail}
+` +
+        `📱 *Device:* ${device}
+` +
+        `⏰ *Time:* ${dateStr}
+` +
         `🔗 *Source:* ${fromCheckout ? 'Checkout Page' : 'Account Dashboard'}`;
 
       fetch(`https://api.telegram.org/bot${TG_VISITOR_TOKEN}/sendMessage`, {
@@ -2032,18 +2138,34 @@ ${firstImg}`;
         item.cancelReason = reason.trim();
         updateOrderInFirebase(item);
 
-        let tgMsg = `🚨 *ORDER CANCELLED BY CUSTOMER!* 🚨\n\n` +
-                    `🆔 *Order ID:* #${item.orderId}\n` +
-                    `📦 *Item:* ${item.title}\n` +
-                    `🔢 *Code:* ${item.code || 'N/A'}\n` +
-                    (item.size ? `📏 *Size:* ${item.size}\n` : '') +
-                    `🔢 *Quantity:* ${item.qty}\n` +
-                    `💰 *Order Amount:* ₹${item.price}\n\n` +
-                    `👤 *Customer Name:* ${item.name}\n` +
-                    `📧 *Email ID:* ${item.email || 'N/A'}\n` +
-                    `📞 *Phone Number:* ${item.phone}\n` +
-                    `📍 *Delivery Address:* ${item.address}\n\n` +
-                    `💬 *Cancellation Reason:* ${reason.trim()}\n\n` +
+        let tgMsg = `🚨 *ORDER CANCELLED BY CUSTOMER!* 🚨
+
+` +
+                    `🆔 *Order ID:* #${item.orderId}
+` +
+                    `📦 *Item:* ${item.title}
+` +
+                    `🔢 *Code:* ${item.code || 'N/A'}
+` +
+                    (item.size ? `📏 *Size:* ${item.size}
+` : '') +
+                    `🔢 *Quantity:* ${item.qty}
+` +
+                    `💰 *Order Amount:* ₹${item.price}
+
+` +
+                    `👤 *Customer Name:* ${item.name}
+` +
+                    `📧 *Email ID:* ${item.email || 'N/A'}
+` +
+                    `📞 *Phone Number:* ${item.phone}
+` +
+                    `📍 *Delivery Address:* ${item.address}
+
+` +
+                    `💬 *Cancellation Reason:* ${reason.trim()}
+
+` +
                     `🖼️ *Product Photo Link:*
 ${item.img}`;
 
@@ -2067,18 +2189,34 @@ ${item.img}`;
         item.returnReason = reason.trim();
         updateOrderInFirebase(item);
 
-        let tgMsg = `🔄 *RETURN REQUESTED BY CUSTOMER!* 🔄\n\n` +
-                    `🆔 *Order ID:* #${item.orderId}\n` +
-                    `📦 *Item:* ${item.title}\n` +
-                    `🔢 *Code:* ${item.code || 'N/A'}\n` +
-                    (item.size ? `📏 *Size:* ${item.size}\n` : '') +
-                    `🔢 *Quantity:* ${item.qty}\n` +
-                    `💰 *Refund Amount:* ₹${item.price}\n\n` +
-                    `👤 *Customer Name:* ${item.name}\n` +
-                    `📧 *Email ID:* ${item.email || 'N/A'}\n` +
-                    `📞 *Phone Number:* ${item.phone}\n` +
-                    `📍 *Pickup Address:* ${item.address}\n\n` +
-                    `💬 *Return Reason:* ${reason.trim()}\n\n` +
+        let tgMsg = `🔄 *RETURN REQUESTED BY CUSTOMER!* 🔄
+
+` +
+                    `🆔 *Order ID:* #${item.orderId}
+` +
+                    `📦 *Item:* ${item.title}
+` +
+                    `🔢 *Code:* ${item.code || 'N/A'}
+` +
+                    (item.size ? `📏 *Size:* ${item.size}
+` : '') +
+                    `🔢 *Quantity:* ${item.qty}
+` +
+                    `💰 *Refund Amount:* ₹${item.price}
+
+` +
+                    `👤 *Customer Name:* ${item.name}
+` +
+                    `📧 *Email ID:* ${item.email || 'N/A'}
+` +
+                    `📞 *Phone Number:* ${item.phone}
+` +
+                    `📍 *Pickup Address:* ${item.address}
+
+` +
+                    `💬 *Return Reason:* ${reason.trim()}
+
+` +
                     `🖼️ *Product Photo Link:*
 ${item.img}`;
 
@@ -2113,10 +2251,15 @@ ${item.img}`;
             let dateStr = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', dateStyle: 'medium', timeStyle: 'short' });
 
             let visitMsg = 
-              `👀 *TOTAL UNIQUE VISITOR ALERT!* 🌐\n\n` +
-              `🔢 *Total Lifetime Count:* #${totalVisits}\n` +
-              `📱 *Device:* ${device}\n` +
-              `⏰ *Time:* ${dateStr}\n` +
+              `👀 *TOTAL UNIQUE VISITOR ALERT!* 🌐
+
+` +
+              `🔢 *Total Lifetime Count:* #${totalVisits}
+` +
+              `📱 *Device:* ${device}
+` +
+              `⏰ *Time:* ${dateStr}
+` +
               `🔗 *Source:* Website Link Clicked 🎀`;
 
             fetch(`https://api.telegram.org/bot${TG_VISITOR_TOKEN}/sendMessage`, {
@@ -2235,7 +2378,7 @@ ${item.img}`;
         const rows = json.table ? json.table.rows : [];
         if(rows && rows.length > 0){
           let sheetItems = [];
-          rows.forEach((r, idx)=>{
+          rows.rows.forEach((r, idx)=>{
             if(!r || !r.c || !r.c[3] || !r.c[3].v) return;
             const c = r.c;
             sheetItems.push({

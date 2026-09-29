@@ -135,6 +135,34 @@
     .t-item.returned::before{background:var(--blue);border-color:var(--blue);}
 
     .profile-card{background:#fff;border-radius:18px;border:1px solid var(--border);padding:18px;margin:0 auto 16px;max-width:800px;}
+/* ===== Full Page Cart / Meesho-style Cart Flow ===== */
+#cartPage{display:none;position:fixed;inset:0;width:100vw;height:100vh;background:var(--bg);z-index:5000;overflow-y:auto;text-align:left;padding:14px 14px 70px;}
+.cart-page-wrap{max-width:800px;margin:0 auto;}
+.cart-page-head{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--border);border-radius:16px;padding:12px 15px;margin-bottom:12px;}
+.cart-back{width:36px;height:36px;border-radius:50%;border:1px solid var(--pink-accent);background:#fff0f5;color:var(--pink);font-size:18px;font-weight:800;cursor:pointer;}
+.cart-page-step{display:none;}
+.cart-page-step.active{display:block;}
+.cart-product-card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:13px;margin-bottom:10px;display:flex;align-items:center;gap:12px;}
+.cart-product-card img{width:68px;height:78px;object-fit:contain;background:#fff9fb;border-radius:10px;border:1px solid var(--border);flex-shrink:0;}
+.cart-product-main{flex:1;min-width:0;}
+.cart-product-name{font-size:13px;font-weight:800;color:var(--text);line-height:1.3;}
+.cart-product-qty{display:flex;align-items:center;gap:7px;margin-top:9px;}
+.cart-product-qty button{width:29px;height:29px;border-radius:8px;border:1px solid var(--pink-accent);background:#fff;color:var(--pink);font-weight:900;cursor:pointer;}
+.cart-product-qty b{min-width:22px;text-align:center;font-size:12px;}
+.cart-remove-new{border:0;background:transparent;color:var(--red);font-size:20px;cursor:pointer;}
+.cart-next-btn{width:100%;margin-top:8px;}
+.address-card{background:#fff;border:1.5px solid var(--border);border-radius:15px;padding:13px;margin-bottom:10px;cursor:pointer;position:relative;}
+.address-card.selected{border-color:var(--pink);box-shadow:0 0 0 2px #ffe1eb;}
+.address-card .radio{position:absolute;right:13px;top:13px;width:20px;height:20px;border-radius:50%;border:2px solid #d8cbd2;background:#fff;}
+.address-card.selected .radio{border-color:var(--pink);background:var(--pink);box-shadow:inset 0 0 0 4px #fff;}
+.address-label{font-size:12px;font-weight:900;color:var(--text);margin-bottom:5px;}
+.address-text{font-size:11.5px;color:var(--muted);line-height:1.45;padding-right:28px;}
+.new-address-btn{width:100%;padding:12px;border-radius:12px;border:1.5px dashed var(--pink);background:#fff7fa;color:var(--pink);font-weight:800;cursor:pointer;margin-bottom:10px;}
+.cart-billing{background:#fff;border:1px solid var(--border);border-radius:16px;padding:15px;margin-bottom:12px;}
+.cart-billing .bill-row{margin-bottom:10px;}
+.cart-billing .bill-row:last-child{margin-bottom:0;}
+.cart-page-note{font-size:11px;color:var(--muted);margin:-4px 0 12px;}
+
     .dash-stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:14px;}
     .dash-stat-box{background:#fff9fb;border:1px solid var(--border);border-radius:14px;padding:12px;text-align:center;}
 
@@ -260,10 +288,10 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
 .cart-total{display:flex;justify-content:space-between;font-weight:800;padding:12px 2px;border-top:1px dashed var(--border);margin-top:8px;}
 .cart-form input,.cart-form textarea{width:100%;padding:10px 11px;border:1px solid var(--border);border-radius:10px;font-size:12px;margin-top:6px;outline:none;}
 .cart-form label{display:block;font-size:11px;font-weight:800;color:var(--muted);margin-top:9px;}
-.account-nav{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;max-width:800px;margin:0 auto 14px;}
+.account-nav{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;max-width:800px;margin:0 auto 14px;}
 .account-nav button{border:1px solid var(--border);background:#fff;border-radius:12px;padding:10px 5px;color:var(--pink);font-size:10.5px;font-weight:800;cursor:pointer;}
 .account-nav button:hover{background:#fff0f5;}
-@media(max-width:560px){.header-tools{gap:5px}.header-tool-btn{padding:7px 8px;font-size:9.5px}.account-nav{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:560px){.header-tools{gap:5px}.header-tool-btn{padding:7px 8px;font-size:9.5px}.account-nav{grid-template-columns:repeat(2,1fr)}}
 
 @media(max-width:560px){.header{top:6px}.brand-title{font-size:18px}.hero-store{padding:23px 17px;border-radius:22px}.hero-store h2{font-size:23px}.store-trust{grid-template-columns:repeat(2,1fr)}.grid{gap:10px!important}.card-img-wrapper{height:175px!important}.card-info{padding:10px!important}.site-footer{border-radius:20px}.footer-bottom{display:block}.footer-bottom span{display:block;margin-top:4px}}
 
@@ -398,28 +426,62 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
   </div>
 
 
-  <!-- Cart Modal -->
-  <div class="modal" id="cartModal" onclick="if(event.target.id==='cartModal')history.back()">
-    <div class="modal-content" style="max-width:480px;">
-      <div style="padding:16px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
-        <div><h2 style="font-size:17px;">My Cart 🛒</h2><p style="font-size:10.5px;color:var(--muted);">Review all items and place one COD order</p></div>
-        <div class="close-btn" style="position:static;width:34px;height:34px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;border:1px solid var(--border);" onclick="history.back()">&times;</div>
+  <!-- Full Page Cart Flow -->
+  <div id="cartPage">
+    <div class="cart-page-wrap">
+      <div class="cart-page-head">
+        <button class="cart-back" onclick="cartPageBack()">←</button>
+        <div><h2 style="font-size:18px;">My Cart 🛒</h2><p id="cartPageSubtitle" style="font-size:11px;color:var(--muted);">Review your products</p></div>
       </div>
-      <div class="modal-body">
-        <div id="cartItemsList" class="cart-modal-list"></div>
-        <div id="cartEmptyBox" style="display:none;text-align:center;padding:35px 10px;background:#fff9fb;border:1px solid var(--border);border-radius:16px;">
-          <div style="font-size:34px;">🛒</div><h3 style="font-size:15px;margin-top:7px;">Your Cart is Empty</h3><p style="font-size:11px;color:var(--muted);margin-top:4px;">Products ko cart me add karke yahan se ek saath order karein.</p>
+
+      <div class="cart-page-step active" id="cartPageStep1">
+        <div id="cartPageItems"></div>
+        <div id="cartPageEmpty" style="display:none;text-align:center;padding:45px 14px;background:#fff;border:1px solid var(--border);border-radius:16px;">
+          <div style="font-size:40px;">🛒</div><h3 style="font-size:16px;margin-top:7px;">Your Cart is Empty</h3><p style="font-size:11.5px;color:var(--muted);margin-top:5px;">Products ko cart me add karke yahan se order karein.</p>
         </div>
-        <div id="cartCheckoutArea" style="display:none;">
-          <div class="cart-total-box"><div style="display:flex;justify-content:space-between;font-size:12px;font-weight:700;"><span>Items Total</span><span id="cartItemsTotal">₹0</span></div><div style="display:flex;justify-content:space-between;font-size:14px;font-weight:900;margin-top:6px;color:var(--pink);"><span>COD Total</span><span id="cartGrandTotal">₹0</span></div></div>
-          <div class="cart-form-title">Delivery Details 📍</div>
-          <div class="form-group"><label>Full Name</label><input id="cartName" type="text" placeholder="Enter your full name"></div>
-          <div class="form-group"><label>Mobile Number</label><input id="cartPhone" type="tel" maxlength="10" placeholder="10-digit mobile number"></div>
-          <div class="form-group"><label>Address</label><textarea id="cartAddr" rows="2" placeholder="House no., street, area"></textarea></div>
-          <div style="display:flex;gap:8px;"><div class="form-group" style="flex:1;"><label>City</label><input id="cartCity" type="text" placeholder="City"></div><div class="form-group" style="width:105px;"><label>Pincode</label><input id="cartPin" type="tel" maxlength="6" placeholder="PIN"></div></div>
-          <div id="cartSavedAddressNote" class="saved-address-note"></div>
-          <button class="btn-pink" id="btnCartPlace" style="margin-top:5px;" onclick="placeCartOrder()">Place Cart Order (COD) 🛍️</button>
+        <button class="btn-pink cart-next-btn" id="cartContinueAddress" onclick="cartGoStep(2)">Continue to Address ➜</button>
+      </div>
+
+      <div class="cart-page-step" id="cartPageStep2">
+        <div style="background:#fff;border:1px solid var(--border);border-radius:16px;padding:14px;margin-bottom:12px;">
+          <h3 style="font-size:15px;">Select Delivery Address 📍</h3>
+          <p class="cart-page-note">Saved address choose karein ya naya address add karein.</p>
+          <div id="savedAddressesList"></div>
+          <button class="new-address-btn" onclick="showNewCartAddress()">＋ Add New Address</button>
+          <div id="newCartAddressBox" style="display:none;">
+            <div class="form-group"><label>Full Name *</label><input id="cartNameNew" type="text" placeholder="Full Name"></div>
+            <div class="form-group"><label>10-Digit Mobile Number *</label><input id="cartPhoneNew" type="tel" maxlength="10" placeholder="10-digit mobile number"></div>
+            <div class="form-group"><label>Address *</label><textarea id="cartAddrNew" rows="2" placeholder="House no., Street, Colony"></textarea></div>
+            <div class="form-group"><label>City & State *</label><input id="cartCityNew" type="text" placeholder="City, State"></div>
+            <div class="form-group"><label>Pincode *</label><input id="cartPinNew" type="tel" maxlength="6" placeholder="6-digit pincode"></div>
+            <button class="btn-pink" style="width:100%;" onclick="saveNewCartAddress()">Save Address & Continue ➜</button>
+          </div>
         </div>
+        <div style="display:flex;gap:8px;"><button style="flex:1;padding:13px;background:#fff0f5;border:1px solid var(--border);border-radius:12px;font-weight:700;cursor:pointer;" onclick="cartGoStep(1)">← Back</button><button style="flex:2;" class="btn-pink" onclick="continueWithSelectedCartAddress()">Continue ➜</button></div>
+      </div>
+
+      <div class="cart-page-step" id="cartPageStep3">
+        <div class="cart-billing">
+          <h3 style="font-size:15px;margin-bottom:12px;">Order Summary & Billing 💰</h3>
+          <div id="cartBillingItems"></div>
+          <div class="bill-row"><span>Items Total</span><span id="newCartItemsTotal">₹0</span></div>
+          <div class="bill-row"><span>Delivery</span><span style="color:var(--green);">FREE 🚚</span></div>
+          <div class="bill-row total"><span>Total Payable (COD)</span><span id="newCartGrandTotal" style="color:var(--pink);">₹0</span></div>
+        </div>
+        <div style="background:#e8f8f2;color:var(--green);border:1px solid #b7e8d6;border-radius:10px;padding:10px;font-size:12px;font-weight:700;margin-bottom:12px;">✓ Cash on Delivery — Pay when your order arrives</div>
+        <div id="selectedCartAddressBox" class="address-card selected"></div>
+        <div style="display:flex;gap:8px;"><button style="flex:1;padding:13px;background:#fff0f5;border:1px solid var(--border);border-radius:12px;font-weight:700;cursor:pointer;" onclick="cartGoStep(2)">← Address</button><button style="flex:2;" class="btn-pink" onclick="cartGoStep(4)">Continue to Place Order ➜</button></div>
+      </div>
+
+      <div class="cart-page-step" id="cartPageStep4">
+        <div style="background:#fff;border:1px solid var(--border);border-radius:16px;padding:15px;margin-bottom:12px;">
+          <h3 style="font-size:16px;margin-bottom:12px;">Confirm Your Order 📦</h3>
+          <div id="cartFinalItems"></div>
+          <div class="bill-row total"><span>Total Payable</span><span id="cartFinalTotal" style="color:var(--pink);">₹0</span></div>
+        </div>
+        <div id="cartFinalAddress" class="address-card selected"></div>
+        <button class="btn-pink" id="btnCartPlaceNew" style="width:100%;margin-top:3px;" onclick="placeCartOrderNew()">Place Order (COD) 🛍️</button>
+        <button style="width:100%;margin-top:8px;padding:12px;background:#fff0f5;border:1px solid var(--border);border-radius:12px;font-weight:700;cursor:pointer;" onclick="cartGoStep(3)">← Back to Billing</button>
       </div>
     </div>
   </div>
@@ -521,7 +583,6 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
       <div class="account-nav">
         <button onclick="openMyOrdersPage()">📦 My Orders</button>
         <button onclick="openWaitlistPage()">♡ Wishlist</button>
-        <button onclick="focusStoreSearch()">🔍 Search</button>
       </div>
 
       <div class="customer-support-poster">
@@ -918,36 +979,96 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
       ['Name','Phone','Addr','City','Pin'].forEach(k=>{const el=document.getElementById('cart'+k); if(el && a[k.toLowerCase()]) el.value=a[k.toLowerCase()];});
       const note=document.getElementById('cartSavedAddressNote'); if(note) note.innerText='✓ Aapka saved address automatically fill ho gaya hai.';
     }
+    let selectedCartAddress = null;
+    let cartPageStepNo = 1;
+
+    function cartPageBack(){
+      if(cartPageStepNo > 1){ cartGoStep(cartPageStepNo-1); return; }
+      history.back();
+    }
+    function cartGoStep(step){
+      if(step===2 && !shoppingCart.length) return;
+      if(step===2 && !currentUserEmail){ alert('⚠️ Cart order ke liye pehle Google Login karein! 🌸'); openAccountPage(); return; }
+      if(step===3 && !selectedCartAddress){ alert('Kripya delivery address select karein! 📍'); return; }
+      cartPageStepNo=step;
+      [1,2,3,4].forEach(n=>{ const el=document.getElementById('cartPageStep'+n); if(el) el.classList.toggle('active',n===step); });
+      const sub=document.getElementById('cartPageSubtitle');
+      if(sub) sub.innerText=['Review your products','Select delivery address','Check billing details','Confirm & place order'][step-1];
+      if(step===2) renderSavedAddresses();
+      if(step===3) renderCartBilling();
+      if(step===4) renderCartFinal();
+      window.scrollTo(0,0);
+    }
     function renderCart(){
-      const list=document.getElementById('cartItemsList'), empty=document.getElementById('cartEmptyBox'), area=document.getElementById('cartCheckoutArea'); if(!list) return;
+      const list=document.getElementById('cartPageItems'), empty=document.getElementById('cartPageEmpty'), cont=document.getElementById('cartContinueAddress'); if(!list) return;
       updateCartBadge();
-      if(!shoppingCart.length){ list.innerHTML=''; empty.style.display='block'; area.style.display='none'; return; }
-      empty.style.display='none'; area.style.display='block';
-      let total=0;
-      list.innerHTML=shoppingCart.map(i=>{const line=i.price*(i.qty||1); total+=line; return `<div class="cart-item"><img src="${i.img}" alt="${i.title}"><div class="cart-item-info"><div class="cart-item-title">${i.title}</div><div class="cart-item-meta">₹${i.price} • ${i.size||'Free Size'} • Code: ${i.code||''}</div><div class="cart-qty"><button onclick="changeCartQty('${i.id}',-1)">−</button><b style="font-size:11px;min-width:15px;text-align:center;">${i.qty||1}</b><button onclick="changeCartQty('${i.id}',1)">+</button></div></div><div style="text-align:right;"><b style="font-size:12px;color:var(--pink);">₹${line}</b><br><button class="cart-remove" onclick="removeFromCart('${i.id}')" title="Remove">×</button></div></div>`;}).join('');
-      document.getElementById('cartItemsTotal').innerText='₹'+total;
-      document.getElementById('cartGrandTotal').innerText='₹'+total+' (COD)';
-      loadSavedCartAddress();
+      if(!shoppingCart.length){ list.innerHTML=''; empty.style.display='block'; cont.style.display='none'; return; }
+      empty.style.display='none'; cont.style.display='block';
+      list.innerHTML=shoppingCart.map(i=>`<div class="cart-product-card"><img src="${i.img}" alt="${i.title}"><div class="cart-product-main"><div class="cart-product-name">${i.title}</div><div class="cart-product-qty"><button onclick="changeCartQty('${i.id}',-1)">−</button><b>${i.qty||1}</b><button onclick="changeCartQty('${i.id}',1)">+</button><span style="font-size:10.5px;color:var(--muted);">Quantity</span></div></div><button class="cart-remove-new" onclick="removeFromCart('${i.id}')">×</button></div>`).join('');
     }
-    function validateCartAddress(){
-      if(!currentUserEmail){ alert('⚠️ Cart order ke liye pehle Google Login karein! 🌸'); openAccountPage(); return null; }
-      const name=document.getElementById('cartName').value.trim(), phone=document.getElementById('cartPhone').value.trim(), addr=document.getElementById('cartAddr').value.trim(), city=document.getElementById('cartCity').value.trim(), pin=document.getElementById('cartPin').value.trim();
-      if(!name){alert('Kripya Full Name dalein! 🌸');return null;} if(!/^[6-9]\d{9}$/.test(phone)){alert('Kripya valid 10-digit mobile number enter karein! 🌸');return null;} if(!addr){alert('Kripya complete Address dalein! 🌸');return null;} if(!city){alert('Kripya City dalein! 🌸');return null;} if(!/^\d{6}$/.test(pin)){alert('Kripya 6-digit Pincode dalein! 🌸');return null;}
-      localStorage.setItem(getSavedAddressKey(),JSON.stringify({name,phone,addr,city,pin}));
-      return {name,phone,addr,city,pin};
+    function changeCartQty(id,delta){
+      const item=shoppingCart.find(i=>String(i.id)===String(id)); if(!item) return;
+      item.qty=Math.max(1,Math.min(20,(item.qty||1)+delta)); saveCart(); renderCart();
     }
-    function placeCartOrder(){
-      if(!shoppingCart.length) return;
-      const address=validateCartAddress(); if(!address) return;
-      const btn=document.getElementById('btnCartPlace'); btn.disabled=true; btn.innerText='Placing Cart Order...';
-      const batchId='MWT-B'+Math.floor(10000+Math.random()*90000), now=Date.now(), addressText=`${address.addr}, ${address.city} - ${address.pin}`;
-      let total=0;
-      const orders=shoppingCart.map((i,idx)=>{const line=i.price*(i.qty||1);total+=line;return {productId:i.id,orderId:batchId+'-'+(idx+1),batchOrderId:batchId,title:i.title,img:i.img,code:i.code,price:line,unitPrice:i.price,qty:i.qty||1,size:i.size,email:currentUserEmail,name:address.name,phone:address.phone,address:addressText,date:new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}),timestamp:now+idx,status:'active'};});
+    function removeFromCart(id){ shoppingCart=shoppingCart.filter(i=>String(i.id)!==String(id)); saveCart(); renderCart(); }
+    function getSavedAddressKey(){ return currentUserEmail ? 'mwt_saved_address_'+sanitizeEmailKey(currentUserEmail) : 'mwt_saved_address_guest'; }
+    function getSavedCartAddresses(){
+      const raw=localStorage.getItem(getSavedAddressKey());
+      if(!raw) return [];
+      try{ const a=JSON.parse(raw); return a && a.name ? [a] : []; }catch(e){ return []; }
+    }
+    function addressLabel(a){ return `${a.name}, ${a.phone}`; }
+    function addressText(a){ return `${a.addr}, ${a.city} - ${a.pin}`; }
+    function renderSavedAddresses(){
+      const box=document.getElementById('savedAddressesList'); if(!box) return;
+      const arr=getSavedCartAddresses();
+      if(!arr.length){ box.innerHTML='<div style="font-size:11px;color:var(--muted);padding:8px 0 12px;">No saved address yet. Add a new address below. 📍</div>'; selectedCartAddress=null; return; }
+      if(!selectedCartAddress) selectedCartAddress=arr[0];
+      box.innerHTML=arr.map((a,idx)=>`<div class="address-card ${selectedCartAddress && addressText(selectedCartAddress)===addressText(a)?'selected':''}" onclick="selectSavedCartAddress(${idx})"><div class="radio"></div><div class="address-label">${idx===0?'HOME':'ADDRESS'} · ${addressLabel(a)}</div><div class="address-text">${addressText(a)}</div></div>`).join('');
+    }
+    function selectSavedCartAddress(idx){ const arr=getSavedCartAddresses(); selectedCartAddress=arr[idx]||null; renderSavedAddresses(); }
+    function showNewCartAddress(){
+      const b=document.getElementById('newAddressBox');
+      const box=document.getElementById('newCartAddressBox'); if(box) box.style.display='block';
+      if(box) box.scrollIntoView({behavior:'smooth',block:'start'});
+    }
+    function saveNewCartAddress(){
+      if(!currentUserEmail){ alert('⚠️ Pehle Google Login karein! 🌸'); openAccountPage(); return; }
+      const name=document.getElementById('cartNameNew').value.trim(), phone=document.getElementById('cartPhoneNew').value.trim(), addr=document.getElementById('cartAddrNew').value.trim(), city=document.getElementById('cartCityNew').value.trim(), pin=document.getElementById('cartPinNew').value.trim();
+      if(!name||!/^[6-9]\d{9}$/.test(phone)||!addr||!city||!/^[0-9]{6}$/.test(pin)){ alert('Kripya sabhi address details sahi se fill karein! 🌸'); return; }
+      selectedCartAddress={name,phone,addr,city,pin};
+      localStorage.setItem(getSavedAddressKey(),JSON.stringify(selectedCartAddress));
+      renderSavedAddresses();
+      cartGoStep(3);
+    }
+    function continueWithSelectedCartAddress(){
+      if(!selectedCartAddress){ alert('Kripya delivery address select karein! 📍'); return; }
+      cartGoStep(3);
+    }
+    function renderCartBilling(){
+      let total=0; const items=document.getElementById('cartBillingItems');
+      if(items) items.innerHTML=shoppingCart.map(i=>{const line=i.price*(i.qty||1);total+=line;return `<div style="display:flex;justify-content:space-between;gap:8px;font-size:12px;margin-bottom:8px;"><span>${i.title} × ${i.qty||1}</span><b>₹${line}</b></div>`;}).join('');
+      document.getElementById('newCartItemsTotal').innerText='₹'+total;
+      document.getElementById('newCartGrandTotal').innerText='₹'+total;
+      const a=document.getElementById('selectedCartAddressBox'); if(a&&selectedCartAddress) a.innerHTML=`<div class="address-label">Delivering To · ${addressLabel(selectedCartAddress)}</div><div class="address-text">${addressText(selectedCartAddress)}</div>`;
+    }
+    function renderCartFinal(){
+      let total=0; const items=document.getElementById('cartFinalItems');
+      if(items) items.innerHTML=shoppingCart.map(i=>{const line=i.price*(i.qty||1);total+=line;return `<div style="display:flex;justify-content:space-between;gap:8px;font-size:12px;margin-bottom:8px;"><span>${i.title} × ${i.qty||1}</span><b>₹${line}</b></div>`;}).join('');
+      document.getElementById('cartFinalTotal').innerText='₹'+total+' (COD)';
+      const a=document.getElementById('cartFinalAddress'); if(a&&selectedCartAddress) a.innerHTML=`<div class="address-label">Delivery Address · ${addressLabel(selectedCartAddress)}</div><div class="address-text">${addressText(selectedCartAddress)}</div>`;
+    }
+    function placeCartOrderNew(){
+      if(!shoppingCart.length || !selectedCartAddress) return;
+      const btn=document.getElementById('btnCartPlaceNew'); btn.disabled=true; btn.innerText='Placing Order...';
+      const address=selectedCartAddress, batchId='MWT-B'+Math.floor(10000+Math.random()*90000), now=Date.now(), addressStr=addressText(address); let total=0;
+      const orders=shoppingCart.map((i,idx)=>{const line=i.price*(i.qty||1);total+=line;return {productId:i.id,orderId:batchId+'-'+(idx+1),batchOrderId:batchId,title:i.title,img:i.img,code:i.code,price:line,unitPrice:i.price,qty:i.qty||1,size:i.size,email:currentUserEmail,name:address.name,phone:address.phone,address:addressStr,date:new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}),timestamp:now+idx,status:'active'};});
       orders.forEach(o=>saveOrderToFirebase(o));
       const lines=orders.map(o=>`• ${o.title} | Code: ${o.code||'-'} | Qty: ${o.qty} | ₹${o.price}\n  🖼️ ${o.img}`).join('\n');
-      const tg=`🛒 *NEW CART ORDER!* 🛒\n\n🆔 *Cart Order:* #${batchId}\n📦 *Items:* ${orders.length}\n💰 *TOTAL:* ₹${total} (COD)\n\n${lines}\n\n👤 *Customer:* ${address.name}\n📧 *Google Email:* ${currentUserEmail}\n📞 *Mobile:* ${address.phone}\n📍 *Address:* ${addressText}`;
+      const tg=`🛒 *NEW CART ORDER!* 🛒\n\n🆔 *Cart Order:* #${batchId}\n📦 *Items:* ${orders.length}\n💰 *TOTAL:* ₹${total} (COD)\n\n${lines}\n\n👤 *Customer:* ${address.name}\n📧 *Google Email:* ${currentUserEmail}\n📞 *Mobile:* ${address.phone}\n📍 *Address:* ${addressStr}`;
       fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:TG_CHAT,text:tg})}).catch(()=>{});
-      shoppingCart=[]; saveCart(); btn.disabled=false; btn.innerText='Place Cart Order (COD) 🛍️';
+      shoppingCart=[]; saveCart();
+      btn.disabled=false; btn.innerText='Place Order (COD) 🛍️';
       alert(`Order successfully placed! 🎉\nCart Order #${batchId}\nTotal: ₹${total}`);
       location.hash='orders';
     }
@@ -1070,6 +1191,7 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
       let pModal = document.getElementById('productModal');
       let cModal = document.getElementById('checkoutModal');
       let cartModal = document.getElementById('cartModal');
+      let cartPage = document.getElementById('cartPage');
       let oPage = document.getElementById('ordersPage');
       let aPage = document.getElementById('accountPage');
       let wPage = document.getElementById('waitlistPage');
@@ -1078,6 +1200,7 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
       pModal.style.display = 'none';
       cModal.style.display = 'none';
       if(cartModal) cartModal.style.display = 'none';
+      if(cartPage) cartPage.style.display = 'none';
       oPage.style.display = 'none';
       aPage.style.display = 'none';
       wPage.style.display = 'none';
@@ -1092,8 +1215,9 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
       if(!hash) return;
 
       if(hash === 'cart'){
-        renderCart();
-        if(cartModal) cartModal.style.display = 'flex';
+        if(!shoppingCart.length){ renderCart(); }
+        else { cartPageStepNo=1; selectedCartAddress=null; renderCart(); }
+        if(cartPage) cartPage.style.display = 'block';
         return;
       }
 

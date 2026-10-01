@@ -163,8 +163,8 @@
 .cart-billing .bill-row:last-child{margin-bottom:0;}
 .cart-page-note{font-size:11px;color:var(--muted);margin:-4px 0 12px;}
 
-    .dash-stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:14px;}
-    .dash-stat-box{background:#fff9fb;border:1px solid var(--border);border-radius:14px;padding:12px;text-align:center;}
+    .dash-stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px;}
+    .dash-stat-box{background:#fff9fb;border:1px solid var(--border);border-radius:14px;padding:10px;text-align:center;}
 
     .recent-popup{position:fixed;bottom:20px;left:14px;background:#fff;border:1.5px solid var(--border);border-radius:14px;padding:9px 12px;display:flex;align-items:center;gap:10px;box-shadow:0 8px 24px rgba(255,77,136,0.2);z-index:2500;max-width:320px;transform:translateY(120px);opacity:0;transition:all 0.5s ease;text-align:left;pointer-events:none;}
     .recent-popup.show{transform:translateY(0);opacity:1;}
@@ -256,9 +256,14 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
 .hero-actions{display:flex;gap:8px;margin-top:15px;flex-wrap:wrap;}
 .hero-shop-btn{border:0;border-radius:999px;background:#ff4d88;color:#fff;padding:11px 18px;font-weight:800;font-size:12px;cursor:pointer;box-shadow:0 7px 18px rgba(255,77,136,.25);}
 .hero-note{border-radius:999px;padding:10px 14px;background:#fff;color:#2d1e2f;border:1px solid #ffd1dc;font-size:11px;font-weight:800;}
+
+/* 4 BOXES ON MAIN SCREEN */
 .store-trust{max-width:1100px;margin:0 auto 15px;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
-.trust-item{background:#fff;border:1px solid #f3d8e0;border-radius:16px;padding:11px 8px;text-align:center;box-shadow:0 4px 14px rgba(45,30,47,.045);}
+.trust-item{background:#fff;border:1px solid #f3d8e0;border-radius:16px;padding:11px 8px;text-align:center;box-shadow:0 4px 14px rgba(45,30,47,.045);cursor:pointer;transition:transform 0.15s ease;}
+.trust-item:active{transform:scale(0.96);}
 .trust-item b{display:block;font-size:11px;margin-top:4px}.trust-item span{font-size:18px}.trust-item small{display:block;color:#8a7a85;font-size:9px;margin-top:2px;font-weight:600;}
+@media(max-width:600px){ .store-trust{grid-template-columns:repeat(2,1fr);} }
+
 .voice-btn{border-radius:999px!important;box-shadow:0 6px 16px rgba(255,46,99,.16);}
 .top-search-row{max-width:700px!important;}
 .search-input{box-shadow:0 5px 18px rgba(45,30,47,.05);}
@@ -333,7 +338,7 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
       <h1 class="brand-title"><span style="cursor:pointer;" onclick="triggerSecretDiscount()" title="Special Gift">🎀</span> Meri Wali Trends <span>🐱</span>✨</h1>
       <div class="h-actions">
         <button class="btn-header" id="btnHeaderAccount" onclick="openAccountPage()">👤 Login</button>
-         </div>
+      </div>
     </div>
     <p style="font-size:12px; color:var(--muted); text-align:left; font-weight:600;">Babu ki har demand yahan poori hoti hai 🐾💖</p>
   </header>
@@ -346,7 +351,11 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
     <div class="hero-actions"><button class="hero-shop-btn" onclick="document.getElementById('productGrid').scrollIntoView({behavior:'smooth'});">Shop Collection →</button><span class="hero-note">💵 Cash on Delivery Available</span></div>
   </section>
 
+  <!-- 4 BOXES ON MAIN SCREEN (Refer & Earn Included) -->
   <section class="store-trust">
+    <div class="trust-item" style="border-color:var(--pink);background:#fff0f5;" onclick="triggerHomeReferralShare()">
+      <span>🎁</span><b style="color:var(--pink);">Refer &amp; Earn</b><small style="color:var(--pink);font-weight:700;">Get ₹100 Free</small>
+    </div>
     <div class="trust-item"><span>🚚</span><b>Easy Ordering</b><small>Simple checkout</small></div>
     <div class="trust-item"><span>🔒</span><b>Secure Login</b><small>Google verified</small></div>
     <div class="trust-item"><span>💵</span><b>COD Available</b><small>Pay on delivery</small></div>
@@ -507,8 +516,21 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
       <div class="cart-page-step" id="cartPageStep3">
         <div class="cart-billing">
           <h3 style="font-size:15px;margin-bottom:12px;">Order Summary & Billing 💰</h3>
+          
+          <!-- Referral Wallet Coupon Option -->
+          <div id="walletRedeemBox" style="background:#fff0f5;border:1.5px dashed var(--pink);border-radius:12px;padding:12px;margin-bottom:12px;display:none;text-align:left;">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <div>
+                <b style="color:var(--pink);font-size:12.5px;">🎁 Referral Wallet: <span id="cartWalletAvailAmt">₹0</span></b>
+                <div style="font-size:10.5px;color:var(--muted);margin-top:2px;">Use ₹100 flat discount from your balance</div>
+              </div>
+              <button id="btnToggleWalletCoupon" onclick="toggleWalletCoupon()" style="background:var(--pink);color:#fff;border:0;padding:6px 12px;border-radius:8px;font-weight:800;font-size:11px;cursor:pointer;">Apply ₹100</button>
+            </div>
+          </div>
+
           <div id="cartBillingItems"></div>
           <div class="bill-row"><span>Items Total</span><span id="newCartItemsTotal">₹0</span></div>
+          <div class="bill-row" id="walletDiscountRow" style="display:none;color:var(--green);"><span>Wallet Referral Coupon</span><span id="newCartWalletDisc">-₹100</span></div>
           <div class="bill-row"><span>Delivery</span><span style="color:var(--green);">FREE 🚚</span></div>
           <div class="bill-row total"><span>Total Payable (COD)</span><span id="newCartGrandTotal" style="color:var(--pink);">₹0</span></div>
         </div>
@@ -602,7 +624,7 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
     <div id="dashLoginView" class="profile-card" style="display:none; text-align:center; padding:28px 18px;">
       <div style="font-size:38px; margin-bottom:8px;">🎀</div>
       <h3 style="font-size:17px; color:var(--text); margin-bottom:4px;">Verified Customer Login</h3>
-      <p style="font-size:12px; color:var(--muted); margin-bottom:20px;">Apne phone ki Google ID se secure 1-tap login karein taaki sirf aap apne orders aur waitlist dekh sakein</p>
+      <p style="font-size:12px; color:var(--muted); margin-bottom:20px;">Apne phone ki Google ID se secure 1-tap login karein taaki sirf aap apne orders, wallet aur waitlist dekh sakein</p>
       <button class="btn-google" id="btnGoogleAuth" type="button" onclick="loginWithGoogle(false)">
         <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
         <span>Continue with Google</span>
@@ -619,11 +641,30 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
           </div>
           <button style="background:#ffebee; color:var(--red); border:1px solid #ffcdd2; padding:5px 12px; border-radius:8px; font-size:11.5px; font-weight:700; cursor:pointer;" onclick="handleDashboardLogout()">Logout</button>
         </div>
-        <div class="dash-stat-grid">
-          <div class="dash-stat-box"><div style="font-size:18px; font-weight:800; color:var(--pink);" id="dashTotalOrders">0</div><div style="font-size:11px; color:var(--muted); font-weight:700; margin-top:2px;">Total Orders</div></div>
-          <div class="dash-stat-box"><div style="font-size:18px; font-weight:800; color:var(--green);">🛍️</div><div style="font-size:11px; color:var(--muted); font-weight:700; margin-top:2px;">Happy Shopping</div></div>
+
+        <!-- WALLET & REFERRAL BOX DIRECTLY UNDER GOOGLE ID -->
+        <div style="background:#fff0f5;border:1.5px solid var(--border);border-radius:16px;padding:14px;margin-top:14px;text-align:left;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <b style="color:var(--pink);font-size:13px;">🎁 Refer &amp; Earn Wallet</b>
+            <span style="font-size:10px;background:#fff;padding:2px 8px;border-radius:999px;border:1px solid var(--border);color:var(--pink);font-weight:800;">₹100 / Friend</span>
+          </div>
+          <div class="dash-stat-grid">
+            <div class="dash-stat-box"><div style="font-size:16px; font-weight:800; color:var(--green);" id="dashWalletAvailable">₹0</div><div style="font-size:10px; color:var(--muted); font-weight:700; margin-top:2px;">Available Balance</div></div>
+            <div class="dash-stat-box"><div style="font-size:16px; font-weight:800; color:var(--pink);" id="dashWalletPending">₹0</div><div style="font-size:10px; color:var(--muted); font-weight:700; margin-top:2px;">Pending (Delivery Par)</div></div>
+            <div class="dash-stat-box"><div style="font-size:16px; font-weight:800; color:var(--text);" id="dashTotalOrders">0</div><div style="font-size:10px; color:var(--muted); font-weight:700; margin-top:2px;">Total Orders</div></div>
+          </div>
+          <div style="margin-top:12px;">
+            <label style="font-size:10.5px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px;">Aapka Unique Referral Link:</label>
+            <div style="display:flex;gap:6px;">
+              <input type="text" id="dashReferralLinkInput" readonly style="flex:1;padding:8px 10px;border:1px solid var(--border);border-radius:8px;font-size:11px;background:#fff;color:var(--text);outline:none;">
+              <button onclick="copyReferralLink()" style="background:var(--pink);color:#fff;border:0;padding:8px 12px;border-radius:8px;font-weight:800;font-size:11px;cursor:pointer;">Copy</button>
+              <button onclick="shareReferralWhatsApp()" style="background:#25D366;color:#fff;border:0;padding:8px 12px;border-radius:8px;font-weight:800;font-size:11px;cursor:pointer;">WhatsApp</button>
+            </div>
+            <small style="font-size:9.5px;color:var(--muted);display:block;margin-top:5px;">* Friend ke sign-up karte hi ₹100 Pending ho jayenge, aur uska parcel deliver hone par Available Balance mein add ho jayenge!</small>
+          </div>
         </div>
       </div>
+
       <div class="account-nav">
         <button onclick="openMyOrdersPage()">📦 My Orders</button>
         <button onclick="openWaitlistPage()">♡ Wishlist</button>
@@ -743,7 +784,17 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
     let userWaitlist = {};
     let latestLoadedOrders = [];
     let isSpecialSecretActive = false;
+    let userWallet = { available: 0, pending: 0 };
+    let isWalletCouponApplied = false;
     const vAudio = new Audio("site.mp3");
+
+    // LOGIC: अगर यूजर के पास वॉलेट बैलेंस है तो +₹100 जोड़कर दिखाओ
+    function getAdjustedPrice(basePn) {
+      if (userWallet && userWallet.available > 0) {
+        return basePn + 100;
+      }
+      return basePn;
+    }
 
     function triggerSecretDiscount() {
       if(!currentUserEmail){
@@ -852,12 +903,13 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
         if(matchesCategory && matchesSearch){
           foundCount++;
           let firstImg = Array.isArray(x.i) ? x.i[0] : x.i;
-          let displayPriceNum = x.pn;
-          let displayPriceStr = x.p;
+          let basePn = getAdjustedPrice(x.pn);
+          let displayPriceNum = basePn;
+          let displayPriceStr = `₹${basePn}`;
 
           if (isSpecialSecretActive) {
             displayPriceNum = Math.round(x.pn * 0.05);
-            displayPriceStr = `₹${displayPriceNum} <span style="font-size:10px; color:var(--green); text-decoration:line-through;">${x.p}</span> <span style="font-size:10px; color:var(--red); font-weight:800;">95% OFF! 💖</span>`;
+            displayPriceStr = `₹${displayPriceNum} <span style="font-size:10px; color:var(--green); text-decoration:line-through;">₹${basePn}</span> <span style="font-size:10px; color:var(--red); font-weight:800;">95% OFF! 💖</span>`;
           }
 
           let sizeHtml = '';
@@ -1005,7 +1057,7 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
       const directItem = {
         id:x.id,
         title:x.t,
-        price:x.pn,
+        price:getAdjustedPrice(x.pn),
         img:Array.isArray(x.i)?x.i[0]:x.i,
         code:x.cd,
         qty:selQty || 1,
@@ -1063,6 +1115,7 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
       sessionStorage.removeItem('mwt_order_completed_at');
       selectedCartAddress = null;
       cartPageStepNo = 1;
+      isWalletCouponApplied = false;
       if(!(directOrderMode || sessionStorage.getItem('mwt_direct_order_mode') === '1')){
         directOrderMode = false;
       }
@@ -1136,10 +1189,11 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
     function addCurrentProductToCart(){
       if(!currId) return;
       const x=getProdById(currId); if(!x) return;
+      const finalPrice = getAdjustedPrice(x.pn);
       const existing=shoppingCart.find(i=>String(i.id)===String(currId));
       if(existing){ existing.qty=Math.min(20,(existing.qty||1)+1); }
       else {
-        shoppingCart.push({id:x.id,title:x.t,price:x.pn,img:Array.isArray(x.i)?x.i[0]:x.i,code:x.cd,qty:1,size:(x.s&&x.s.length)?x.s[0]:'Free Size'});
+        shoppingCart.push({id:x.id,title:x.t,price:finalPrice,img:Array.isArray(x.i)?x.i[0]:x.i,code:x.cd,qty:1,size:(x.s&&x.s.length)?x.s[0]:'Free Size'});
       }
       saveCart();
       alert('Product cart me add ho gaya! 🛒✨');
@@ -1213,6 +1267,16 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
       if(!selectedCartAddress){ alert('Kripya delivery address select karein! 📍'); return; }
       cartGoStep(3);
     }
+
+    function toggleWalletCoupon(){
+      if(userWallet.available < 100){
+        alert("Wallet mein minimum ₹100 hone chahiye coupon apply karne ke liye!");
+        return;
+      }
+      isWalletCouponApplied = !isWalletCouponApplied;
+      renderCartBilling();
+    }
+
     function renderCartBilling(){
       let total=0; const items=document.getElementById('cartBillingItems');
       if(items) items.innerHTML=shoppingCart.map(i=>{
@@ -1221,10 +1285,37 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
         const off=isSpecialSecretActive ? ` <span style="color:var(--red);font-size:10px;font-weight:800;">95% OFF 💖</span>` : '';
         return `<div style="display:flex;justify-content:space-between;gap:8px;font-size:12px;margin-bottom:8px;"><span>${i.title} × ${i.qty||1}${off}</span><b>₹${line}</b></div>`;
       }).join('');
+
+      let walletBox = document.getElementById('walletRedeemBox');
+      let discRow = document.getElementById('walletDiscountRow');
+      let availAmtSpan = document.getElementById('cartWalletAvailAmt');
+      let toggleBtn = document.getElementById('btnToggleWalletCoupon');
+
+      if(userWallet.available > 0){
+        if(walletBox) walletBox.style.display = 'block';
+        if(availAmtSpan) availAmtSpan.innerText = `₹${userWallet.available}`;
+        if(toggleBtn) {
+          toggleBtn.innerText = isWalletCouponApplied ? 'Remove' : 'Apply ₹100';
+          toggleBtn.style.background = isWalletCouponApplied ? 'var(--green)' : 'var(--pink)';
+        }
+      } else {
+        if(walletBox) walletBox.style.display = 'none';
+        isWalletCouponApplied = false;
+      }
+
+      let finalPayable = total;
+      if(isWalletCouponApplied && userWallet.available >= 100){
+        if(discRow) discRow.style.display = 'flex';
+        finalPayable = Math.max(0, total - 100);
+      } else {
+        if(discRow) discRow.style.display = 'none';
+      }
+
       document.getElementById('newCartItemsTotal').innerText='₹'+total;
-      document.getElementById('newCartGrandTotal').innerText='₹'+total;
+      document.getElementById('newCartGrandTotal').innerText='₹'+finalPayable;
       const a=document.getElementById('selectedCartAddressBox'); if(a&&selectedCartAddress) a.innerHTML=`<div class="address-label">Delivering To · ${addressLabel(selectedCartAddress)}</div><div class="address-text">${addressText(selectedCartAddress)}</div>`;
     }
+
     function renderCartFinal(){
       let total=0; const items=document.getElementById('cartFinalItems');
       if(items) items.innerHTML=shoppingCart.map(i=>{
@@ -1232,9 +1323,12 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
         const line=unit*(i.qty||1); total+=line;
         return `<div style="display:flex;justify-content:space-between;gap:8px;font-size:12px;margin-bottom:8px;"><span>${i.title} × ${i.qty||1}</span><b>₹${line}</b></div>`;
       }).join('');
-      document.getElementById('cartFinalTotal').innerText='₹'+total+' (COD)'+(isSpecialSecretActive?' · 95% OFF 💖':'');
+
+      let finalPayable = isWalletCouponApplied ? Math.max(0, total - 100) : total;
+      document.getElementById('cartFinalTotal').innerText='₹'+finalPayable+' (COD)'+(isSpecialSecretActive?' · 95% OFF 💖':'');
       const a=document.getElementById('cartFinalAddress'); if(a&&selectedCartAddress) a.innerHTML=`<div class="address-label">Delivery Address · ${addressLabel(selectedCartAddress)}</div><div class="address-text">${addressText(selectedCartAddress)}</div>`;
     }
+
     async function placeCartOrderNew(){
       if(!shoppingCart.length || !selectedCartAddress) return;
       const btn=document.getElementById('btnCartPlaceNew');
@@ -1250,15 +1344,49 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
 
       const offerWasActive=isSpecialSecretActive;
       const address=selectedCartAddress, batchId='MWT-B'+Math.floor(10000+Math.random()*90000), now=Date.now(), addressStr=addressText(address); let total=0;
+      
+      let referredBy = localStorage.getItem('mwt_referred_by') || "";
+
+      // Deduct ₹100 from wallet if used
+      if(isWalletCouponApplied && userWallet.available >= 100){
+        userWallet.available -= 100;
+        updateUserWalletInCloud(currentUserEmail, userWallet);
+      }
+
       const orders=shoppingCart.map((i,idx)=>{
         const unitPrice=offerWasActive ? Math.round(i.price*0.05) : i.price;
         const line=unitPrice*(i.qty||1); total+=line;
-        return {productId:i.id,orderId:batchId+'-'+(idx+1),batchOrderId:batchId,title:i.title,img:i.img,code:i.code,price:line,unitPrice:unitPrice,originalPrice:i.price,discountApplied:offerWasActive?'95% OFF':null,qty:i.qty||1,size:i.size,email:currentUserEmail,name:address.name,phone:address.phone,address:addressStr,date:new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}),timestamp:now+idx,status:'active'};
+        return {
+          productId:i.id,
+          orderId:batchId+'-'+(idx+1),
+          batchOrderId:batchId,
+          title:i.title,
+          img:i.img,
+          code:i.code,
+          price:line,
+          unitPrice:unitPrice,
+          originalPrice:i.price,
+          discountApplied:offerWasActive?'95% OFF':(isWalletCouponApplied?'₹100 Referral Disc':null),
+          qty:i.qty||1,
+          size:i.size,
+          email:currentUserEmail,
+          name:address.name,
+          phone:address.phone,
+          address:addressStr,
+          date:new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}),
+          timestamp:now+idx,
+          status:'active',
+          referredBy: referredBy,
+          referralRewardUnlocked: false
+        };
       });
 
       orders.forEach(o=>saveOrderToFirebase(o));
-      const lines=orders.map(o=>`• ${o.title} | Code: ${o.code||'-'} | Qty: ${o.qty} | ₹${o.price}${o.discountApplied?' [95% OFF CODE APPLIED]':''}\n  🖼️ ${o.img}`).join('\n');
-      const tg=`🛒 *NEW CART ORDER!* 🛒\n\n🆔 *Cart Order:* #${batchId}\n📦 *Items:* ${orders.length}\n💰 *TOTAL:* ₹${total} (COD)${offerWasActive?' [95% OFF CODE APPLIED]':''}\n\n${lines}\n\n👤 *Customer:* ${address.name}\n📧 *Google Email:* ${currentUserEmail}\n📞 *Mobile:* ${address.phone}\n📍 *Address:* ${addressStr}`;
+
+      let finalAmount = isWalletCouponApplied ? Math.max(0, total - 100) : total;
+
+      const lines=orders.map(o=>`• ${o.title} | Code: ${o.code||'-'} | Qty: ${o.qty} | ₹${o.price}${o.discountApplied?(' ['+o.discountApplied+']'):''}\n  🖼️ ${o.img}`).join('\n');
+      const tg=`🛒 *NEW CART ORDER!* 🛒\n\n🆔 *Cart Order:* #${batchId}\n📦 *Items:* ${orders.length}\n💰 *TOTAL:* ₹${finalAmount} (COD)${offerWasActive?' [95% OFF CODE APPLIED]':''}${isWalletCouponApplied?' [₹100 WALLET DISC]':''}\n\n${lines}\n\n👤 *Customer:* ${address.name}\n📧 *Google Email:* ${currentUserEmail}\n📞 *Mobile:* ${address.phone}\n📍 *Address:* ${addressStr}`;
       fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:TG_CHAT,text:tg})}).catch(()=>{});
 
       shoppingCart=[];
@@ -1270,10 +1398,11 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
       saveCart();
 
       isSpecialSecretActive=false;
+      isWalletCouponApplied=false;
       renderGrid();
 
       btn.disabled=false; btn.innerText='Place Order (COD) 🛍️';
-      showOrderSuccessAnimation(batchId,total);
+      showOrderSuccessAnimation(batchId,finalAmount);
     }
 
     function updateCheckoutEmailState(){
@@ -1448,6 +1577,120 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
       });
     }
 
+    // CHECK AND UNLOCK REFERRAL REWARD ON SUCCESSFUL DELIVERY
+    function checkAndUnlockReferralRewards(userEmail) {
+      if (!fbDb || !userEmail) return;
+      const eKey = sanitizeEmailKey(userEmail);
+
+      fbDb.ref('orders/' + eKey).once('value').then(snapshot => {
+        const orders = snapshot.val();
+        if (!orders) return;
+
+        Object.keys(orders).forEach(orderId => {
+          const order = orders[orderId];
+          const diffDays = (Date.now() - (order.timestamp || Date.now())) / (1000 * 60 * 60 * 24);
+
+          const isDelivered = (order.status === "delivered" || diffDays >= 7);
+
+          if (isDelivered && order.referredBy && !order.referralRewardUnlocked) {
+            const referrerKey = sanitizeEmailKey(order.referredBy);
+
+            fbDb.ref('users/' + referrerKey + '/wallet').transaction(wallet => {
+              if (!wallet) wallet = { available: 0, pending: 0 };
+              wallet.pending = Math.max(0, (wallet.pending || 0) - 100);
+              wallet.available = (wallet.available || 0) + 100;
+              return wallet;
+            }, (error, committed) => {
+              if (committed) {
+                fbDb.ref('orders/' + eKey + '/' + orderId).update({
+                  referralRewardUnlocked: true,
+                  status: "delivered"
+                });
+              }
+            });
+          }
+        });
+      });
+    }
+
+    function syncUserWalletCloud(email, callback){
+      if(!fbDb || !email) { if(callback) callback(); return; }
+      let eKey = sanitizeEmailKey(email);
+      fbDb.ref('users/' + eKey + '/wallet').once('value').then(snap => {
+        let val = snap.val();
+        if(val) {
+          userWallet = { available: val.available || 0, pending: val.pending || 0 };
+        } else {
+          userWallet = { available: 0, pending: 0 };
+          fbDb.ref('users/' + eKey + '/wallet').set(userWallet);
+        }
+        updateDashboardWalletUI();
+        renderGrid();
+        if(callback) callback();
+      }).catch(()=>{ if(callback) callback(); });
+    }
+
+    function updateUserWalletInCloud(email, walletObj){
+      if(!fbDb || !email) return;
+      let eKey = sanitizeEmailKey(email);
+      fbDb.ref('users/' + eKey + '/wallet').set(walletObj);
+      updateDashboardWalletUI();
+      renderGrid();
+    }
+
+    function updateDashboardWalletUI(){
+      let avEl = document.getElementById('dashWalletAvailable');
+      let peEl = document.getElementById('dashWalletPending');
+      if(avEl) avEl.innerText = `₹${userWallet.available}`;
+      if(peEl) peEl.innerText = `₹${userWallet.pending}`;
+      let refInput = document.getElementById('dashReferralLinkInput');
+      if(refInput && currentUserEmail) {
+        let code = sanitizeEmailKey(currentUserEmail);
+        refInput.value = `${window.location.origin}${window.location.pathname}?ref=${code}`;
+      }
+    }
+
+    function getReferralLink(){
+      if(!currentUserEmail) return "";
+      let code = sanitizeEmailKey(currentUserEmail);
+      return `${window.location.origin}${window.location.pathname}?ref=${code}`;
+    }
+
+    function copyReferralLink(){
+      let link = getReferralLink();
+      if(!link){
+        alert("⚠️ Pehle Login karein taaki aapka referral code ban sake!");
+        openAccountPage();
+        return;
+      }
+      navigator.clipboard.writeText(link);
+      alert("Referral link copy ho gaya! 📋✨ Dosto ke sath share karein!");
+    }
+
+    function shareReferralWhatsApp(){
+      let link = getReferralLink();
+      if(!link){
+        alert("⚠️ Pehle Login karein taaki aapka referral code ban sake!");
+        openAccountPage();
+        return;
+      }
+      let text = encodeURIComponent(`Hey! Meri Wali Trends par shopping karo aur paao ₹100 Flat Discount! 🎀✨\nMere link se click karke sign-up karo:\n${link}`);
+      window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
+    }
+
+    function triggerHomeReferralShare(){
+      if(!currentUserEmail){
+        alert("🎁 Refer & Earn se ₹100 paane ke liye pehle Login karein! 🌸");
+        openAccountPage();
+        return;
+      }
+      openAccountPage();
+      setTimeout(()=>{
+        let el = document.getElementById('dashReferralLinkInput');
+        if(el) el.scrollIntoView({behavior:'smooth'});
+      },300);
+    }
+
     function handleRoute(){
       let hash = window.location.hash.replace('#', '').trim();
 
@@ -1527,6 +1770,8 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
         aPage.style.display = 'block';
         if(currentUserEmail){
           syncUserOrdersCloud(currentUserEmail);
+          syncUserWalletCloud(currentUserEmail);
+          checkAndUnlockReferralRewards(currentUserEmail);
         } else {
           renderAccountDashboard([]);
         }
@@ -1561,11 +1806,12 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
           setupSlider(x.i);
           document.getElementById('mTitle').innerText = x.t;
           
-          let modalPriceNum = x.pn;
-          let modalPriceStr = x.p;
+          let basePn = getAdjustedPrice(x.pn);
+          let modalPriceNum = basePn;
+          let modalPriceStr = `₹${basePn}`;
           if(isSpecialSecretActive){
             modalPriceNum = Math.round(x.pn * 0.05);
-            modalPriceStr = `₹${modalPriceNum} <span style="font-size:11px; color:var(--green); text-decoration:line-through;">${x.p}</span> <span style="font-size:11px; color:var(--red); font-weight:800;">95% OFF! 💖</span>`;
+            modalPriceStr = `₹${modalPriceNum} <span style="font-size:11px; color:var(--green); text-decoration:line-through;">₹${basePn}</span> <span style="font-size:11px; color:var(--red); font-weight:800;">95% OFF! 💖</span>`;
           }
           document.getElementById('mPrice').innerHTML = modalPriceStr;
 
@@ -1592,7 +1838,7 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
             sessionStorage.setItem('mwt_cart_backup', JSON.stringify(shoppingCart));
             sessionStorage.setItem('mwt_direct_order_mode','1');
             directOrderMode = true;
-            shoppingCart = [{id:x.id,title:x.t,price:x.pn,img:Array.isArray(x.i)?x.i[0]:x.i,code:x.cd,qty:oldQty,size:oldSize}];
+            shoppingCart = [{id:x.id,title:x.t,price:getAdjustedPrice(x.pn),img:Array.isArray(x.i)?x.i[0]:x.i,code:x.cd,qty:oldQty,size:oldSize}];
             saveCart();
             selectedCartAddress = null;
             cartPageStepNo = 1;
@@ -1619,14 +1865,14 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
             document.getElementById('stepBar').style.display = 'none';
           }
 
-          let effectivePn = isSpecialSecretActive ? Math.round(x.pn * 0.05) : x.pn;
+          let effectivePn = isSpecialSecretActive ? Math.round(x.pn * 0.05) : getAdjustedPrice(x.pn);
           let tot = effectivePn * selQty;
 
           if(step === 1){
             let firstImg = Array.isArray(x.i) ? x.i[0] : x.i;
             document.getElementById('cMiniImg1').src = firstImg; 
             document.getElementById('cMiniTitle1').innerText = x.t;
-            document.getElementById('cMiniPrice1').innerText = isSpecialSecretActive ? `₹${effectivePn} (95% OFF)` : x.p;
+            document.getElementById('cMiniPrice1').innerText = isSpecialSecretActive ? `₹${effectivePn} (95% OFF)` : `₹${effectivePn}`;
 
             let sBox = document.getElementById('cSizeBox'), sOpts = document.getElementById('cSizeOpts');
             sOpts.innerHTML = '';
@@ -1732,7 +1978,7 @@ ${shareData.url}`);
 Mujhe gift kar do na please 👉👈✨
 
 Item: ${x.t}
-Price: ${x.p}
+Price: ₹${getAdjustedPrice(x.pn)}
 Direct Link: ${productDirectLink}`);
       window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
     }
@@ -1742,7 +1988,7 @@ Direct Link: ${productDirectLink}`);
       if(!x) return;
       let baseUrl = window.location.origin + window.location.pathname;
       let productDirectLink = `${baseUrl}#product-${currId}`;
-      let hintText = `सुनो ना! Meri Wali Trends pe ye dekho kitna pyara hai 🥺🎀\nItem: ${x.t}\nPrice: ${x.p}\nLink: ${productDirectLink}`;
+      let hintText = `सुनो ना! Meri Wali Trends pe ye dekho kitna pyara hai 🥺🎀\nItem: ${x.t}\nPrice: ₹${getAdjustedPrice(x.pn)}\nLink: ${productDirectLink}`;
       
       navigator.clipboard.writeText(hintText).then(()=>{
         alert("Hint copied to clipboard! 📋✨ Ab Instagram DM me paste karke bhej do!");
@@ -1851,7 +2097,8 @@ Direct Link: ${productDirectLink}`);
 
       let btn = document.getElementById('btnPlace'); btn.innerText = "Placing Order..."; btn.disabled = true;
       let x = getProdById(currId), oId = "MWT-" + Math.floor(10000 + Math.random()*90000);
-      let effectivePn = isSpecialSecretActive ? Math.round(x.pn * 0.05) : x.pn;
+      let basePn = getAdjustedPrice(x.pn);
+      let effectivePn = isSpecialSecretActive ? Math.round(x.pn * 0.05) : basePn;
       let tot = effectivePn * selQty;
       let now = Date.now();
       let n = document.getElementById('cName').value.trim(), ad = document.getElementById('cAddr').value.trim(), ct = document.getElementById('cCity').value.trim(), pn = document.getElementById('cPin').value.trim();
@@ -1859,10 +2106,12 @@ Direct Link: ${productDirectLink}`);
       localStorage.setItem(getSavedAddressKey(), JSON.stringify({name:n,phone:phone,addr:ad,city:ct,pin:pn}));
       let firstImg = Array.isArray(x.i) ? x.i[0] : x.i;
 
+      let referredBy = localStorage.getItem('mwt_referred_by') || "";
+
       let order = {
         productId:currId, orderId:oId, title:x.t, img:firstImg, code:x.cd, price:tot, qty:selQty, size:selSize,
         email:currentUserEmail, name:n, phone:phone, address:`${ad}, ${ct} - ${pn}`, date:new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}),
-        timestamp:now, status:"active"
+        timestamp:now, status:"active", referredBy: referredBy, referralRewardUnlocked: false
       };
 
       if(isSpecialSecretActive){
@@ -1879,31 +2128,18 @@ Direct Link: ${productDirectLink}`);
       renderGrid();
 
       let tgMessage = 
-        `🛍️ *NEW ORDER CONFIRMED!* 🛍️
-
-` +
-        `🆔 *Order ID:* #${oId}
-` +
-        `📦 *Item:* ${x.t}
-` +
-        `🔢 *Code:* ${x.cd}
-` +
-        (selSize ? `📏 *Option/Size:* ${selSize}
-` : '') +
-        `🔢 *Quantity:* ${selQty}
-` +
-        `💰 *Total Amount:* ₹${tot} (COD)` + (effectivePn !== x.pn ? ' [95% OFF CODE APPLIED]' : '') + `\n\n` +
-        `👤 *Customer Name:* ${n}
-` +
-        `📧 *Google Verified Email:* ${currentUserEmail}
-` +
-        `📞 *Mobile Number:* ${phone}
-` +
-        `📍 *Delivery Address:* ${ad}, ${ct} - ${pn}
-
-` +
-        `🖼️ *Product Photo Link:*
-${firstImg}`;
+        `🛍️ *NEW ORDER CONFIRMED!* 🛍️\n\n` +
+        `🆔 *Order ID:* #${oId}\n` +
+        `📦 *Item:* ${x.t}\n` +
+        `🔢 *Code:* ${x.cd}\n` +
+        (selSize ? `📏 *Option/Size:* ${selSize}\n` : '') +
+        `🔢 *Quantity:* ${selQty}\n` +
+        `💰 *Total Amount:* ₹${tot} (COD)` + (effectivePn !== basePn ? ' [95% OFF CODE APPLIED]' : '') + `\n\n` +
+        `👤 *Customer Name:* ${n}\n` +
+        `📧 *Google Verified Email:* ${currentUserEmail}\n` +
+        `📞 *Mobile Number:* ${phone}\n` +
+        `📍 *Delivery Address:* ${ad}, ${ct} - ${pn}\n\n` +
+        `🖼️ *Product Photo Link:*\n${firstImg}`;
 
       fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
         method:"POST", headers:{"Content-Type":"application/json"},
@@ -2024,7 +2260,7 @@ ${firstImg}`;
       const directItem = {
         id: x.id,
         title: x.t,
-        price: x.pn,
+        price: getAdjustedPrice(x.pn),
         img: Array.isArray(x.i)?x.i[0]:x.i,
         code: x.cd,
         qty: 1,
@@ -2169,9 +2405,28 @@ ${firstImg}`;
     function handleSuccessfulGoogleLogin(emailStr, fromCheckout = false){
       currentUserEmail = emailStr.toLowerCase();
       localStorage.setItem('mwt_logged_in_email', currentUserEmail);
+
+      // Check URL for referral link parameter (?ref=...)
+      const urlParams = new URLSearchParams(window.location.search);
+      const refCode = urlParams.get('ref');
+      if(refCode && refCode !== sanitizeEmailKey(currentUserEmail)) {
+        localStorage.setItem('mwt_referred_by', refCode);
+
+        // Sign-up par Referrer ke account me ₹100 Pending Balance add karna
+        fbDb.ref('users/' + refCode + '/wallet').transaction(wallet => {
+          if (!wallet) wallet = { available: 0, pending: 0 };
+          wallet.pending = (wallet.pending || 0) + 100;
+          return wallet;
+        });
+      }
+
       updateHeaderAccountBtn();
       updateCheckoutEmailState();
       syncUserWaitlistCloud(currentUserEmail);
+      syncUserWalletCloud(currentUserEmail, () => {
+        updateDashboardWalletUI();
+      });
+      checkAndUnlockReferralRewards(currentUserEmail);
 
       let userAgent = navigator.userAgent || "";
       let device = "Mobile Device 📱";
@@ -2182,15 +2437,10 @@ ${firstImg}`;
       let dateStr = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', dateStyle: 'medium', timeStyle: 'short' });
 
       let loginMsg = 
-        `👤 *GOOGLE SIGN-IN VERIFIED!* 🎀
-
-` +
-        `📧 *Email ID:* ${currentUserEmail}
-` +
-        `📱 *Device:* ${device}
-` +
-        `⏰ *Time:* ${dateStr}
-` +
+        `👤 *GOOGLE SIGN-IN VERIFIED!* 🎀\n\n` +
+        `📧 *Email ID:* ${currentUserEmail}\n` +
+        `📱 *Device:* ${device}\n` +
+        `⏰ *Time:* ${dateStr}\n` +
         `🔗 *Source:* ${fromCheckout ? 'Checkout Page' : 'Account Dashboard'}`;
 
       fetch(`https://api.telegram.org/bot${TG_VISITOR_TOKEN}/sendMessage`, {
@@ -2208,6 +2458,7 @@ ${firstImg}`;
           handleSuccessfulGoogleLogin(user.email, false);
         } else if(user && user.email && currentUserEmail){
           syncUserWaitlistCloud(currentUserEmail);
+          syncUserWalletCloud(currentUserEmail);
         }
       });
     }
@@ -2218,10 +2469,12 @@ ${firstImg}`;
       localStorage.removeItem('mwt_logged_in_email');
       latestLoadedOrders = [];
       userWaitlist = {};
+      userWallet = { available: 0, pending: 0 };
       updateHeaderAccountBtn();
       updateCheckoutEmailState();
       updateHeaderWaitlistUI();
       renderAccountDashboard([]);
+      renderGrid();
     }
 
     function cancelOrder(orderId){
@@ -2234,36 +2487,19 @@ ${firstImg}`;
         item.cancelReason = reason.trim();
         updateOrderInFirebase(item);
 
-        let tgMsg = `🚨 *ORDER CANCELLED BY CUSTOMER!* 🚨
-
-` +
-                    `🆔 *Order ID:* #${item.orderId}
-` +
-                    `📦 *Item:* ${item.title}
-` +
-                    `🔢 *Code:* ${item.code || 'N/A'}
-` +
-                    (item.size ? `📏 *Size:* ${item.size}
-` : '') +
-                    `🔢 *Quantity:* ${item.qty}
-` +
-                    `💰 *Order Amount:* ₹${item.price}
-
-` +
-                    `👤 *Customer Name:* ${item.name}
-` +
-                    `📧 *Email ID:* ${item.email || 'N/A'}
-` +
-                    `📞 *Phone Number:* ${item.phone}
-` +
-                    `📍 *Delivery Address:* ${item.address}
-
-` +
-                    `💬 *Cancellation Reason:* ${reason.trim()}
-
-` +
-                    `🖼️ *Product Photo Link:*
-${item.img}`;
+        let tgMsg = `🚨 *ORDER CANCELLED BY CUSTOMER!* 🚨\n\n` +
+                    `🆔 *Order ID:* #${item.orderId}\n` +
+                    `📦 *Item:* ${item.title}\n` +
+                    `🔢 *Code:* ${item.code || 'N/A'}\n` +
+                    (item.size ? `📏 *Size:* ${item.size}\n` : '') +
+                    `🔢 *Quantity:* ${item.qty}\n` +
+                    `💰 *Order Amount:* ₹${item.price}\n\n` +
+                    `👤 *Customer Name:* ${item.name}\n` +
+                    `📧 *Email ID:* ${item.email || 'N/A'}\n` +
+                    `📞 *Phone Number:* ${item.phone}\n` +
+                    `📍 *Delivery Address:* ${item.address}\n\n` +
+                    `💬 *Cancellation Reason:* ${reason.trim()}\n\n` +
+                    `🖼️ *Product Photo Link:*\n${item.img}`;
 
         fetch(`https://api.telegram.org/bot${TG_CANCEL_TOKEN}/sendMessage`, {
           method: "POST",
@@ -2285,36 +2521,19 @@ ${item.img}`;
         item.returnReason = reason.trim();
         updateOrderInFirebase(item);
 
-        let tgMsg = `🔄 *RETURN REQUESTED BY CUSTOMER!* 🔄
-
-` +
-                    `🆔 *Order ID:* #${item.orderId}
-` +
-                    `📦 *Item:* ${item.title}
-` +
-                    `🔢 *Code:* ${item.code || 'N/A'}
-` +
-                    (item.size ? `📏 *Size:* ${item.size}
-` : '') +
-                    `🔢 *Quantity:* ${item.qty}
-` +
-                    `💰 *Refund Amount:* ₹${item.price}
-
-` +
-                    `👤 *Customer Name:* ${item.name}
-` +
-                    `📧 *Email ID:* ${item.email || 'N/A'}
-` +
-                    `📞 *Phone Number:* ${item.phone}
-` +
-                    `📍 *Pickup Address:* ${item.address}
-
-` +
-                    `💬 *Return Reason:* ${reason.trim()}
-
-` +
-                    `🖼️ *Product Photo Link:*
-${item.img}`;
+        let tgMsg = `🔄 *RETURN REQUESTED BY CUSTOMER!* 🔄\n\n` +
+                    `🆔 *Order ID:* #${item.orderId}\n` +
+                    `📦 *Item:* ${item.title}\n` +
+                    `🔢 *Code:* ${item.code || 'N/A'}\n` +
+                    (item.size ? `📏 *Size:* ${item.size}\n` : '') +
+                    `🔢 *Quantity:* ${item.qty}\n` +
+                    `💰 *Refund Amount:* ₹${item.price}\n\n` +
+                    `👤 *Customer Name:* ${item.name}\n` +
+                    `📧 *Email ID:* ${item.email || 'N/A'}\n` +
+                    `📞 *Phone Number:* ${item.phone}\n` +
+                    `📍 *Pickup Address:* ${item.address}\n\n` +
+                    `💬 *Return Reason:* ${reason.trim()}\n\n` +
+                    `🖼️ *Product Photo Link:*\n${item.img}`;
 
         fetch(`https://api.telegram.org/bot${TG_CANCEL_TOKEN}/sendMessage`, {
           method: "POST",
@@ -2327,7 +2546,11 @@ ${item.img}`;
     }
 
     window.addEventListener('load', function() {
-      if(currentUserEmail) syncUserWaitlistCloud(currentUserEmail);
+      if(currentUserEmail) {
+        syncUserWaitlistCloud(currentUserEmail);
+        syncUserWalletCloud(currentUserEmail);
+        checkAndUnlockReferralRewards(currentUserEmail);
+      }
 
       if(fbDb) {
         let visitorRef = fbDb.ref('site_stats/total_visits');
@@ -2347,15 +2570,10 @@ ${item.img}`;
             let dateStr = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', dateStyle: 'medium', timeStyle: 'short' });
 
             let visitMsg = 
-              `👀 *TOTAL UNIQUE VISITOR ALERT!* 🌐
-
-` +
-              `🔢 *Total Lifetime Count:* #${totalVisits}
-` +
-              `📱 *Device:* ${device}
-` +
-              `⏰ *Time:* ${dateStr}
-` +
+              `👀 *TOTAL UNIQUE VISITOR ALERT!* 🌐\n\n` +
+              `🔢 *Total Lifetime Count:* #${totalVisits}\n` +
+              `📱 *Device:* ${device}\n` +
+              `⏰ *Time:* ${dateStr}\n` +
               `🔗 *Source:* Website Link Clicked 🎀`;
 
             fetch(`https://api.telegram.org/bot${TG_VISITOR_TOKEN}/sendMessage`, {

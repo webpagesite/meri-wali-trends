@@ -4,6 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>🎀 Meri Wali Trends 🐱✨</title>
+
+  <!-- PWA Meta Tags -->
+  <meta name="theme-color" content="#ff4d88">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Meri Wali Trends">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="https://i.ibb.co/Ld0X8PQv/Screenshot-2026-0816-064613.jpg">
   
   <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -28,6 +36,7 @@
     .brand-title{font-family:'Quicksand',sans-serif;font-size:20px;color:var(--pink);display:flex;align-items:center;gap:5px;}
     .h-actions{display:flex;gap:6px;align-items:center;}
     .btn-header{background:#fff0f5;color:var(--pink);border:1px solid var(--pink-accent);padding:6px 12px;border-radius:999px;font-size:11.5px;font-weight:700;cursor:pointer;}
+    .btn-install{background:linear-gradient(135deg,#ff4d88,#ff2e63);color:#fff;border:none;padding:6px 14px;border-radius:999px;font-size:11.5px;font-weight:800;cursor:pointer;box-shadow:0 4px 12px rgba(255,46,99,0.25);display:none;align-items:center;gap:4px;}
     
     .voice-btn{background:linear-gradient(135deg,#ff6584,#ff2e63);color:#fff;border:none;padding:11px 18px;border-radius:999px;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 6px 16px rgba(255,46,99,0.35);}
     .voice-popup{display:none;background:#fff;border:2px dashed var(--pink);border-radius:16px;padding:12px 16px;margin:10px auto;max-width:900px;font-size:13px;color:#b01a48;font-weight:600;}
@@ -351,8 +360,10 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
     <div class="h-row">
       <h1 class="brand-title"><span style="cursor:pointer;" onclick="triggerSecretDiscount()" title="Special Gift">🎀</span> Meri Wali Trends <span>🐱</span>✨</h1>
       <div class="h-actions">
+        <!-- PWA INSTALL APP BUTTON -->
+        <button class="btn-install" id="btnInstallApp" onclick="triggerPwaInstall()">📲 Install App</button>
         <button class="btn-header" id="btnHeaderAccount" onclick="openAccountPage()">👤 Login</button>
-         </div>
+      </div>
     </div>
     <p style="font-size:12px; color:var(--muted); text-align:left; font-weight:600;">Babu ki har demand yahan poori hoti hai 🐾💖</p>
   </header>
@@ -369,6 +380,7 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
     <div class="trust-item"><span>🚚</span><b>Easy Ordering</b><small>Simple checkout</small></div>
     <div class="trust-item"><span>🔒</span><b>Secure Login</b><small>Google verified</small></div>
     <div class="trust-item"><span>💵</span><b>COD Available</b><small>Pay on delivery</small></div>
+    <div class="trust-item" onclick="triggerPwaInstall()" style="cursor:pointer;"><span>📲</span><b>Mobile App</b><small>Fast &amp; Cute</small></div>
   </section>
 
   <div style="margin-bottom:14px;">
@@ -781,6 +793,47 @@ body{background:linear-gradient(180deg,#fff8fb 0%,#fff 42%,#fff8fb 100%);padding
     let referralAvailableBalance = 0;
     let isSpecialSecretActive = false;
     const vAudio = new Audio("site.mp3");
+
+    /* ========================================================
+       PWA INSTALL (ADD TO HOME SCREEN) CONTROLLER
+       ======================================================== */
+    let deferredPrompt = null;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      const installBtn = document.getElementById('btnInstallApp');
+      if(installBtn) installBtn.style.display = 'inline-flex';
+    });
+
+    window.addEventListener('appinstalled', () => {
+      deferredPrompt = null;
+      const installBtn = document.getElementById('btnInstallApp');
+      if(installBtn) installBtn.style.display = 'none';
+      alert('🎀 Meri Wali Trends App successfully install ho gaya hai!');
+    });
+
+    function triggerPwaInstall() {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choiceResult) => {
+          if (choiceResult.outcome === 'accepted') {
+            console.log('User accepted the install prompt');
+          }
+          deferredPrompt = null;
+        });
+      } else {
+        alert("📲 App Install Karne Ka Tareeqa:\n\n1. Browser ke 3 dots (⋮) par tap karein\n2. 'Install app' ya 'Add to Home screen' par click karein! 🎀✨");
+      }
+    }
+
+    // Register Service Worker for PWA
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js').catch((err) => {
+          console.log('SW registration error: ', err);
+        });
+      });
+    }
 
     function triggerSecretDiscount() {
       if(!currentUserEmail){
@@ -2675,7 +2728,7 @@ ${item.img}`;
       "Babu ke dil ka raaz: Jab aap muskurati ho toh uska poora din ban jata hai! 🥰",
       "Aapka aura itna aesthetic hai ki Babu aapko dekhte hi kho jaata hai! 💫",
       "Love Alert: Aap dono ki jodi duniya ki sabse pyari jodi hai, nazar na lage! 🧿",
-      "Kismat Ka Ishara: Ye cute cheez aapke upar sabse zyada suit karegi! 🛍️️",
+      "Kismat Ka Ishara: Ye cute cheez aapke upar sabse zyada suit karegi! 🛍️",
       "Babu ki diary: 'Wo gusse me bhi kitni cute lagti hai yaar!' 🥺👉👈",
       "Secret Fortune: Babu ko ek hint bhej do, wo bina bole order kar dega! 💌"
     ];
